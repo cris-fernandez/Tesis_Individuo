@@ -5,7 +5,9 @@ new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not 
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
 
-setwd("C:/Users/recup/Desktop/TESIS/PAPERS/01_INDIVIDUO/DATA")
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd('..')
+getwd()
 
 # 1.- Reading db ####
 
@@ -142,5 +144,5 @@ climate_data_series <- climate_data %>%
 
 # 9.- Exportation ####
 
-write.csv(climate_data_site, "00_climate_means.csv")
-write.csv(climate_data_series, "00_climate_series.csv")
+write.csv(climate_data_site, "02_clean_data/02_00_climate_means.csv")
+write.csv(climate_data_series, "02_clean_data/02_00_climate_series.csv")
