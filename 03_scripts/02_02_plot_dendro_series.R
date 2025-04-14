@@ -6,13 +6,14 @@ new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not 
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
 
-setwd("C:/Users/recup/Desktop/TESIS/PAPERS/01_INDIVIDUO/DATA")
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd('..')
 getwd()
 
 # 1.- Reading data ####
 
-climate_data <- read.csv("00_climate_series.csv") %>% select(-X)
-dendro_data <- read.csv("00_dendro_series.csv") %>% select(-X)
+climate_data <- read.csv("02_clean_data/02_00_climate_series.csv") %>% select(-X)
+dendro_data <- read.csv("02_clean_data/02_02_dendro_series.csv") %>% select(-X)
 
 # 2.- Tidying and joining ####
 
@@ -276,9 +277,7 @@ psnav_plot <- ggplot(data = psylv_nav) +
 
 # 4.- Exporting ####
 
-setwd("C:/Users/recup/Desktop/TESIS/PAPERS/01_INDIVIDUO/FIGURES")
-
-tiff("grouped_dendro.tiff", units = "mm", width = 700, height = 780,
+tiff("04_figures/04_02_grouped_dendro.tiff", units = "mm", width = 700, height = 780,
      res = 700, compression = "lzw")
   abnav_plot + abhue_plot + ppmad_plot + psmad_plot +
   psgua_plot + pster_plot + psnav_plot + plot_layout(ncol = 2)
