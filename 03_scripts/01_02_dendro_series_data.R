@@ -155,5 +155,7 @@ BAI_df3 <- full_join(plot, BAI_df2, by = "plot_id")
 
 # 10.- Exporting ####
 
-setwd("C:/Users/recup/Desktop/TESIS/PAPERS/01_INDIVIDUO/DATA")
-write.csv(BAI_df3, "00_dendro_series.csv")
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd('..')
+getwd()
+write.csv(BAI_df3, "02_clean_data/02_02_dendro_series.csv")
