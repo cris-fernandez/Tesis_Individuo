@@ -377,7 +377,7 @@ clean_target2 <- clean_target %>%
   filter(!is.na(Rt17)) %>% 
   group_by(sp_id) %>%
   mutate(Rt17_cat = cut(Rt17,
-                        breaks = quantile(Rs12, 
+                        breaks = quantile(Rt17, 
                                           probs = c(0, 1/3, 2/3, 1), 
                                           na.rm = T),
                         include.lowest = T,
@@ -686,7 +686,7 @@ bai05_rs17 <- ggplot(clean_target2) +
 clean_target2 <- clean_target %>%
   filter(!is.na(Rt22)) %>% 
   group_by(sp_id) %>%
-  mutate(Rt22_cat = cut(Rs12,
+  mutate(Rt22_cat = cut(Rt22,
                         breaks = quantile(Rt22, 
                                           probs = c(0, 1/3, 2/3, 1), 
                                           na.rm = T),
