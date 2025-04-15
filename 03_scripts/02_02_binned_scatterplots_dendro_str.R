@@ -59,23 +59,23 @@ clean_target <- clean_target %>%
 
 clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pinpine")
 
-# 5.- Dendro indices scatterplots ####
+# 5.- Structure - BAI scatterplots ####
 
-## 5.1.- BAI ~ Rt12 ####
+## 5.1.- BAI ~ height ####
 
 clean_target2 <- clean_target %>%
-  filter(!is.na(Rt12)) %>% 
+  filter(!is.na(height)) %>% 
   group_by(sp_id) %>%
-  mutate(Rt12_cat = cut(Rt12,
-                        breaks = quantile(Rt12, 
-                                            probs = c(0, 1/3, 2/3, 1), 
-                                            na.rm = T),
+  mutate(height_cat = cut(height,
+                        breaks = quantile(height, 
+                                          probs = c(0, 1/3, 2/3, 1), 
+                                          na.rm = T),
                         include.lowest = T,
                         labels = c("1st T", "2nd T", "3rd T"))) %>%
   ungroup()
 
-bai_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean, fill = sp_id)) + 
+bai_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -84,7 +84,7 @@ bai_rt12 <- ggplot(clean_target2) +
                                "P. sylvestris",
                                "P. pinea"),
                     name = "") +
-  xlab("") +
+  xlab("Tree height (m)") +
   ylab(expression(paste("BAI (cm² year"^"-1", ")"))) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -96,10 +96,10 @@ bai_rt12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.2.- BAI80 ~ Rt12 ####
+## 5.2.- BAI80 ~ height ####
 
-bai80_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean_1980, fill = sp_id)) + 
+bai80_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean_1980, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -120,10 +120,10 @@ bai80_rt12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.3.- BAI20 ~ Rt12 ####
+## 5.3.- BAI20 ~ height ####
 
-bai20_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean_20, fill = sp_id)) + 
+bai20_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean_20, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -142,12 +142,12 @@ bai20_rt12 <- ggplot(clean_target2) +
         axis.text.x = element_text(size = 9, vjust = - .85),
         axis.title.x = element_text(size = 15, vjust = 1.15),
         legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22))
 
-## 5.4.- BAI15 ~ Rt12 ####
+## 5.4.- BAI15 ~ height ####
 
-bai15_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean_15, fill = sp_id)) + 
+bai15_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean_15, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -168,10 +168,10 @@ bai15_rt12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.5.- BAI10 ~ Rt12 ####
+## 5.5.- BAI10 ~ height ####
 
-bai10_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean_10, fill = sp_id)) + 
+bai10_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean_10, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -190,12 +190,12 @@ bai10_rt12 <- ggplot(clean_target2) +
         axis.text.x = element_text(size = 9, vjust = - .85),
         axis.title.x = element_text(size = 15, vjust = 1.15),
         legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22))
 
-## 5.6.- BAI05 ~ Rt12 ####
+## 5.6.- BAI80 ~ height ####
 
-bai05_rt12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt12_cat, y = mean_05, fill = sp_id)) + 
+bai05_height <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = height_cat, y = mean_05, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -204,7 +204,7 @@ bai05_rt12 <- ggplot(clean_target2) +
                                "P. sylvestris",
                                "P. pinea"),
                     name = "") +
-  xlab("2012 Resistance") +
+  xlab("") +
   ylab(expression(paste("BAI 05 (cm² year"^"-1", ")"))) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -216,21 +216,21 @@ bai05_rt12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.7.- BAI ~ Rs12 ####
+## 5.7.- BAI ~ dbh ####
 
 clean_target2 <- clean_target %>%
-  filter(!is.na(Rs12)) %>% 
+  filter(!is.na(dbh)) %>% 
   group_by(sp_id) %>%
-  mutate(Rs12_cat = cut(Rs12,
-                        breaks = quantile(Rs12, 
-                                          probs = c(0, 1/3, 2/3, 1), 
-                                          na.rm = T),
-                        include.lowest = T,
-                        labels = c("1st T", "2nd T", "3rd T"))) %>%
+  mutate(dbh_cat = cut(dbh,
+                          breaks = quantile(dbh, 
+                                            probs = c(0, 1/3, 2/3, 1), 
+                                            na.rm = T),
+                          include.lowest = T,
+                          labels = c("1st T", "2nd T", "3rd T"))) %>%
   ungroup()
 
-bai_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean, fill = sp_id)) + 
+bai_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -251,10 +251,10 @@ bai_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.8.- BAI80 ~ Rs12 ####
+## 5.8.- BAI80 ~ dbh ####
 
-bai80_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean_1980, fill = sp_id)) + 
+bai80_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean_1980, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -275,10 +275,10 @@ bai80_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.9.- BAI20 ~ Rs12 ####
+## 5.9.- BAI20 ~ dbh ####
 
-bai20_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean_20, fill = sp_id)) + 
+bai20_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean_20, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -299,10 +299,10 @@ bai20_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.10.- BAI15 ~ Rs12 ####
+## 5.10.- BAI15 ~ dbh ####
 
-bai15_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean_15, fill = sp_id)) + 
+bai15_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean_15, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -323,10 +323,10 @@ bai15_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.11.- BAI10 ~ Rs12 ####
+## 5.11.- BAI10 ~ dbh ####
 
-bai10_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean_10, fill = sp_id)) + 
+bai10_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean_10, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -347,10 +347,10 @@ bai10_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.12.- BAI05 ~ Rs12 ####
+## 5.12.- BAI05 ~ dbh ####
 
-bai05_rs12 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs12_cat, y = mean_05, fill = sp_id)) + 
+bai05_dbh <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = dbh_cat, y = mean_05, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -359,7 +359,7 @@ bai05_rs12 <- ggplot(clean_target2) +
                                "P. sylvestris",
                                "P. pinea"),
                     name = "") +
-  xlab("2012 Resilience") +
+  xlab("Tree dbh (cm)") +
   ylab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -371,21 +371,21 @@ bai05_rs12 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.13.- BAI ~ Rt17 ####
+## 5.13.- BAI ~ Hegyi ####
 
 clean_target2 <- clean_target %>%
-  filter(!is.na(Rt17)) %>% 
+  filter(!is.na(hegyi_index)) %>% 
   group_by(sp_id) %>%
-  mutate(Rt17_cat = cut(Rt17,
-                        breaks = quantile(Rt17, 
-                                          probs = c(0, 1/3, 2/3, 1), 
-                                          na.rm = T),
-                        include.lowest = T,
-                        labels = c("1st T", "2nd T", "3rd T"))) %>%
+  mutate(hegyi_cat = cut(hegyi_index,
+                       breaks = quantile(hegyi_index, 
+                                         probs = c(0, 1/3, 2/3, 1), 
+                                         na.rm = T),
+                       include.lowest = T,
+                       labels = c("1st T", "2nd T", "3rd T"))) %>%
   ungroup()
 
-bai_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean, fill = sp_id)) + 
+bai_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -406,10 +406,10 @@ bai_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.14.- BAI80 ~ Rt17 ####
+## 5.14.- BAI80 ~ Hegyi ####
 
-bai80_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean_1980, fill = sp_id)) + 
+bai80_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean_1980, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -430,10 +430,10 @@ bai80_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.15.- BAI20 ~ Rt17 ####
+## 5.15.- BAI20 ~ Hegyi ####
 
-bai20_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean_20, fill = sp_id)) + 
+bai20_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean_20, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -454,10 +454,10 @@ bai20_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.16.- BAI15 ~ Rt17 ####
+## 5.16.- BAI15 ~ Hegyi ####
 
-bai15_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean_15, fill = sp_id)) + 
+bai15_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean_15, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -478,10 +478,10 @@ bai15_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.17.- BAI10 ~ Rt17 ####
+## 5.17.- BAI10 ~ Hegyi ####
 
-bai10_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean_10, fill = sp_id)) + 
+bai10_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean_10, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -502,10 +502,10 @@ bai10_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.18.- BAI05 ~ Rt17 ####
+## 5.18.- BAI05 ~ Hegyi ####
 
-bai05_rt17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt17_cat, y = mean_05, fill = sp_id)) + 
+bai05_hegyi <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = hegyi_cat, y = mean_05, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -514,7 +514,7 @@ bai05_rt17 <- ggplot(clean_target2) +
                                "P. sylvestris",
                                "P. pinea"),
                     name = "") +
-  xlab("2017 Resistance") +
+  xlab("Hegyi Index") +
   ylab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -526,21 +526,21 @@ bai05_rt17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.19.- BAI ~ Rs17 ####
+## 5.19.- BAI ~ age ####
 
 clean_target2 <- clean_target %>%
-  filter(!is.na(Rs17)) %>% 
+  filter(!is.na(age)) %>% 
   group_by(sp_id) %>%
-  mutate(Rs17_cat = cut(Rs17,
-                        breaks = quantile(Rs17, 
-                                          probs = c(0, 1/3, 2/3, 1), 
-                                          na.rm = T),
-                        include.lowest = T,
-                        labels = c("1st T", "2nd T", "3rd T"))) %>%
+  mutate(age_cat = cut(age,
+                         breaks = quantile(age, 
+                                           probs = c(0, 1/3, 2/3, 1), 
+                                           na.rm = T),
+                         include.lowest = T,
+                         labels = c("1st T", "2nd T", "3rd T"))) %>%
   ungroup()
 
-bai_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean, fill = sp_id)) + 
+bai_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -561,10 +561,10 @@ bai_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.20.- BAI80 ~ Rs17 ####
+## 5.20.- BAI80 ~ age ####
 
-bai80_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean_1980, fill = sp_id)) + 
+bai80_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean_1980, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -585,10 +585,10 @@ bai80_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.21.- BAI20 ~ Rs17 ####
+## 5.21.- BAI20 ~ age ####
 
-bai20_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean_20, fill = sp_id)) + 
+bai20_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean_20, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -609,10 +609,10 @@ bai20_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.22.- BAI15 ~ Rs17 ####
+## 5.22.- BAI15 ~ age ####
 
-bai15_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean_15, fill = sp_id)) + 
+bai15_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean_15, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -633,10 +633,10 @@ bai15_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.23.- BAI10 ~ Rs17 ####
+## 5.23.- BAI10 ~ age ####
 
-bai10_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean_10, fill = sp_id)) + 
+bai10_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean_10, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -657,10 +657,10 @@ bai10_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.24.- BAI05 ~ Rs17 ####
+## 5.24.- BAI05 ~ Hegyi ####
 
-bai05_rs17 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rs17_cat, y = mean_05, fill = sp_id)) + 
+bai05_age <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = age_cat, y = mean_05, fill = sp_id)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -669,7 +669,7 @@ bai05_rs17 <- ggplot(clean_target2) +
                                "P. sylvestris",
                                "P. pinea"),
                     name = "") +
-  xlab("2017 Resilience") +
+  xlab("Tree age (years)") +
   ylab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -681,170 +681,15 @@ bai05_rs17 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.25.- BAI ~ Rt22 ####
+# 6.- Dendro structure plotting ####
 
-clean_target2 <- clean_target %>%
-  filter(!is.na(Rt22)) %>% 
-  group_by(sp_id) %>%
-  mutate(Rt22_cat = cut(Rt22,
-                        breaks = quantile(Rt22, 
-                                          probs = c(0, 1/3, 2/3, 1), 
-                                          na.rm = T),
-                        include.lowest = T,
-                        labels = c("1st T", "2nd T", "3rd T"))) %>%
-  ungroup()
-
-bai_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-## 5.26.- BAI80 ~ Rt22 ####
-
-bai80_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean_1980, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-## 5.27.- BAI20 ~ Rt22 ####
-
-bai20_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean_20, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-## 5.28.- BAI15 ~ Rt22 ####
-
-bai15_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean_15, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-## 5.29.- BAI10 ~ Rt22 ####
-
-bai10_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean_10, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-## 5.30.- BAI05 ~ Rt22 ####
-
-bai05_rt22 <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = Rt22_cat, y = mean_05, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                    values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +
-  xlab("2022 Resistance") +
-  ylab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),
-        axis.text.y = element_text(size = 9),
-        axis.title.y = element_text(size = 15),
-        axis.text.x = element_text(size = 9, vjust = - .85),
-        axis.title.x = element_text(size = 15, vjust = 1.15),
-        legend.text = element_text(size = 8),
-        plot.tag = element_text(size = 22)) 
-
-# 6.- Dendro indices plotting ####
-
-tiff("04_figures/04_02_dendro_lloret_sp.tiff", units = "mm", width = 450, height = 400,
+tiff("04_figures/04_02_dendro_structure_sp.tiff", units = "mm", width = 450, height = 400,
      res = 800, compression = "lzw")
-bai_rt12 + bai_rs12 + bai_rt17 + bai_rs17 + bai_rt22 + 
-  bai80_rt12 + bai80_rs12 + bai80_rt17 + bai80_rs17 + bai80_rt22 + 
-  bai20_rt12 + bai20_rs12 + bai20_rt17 + bai20_rs17 + bai20_rt22 + 
-  bai15_rt12 + bai15_rs12 + bai15_rt17 + bai15_rs17 + bai15_rt22 + 
-  bai10_rt12 + bai10_rs12 + bai10_rt17 + bai10_rs17 + bai10_rt22 + 
-  bai05_rt12 + bai05_rs12 + bai05_rt17 + bai05_rs17 + bai05_rt22 + 
-  plot_layout(guides = 'collect', ncol = 5)
+bai_height + bai_dbh + bai_hegyi + bai_age + 
+  bai80_height + bai80_dbh + bai80_hegyi + bai80_age + 
+  bai20_height + bai20_dbh + bai20_hegyi + bai20_age +   
+  bai15_height + bai15_dbh + bai15_hegyi + bai15_age + 
+  bai10_height + bai10_dbh + bai10_hegyi + bai10_age + 
+  bai05_height + bai05_dbh + bai05_hegyi + bai05_age + 
+  plot_layout(guides = 'collect', ncol = 4, )
 dev.off()
