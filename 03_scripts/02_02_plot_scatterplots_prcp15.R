@@ -64,7 +64,7 @@ clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pin
 
 climate <- read.csv("02_clean_data/02_00_climate_series.csv") %>% 
   select(-X) %>% 
-  filter(year > 2001)
+  filter(year > 2006)
 
 prcp <- climate %>% 
   select(c(site, year, Prcp)) %>% 
@@ -80,7 +80,7 @@ clean_target <- full_join(clean_target, prcp, by = "site")
 
 # y variable in leaf traits will be defoliation
 
-## 4.1.- MAP20 ~ height ####
+## 4.1.- MAP15 ~ height ####
 
 prcp_height <- ggplot(clean_target) + 
   geom_point(aes(x = height, y = prec, col = sp_id)) + 
@@ -102,7 +102,7 @@ prcp_height <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "A") +
   xlab("Tree height (m)") +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -113,7 +113,7 @@ prcp_height <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.2.- MAP20 ~ dbh ####
+## 4.2.- MAP15 ~ dbh ####
 
 prcp_dbh <- ggplot(clean_target) + 
   geom_point(aes(x = dbh, y = prec, col = sp_id)) + 
@@ -135,7 +135,7 @@ prcp_dbh <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "B") +
   xlab("Tree d.b.h. (cm)") +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -146,7 +146,7 @@ prcp_dbh <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.3.- MAP20 ~ Hegyi ####
+## 4.3.- MAP15 ~ Hegyi ####
 
 prcp_hegyi <- ggplot(clean_target) + 
   geom_point(aes(x = hegyi_index, y = prec, col = sp_id)) + 
@@ -169,7 +169,7 @@ prcp_hegyi <- ggplot(clean_target) +
   labs(tag = "C") +
   xlim(0, 75) + 
   xlab("Hegyi index") +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -180,7 +180,7 @@ prcp_hegyi <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.4.- MAP20 ~ C ####
+## 4.4.- MAP15 ~ C ####
 
 prcp_c <- ggplot(clean_target) + 
   geom_point(aes(x = percent_c, y = prec, col = sp_id)) + 
@@ -202,7 +202,7 @@ prcp_c <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "D") +
   xlab(expression(paste("Leaf C content (%)"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -213,7 +213,7 @@ prcp_c <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.5.- MAP20 ~ N ####
+## 4.5.- MAP15 ~ N ####
 
 prcp_n <- ggplot(clean_target) + 
   geom_point(aes(x = percent_n, y = prec, col = sp_id)) + 
@@ -235,7 +235,7 @@ prcp_n <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "E") +
   xlab(expression(paste("Leaf N content (%)"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -246,7 +246,7 @@ prcp_n <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.6.- MAP20 ~ dC13 ####
+## 4.6.- MAP15 ~ dC13 ####
 
 prcp_d13c <- ggplot(clean_target) + 
   geom_point(aes(x = d13c, y = prec, col = sp_id)) + 
@@ -268,7 +268,7 @@ prcp_d13c <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "F") +
   xlab(bquote("Leaves δ"~C^13~"(‰)")) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -279,7 +279,7 @@ prcp_d13c <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.7.- MAP20 ~ dN15 ####
+## 4.7.- MAP15 ~ dN15 ####
 
 prcp_d15n <- ggplot(clean_target) + 
   geom_point(aes(x = d15n, y = prec, col = sp_id)) + 
@@ -301,7 +301,7 @@ prcp_d15n <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "G") +
   xlab(bquote("Leaves δ"~N^15~"(‰)")) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -312,7 +312,7 @@ prcp_d15n <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.8.- MAP20 ~ dO18 ####
+## 4.8.- MAP15 ~ dO18 ####
 
 prcp_d18o <- ggplot(clean_target) + 
   geom_point(aes(x = d18o, y = prec, col = sp_id)) + 
@@ -334,7 +334,7 @@ prcp_d18o <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "H") +
   xlab(bquote("Leaves δ"~O^18~"(‰)")) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -345,7 +345,7 @@ prcp_d18o <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.9.- MAP20 ~ water content ####
+## 4.9.- MAP15 ~ water content ####
 
 prcp_wc <- ggplot(clean_target) + 
   geom_point(aes(x = wc_22, y = prec, col = sp_id)) + 
@@ -367,7 +367,7 @@ prcp_wc <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "I") +
   xlab(expression(paste("Leaf water content (%)"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -378,7 +378,7 @@ prcp_wc <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.10.- MAP20 ~ total chl ####
+## 4.10.- MAP15 ~ total chl ####
 
 prcp_chl_fw <- ggplot(clean_target) + 
   geom_point(aes(x = total_chl_fw_22, y = prec, col = sp_id)) + 
@@ -400,7 +400,7 @@ prcp_chl_fw <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "J") +
   xlab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   xlim(0, 2500) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -413,7 +413,7 @@ prcp_chl_fw <- ggplot(clean_target) +
         plot.tag = element_text(size = 22)) 
 
 
-## 4.11.- MAP20 ~ carotenoids ####
+## 4.11.- MAP15 ~ carotenoids ####
 
 prcp_xc_fw <- ggplot(clean_target) + 
   geom_point(aes(x = xc_fw_22, y = prec, col = sp_id)) + 
@@ -435,7 +435,7 @@ prcp_xc_fw <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "K") +
   xlab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   xlim(0, 80) + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -447,7 +447,7 @@ prcp_xc_fw <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.12.- MAP20 ~ chla/b ####
+## 4.12.- MAP15 ~ chla/b ####
 
 prcp_chl_ab <- ggplot(clean_target) + 
   geom_point(aes(x = chla_chlb_22, y = prec, col = sp_id)) + 
@@ -469,7 +469,7 @@ prcp_chl_ab <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "L") +
   xlab(expression(paste("Chlorophyll a/b ratio"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   xlim(1.3, 3) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -481,7 +481,7 @@ prcp_chl_ab <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.13.- MAP20 ~ chl/xc ####
+## 4.13.- MAP15 ~ chl/xc ####
 
 prcp_chl_xc <- ggplot(clean_target) + 
   geom_point(aes(x = chl_xc_22, y = prec, col = sp_id)) + 
@@ -503,7 +503,7 @@ prcp_chl_xc <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "M") +
   xlab(expression(paste("Chlorophylls/carotenoids ratio"))) +
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   xlim(15, 40) + 
   theme_classic() +
   theme(legend.position = "right",
@@ -537,7 +537,7 @@ prcp_sla <- ggplot(clean_target) +
                     name = "") +  
   labs(tag = "N") +
   xlab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
-  ylab(expression(paste("MAP_20 (mm)"))) + 
+  ylab(expression(paste("MAP_15 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -550,7 +550,7 @@ prcp_sla <- ggplot(clean_target) +
 
 # 5.- Leaf traits plotting ####
 
-tiff("04_figures/04_02_prcp20_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
+tiff("04_figures/04_02_prcp15_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
      res = 800, compression = "lzw")
 prcp_height + prcp_dbh + prcp_hegyi + prcp_c + 
   prcp_n + prcp_d13c + prcp_d15n + prcp_d18o +  
