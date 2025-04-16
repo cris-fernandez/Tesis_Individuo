@@ -83,8 +83,8 @@ clean_target <- full_join(clean_target, prcp, by = "site")
 ## 4.1.- MAP05 ~ height ####
 
 prcp_height <- ggplot(clean_target) + 
-  geom_point(aes(x = height, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = height, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = height, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = height, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -101,8 +101,8 @@ prcp_height <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +
   labs(tag = "A") +
-  xlab("Tree height (m)") +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab("Tree height (m)") +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -116,8 +116,8 @@ prcp_height <- ggplot(clean_target) +
 ## 4.2.- MAP05 ~ dbh ####
 
 prcp_dbh <- ggplot(clean_target) + 
-  geom_point(aes(x = dbh, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = dbh, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = dbh, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = dbh, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -134,8 +134,8 @@ prcp_dbh <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +
   labs(tag = "B") +
-  xlab("Tree d.b.h. (cm)") +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab("Tree d.b.h. (cm)") +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -149,8 +149,8 @@ prcp_dbh <- ggplot(clean_target) +
 ## 4.3.- MAP05 ~ Hegyi ####
 
 prcp_hegyi <- ggplot(clean_target) + 
-  geom_point(aes(x = hegyi_index, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = hegyi_index, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = hegyi_index, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = hegyi_index, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -168,8 +168,8 @@ prcp_hegyi <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "C") +
   xlim(0, 75) + 
-  xlab("Hegyi index") +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab("Hegyi index") +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -183,8 +183,8 @@ prcp_hegyi <- ggplot(clean_target) +
 ## 4.4.- MAP05 ~ C ####
 
 prcp_c <- ggplot(clean_target) + 
-  geom_point(aes(x = percent_c, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = percent_c, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = percent_c, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = percent_c, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -201,8 +201,8 @@ prcp_c <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +
   labs(tag = "D") +
-  xlab(expression(paste("Leaf C content (%)"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(expression(paste("Leaf C content (%)"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -216,8 +216,8 @@ prcp_c <- ggplot(clean_target) +
 ## 4.5.- MAP05 ~ N ####
 
 prcp_n <- ggplot(clean_target) + 
-  geom_point(aes(x = percent_n, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = percent_n, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = percent_n, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = percent_n, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -234,8 +234,8 @@ prcp_n <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "E") +
-  xlab(expression(paste("Leaf N content (%)"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(expression(paste("Leaf N content (%)"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -249,8 +249,8 @@ prcp_n <- ggplot(clean_target) +
 ## 4.6.- MAP05 ~ dC13 ####
 
 prcp_d13c <- ggplot(clean_target) + 
-  geom_point(aes(x = d13c, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = d13c, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d13c, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = d13c, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -267,8 +267,8 @@ prcp_d13c <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "F") +
-  xlab(bquote("Leaves δ"~C^13~"(‰)")) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(bquote("Leaves δ"~C^13~"(‰)")) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -282,8 +282,8 @@ prcp_d13c <- ggplot(clean_target) +
 ## 4.7.- MAP05 ~ dN15 ####
 
 prcp_d15n <- ggplot(clean_target) + 
-  geom_point(aes(x = d15n, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = d15n, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d15n, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = d15n, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -300,8 +300,8 @@ prcp_d15n <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "G") +
-  xlab(bquote("Leaves δ"~N^15~"(‰)")) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(bquote("Leaves δ"~N^15~"(‰)")) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -315,8 +315,8 @@ prcp_d15n <- ggplot(clean_target) +
 ## 4.8.- MAP05 ~ dO18 ####
 
 prcp_d18o <- ggplot(clean_target) + 
-  geom_point(aes(x = d18o, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = d18o, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d18o, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = d18o, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -333,8 +333,8 @@ prcp_d18o <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "H") +
-  xlab(bquote("Leaves δ"~O^18~"(‰)")) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(bquote("Leaves δ"~O^18~"(‰)")) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -348,8 +348,8 @@ prcp_d18o <- ggplot(clean_target) +
 ## 4.9.- MAP05 ~ water content ####
 
 prcp_wc <- ggplot(clean_target) + 
-  geom_point(aes(x = wc_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = wc_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = wc_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = wc_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -366,8 +366,8 @@ prcp_wc <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "I") +
-  xlab(expression(paste("Leaf water content (%)"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(expression(paste("Leaf water content (%)"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -381,8 +381,8 @@ prcp_wc <- ggplot(clean_target) +
 ## 4.10.- MAP05 ~ total chl ####
 
 prcp_chl_fw <- ggplot(clean_target) + 
-  geom_point(aes(x = total_chl_fw_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = total_chl_fw_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = total_chl_fw_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = total_chl_fw_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -399,8 +399,8 @@ prcp_chl_fw <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "J") +
-  xlab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   xlim(0, 2500) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -416,8 +416,8 @@ prcp_chl_fw <- ggplot(clean_target) +
 ## 4.11.- MAP05 ~ carotenoids ####
 
 prcp_xc_fw <- ggplot(clean_target) + 
-  geom_point(aes(x = xc_fw_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = xc_fw_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = xc_fw_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = xc_fw_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -434,9 +434,8 @@ prcp_xc_fw <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "K") +
-  xlab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
-  xlim(0, 80) + 
+  ylab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() + 
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -450,8 +449,8 @@ prcp_xc_fw <- ggplot(clean_target) +
 ## 4.12.- MAP05 ~ chla/b ####
 
 prcp_chl_ab <- ggplot(clean_target) + 
-  geom_point(aes(x = chla_chlb_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = chla_chlb_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = chla_chlb_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = chla_chlb_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -468,9 +467,8 @@ prcp_chl_ab <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "L") +
-  xlab(expression(paste("Chlorophyll a/b ratio"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
-  xlim(1.3, 3) + 
+  ylab(expression(paste("Chlorophyll a/b ratio"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -484,8 +482,8 @@ prcp_chl_ab <- ggplot(clean_target) +
 ## 4.13.- MAP05 ~ chl/xc ####
 
 prcp_chl_xc <- ggplot(clean_target) + 
-  geom_point(aes(x = chl_xc_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = chl_xc_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = chl_xc_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = chl_xc_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -502,9 +500,8 @@ prcp_chl_xc <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "M") +
-  xlab(expression(paste("Chlorophylls/carotenoids ratio"))) +
-  ylab(expression(paste("MAP_05 (mm)"))) + 
-  xlim(15, 40) + 
+  ylab(expression(paste("Chlorophylls/carotenoids ratio"))) +
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -518,8 +515,8 @@ prcp_chl_xc <- ggplot(clean_target) +
 ## 4.14.- MAP05 ~ SLA ####
 
 prcp_sla <- ggplot(clean_target) + 
-  geom_point(aes(x = sla_22, y = prec, col = sp_id)) + 
-  geom_smooth(aes(x = sla_22, y = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = sla_22, x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = sla_22, x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -536,8 +533,8 @@ prcp_sla <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +  
   labs(tag = "N") +
-  xlab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
-  ylab(expression(paste("MAP_05 (mm)"))) + 
+  ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
+  xlab(expression(paste("MAP_05 (mm)"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),

@@ -48,7 +48,7 @@ abnav_plot <- ggplot(data = abies_nav) +
   xlab("") + 
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "A") +
-  ggtitle("Navarra") +
+  ggtitle("Navarra - BAS/SAR") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -57,7 +57,9 @@ abnav_plot <- ggplot(data = abies_nav) +
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
         axis.title.y = element_text(size = 20),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.2.- Abies HUESCA ####
 
@@ -84,7 +86,7 @@ abhue_plot <- ggplot(data = abies_hue) +
   xlab("") + 
   ylab("") +
   labs(tag = "B") +
-  ggtitle("Huesca") +
+  ggtitle("Huesca - FAG/OZA") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -92,7 +94,9 @@ abhue_plot <- ggplot(data = abies_hue) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.3.- Pinea MADRID ####
 
@@ -120,7 +124,7 @@ ppmad_plot <- ggplot(data = ppine_mad) +
   ylab("") +
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "C") +
-  ggtitle("Madrid") +
+  ggtitle("Madrid - PEL/NAV") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -129,7 +133,9 @@ ppmad_plot <- ggplot(data = ppine_mad) +
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
         axis.title.y = element_text(size = 20),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.4.- Sylv MADRID ####
 
@@ -156,7 +162,7 @@ psmad_plot <- ggplot(data = psylv_mad) +
   xlab("") + 
   ylab("") +
   labs(tag = "D") +
-  ggtitle("Madrid") +
+  ggtitle("Madrid - GUA") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -164,7 +170,9 @@ psmad_plot <- ggplot(data = psylv_mad) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.5.- Sylv GUADALAJARA ####
 
@@ -191,7 +199,7 @@ psgua_plot <- ggplot(data = psylv_gua) +
   xlab("") + 
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "E") +
-  ggtitle("Guadalajara") +
+  ggtitle("Guadalajara - ADO/ALU/TRA") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -200,7 +208,9 @@ psgua_plot <- ggplot(data = psylv_gua) +
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
         axis.title.y = element_text(size = 20),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.6.- Sylv TERUEL ####
 
@@ -227,7 +237,7 @@ pster_plot <- ggplot(data = psylv_ter) +
   xlab("Year") + 
   ylab("") +
   labs(tag = "F") +
-  ggtitle("Teruel") +
+  ggtitle("Teruel - COR/CED") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -236,7 +246,9 @@ pster_plot <- ggplot(data = psylv_ter) +
   theme(axis.text.x = element_text(size = 20),
         axis.title.x = element_text(size = 20),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 ## 3.7.- Sylv NAVARRA ####
 
@@ -263,7 +275,7 @@ psnav_plot <- ggplot(data = psylv_nav) +
   xlab("Year") + 
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "G") +
-  ggtitle("Navarra") +
+  ggtitle("Navarra - RON/URZ") +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
@@ -273,7 +285,9 @@ psnav_plot <- ggplot(data = psylv_nav) +
         axis.title.x = element_text(size = 20),
         axis.ticks.length.x = rel(2),
         axis.title.y = element_text(size = 20),
-        axis.minor.ticks.length.x.bottom = rel(0.7))
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
 
 # 4.- Exporting ####
 
