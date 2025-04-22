@@ -83,8 +83,8 @@ def_height <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "A") +
@@ -124,8 +124,8 @@ def_dbh <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "B") +
@@ -165,8 +165,8 @@ def_hegyi <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "C") +
@@ -206,8 +206,8 @@ def_c <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "D") +
@@ -247,8 +247,8 @@ def_n <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "E") +
@@ -288,8 +288,8 @@ def_d13c <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "F") +
@@ -329,8 +329,8 @@ def_d15n <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "G") +
@@ -370,8 +370,8 @@ def_d18o <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "H") +
@@ -411,8 +411,8 @@ def_wc <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "I") +
@@ -452,8 +452,8 @@ def_chl_fw <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "J") +
@@ -493,8 +493,8 @@ def_xc_fw <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "K") +
@@ -534,8 +534,8 @@ def_chl_ab <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +  
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "L") +
@@ -575,8 +575,8 @@ def_chl_xc <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +  
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "M") +
@@ -616,8 +616,8 @@ def_sla <- ggplot(clean_target2) +
                                "P. pinea"),
                     name = "") +  
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
-                     values = c("hotspot" = 1,
-                                "coldspot" = 0.5),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "N") +
