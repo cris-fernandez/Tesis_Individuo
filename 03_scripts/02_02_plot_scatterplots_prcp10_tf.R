@@ -83,9 +83,9 @@ clean_target <- full_join(clean_target, prcp, by = "site")
 ## 4.1.- MAP10 ~ height ####
 
 prcp_height <- ggplot(clean_target) + 
-  geom_point(aes(x = prec, y = height, col = sp_id)) + 
-  geom_smooth(aes(x = prec, y = height, col = sp_id, fill = sp_id),
-              method = "lm") + 
+  geom_point(aes(x = prec, y = log(height), col = sp_id)) + 
+  geom_smooth(aes(x = prec, y = log(height), col = sp_id, fill = sp_id),
+              method = "loess") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
                                 "Pinpine" = "#db5f02"),
@@ -116,9 +116,9 @@ prcp_height <- ggplot(clean_target) +
 ## 4.2.- MAP10 ~ dbh ####
 
 prcp_dbh <- ggplot(clean_target) + 
-  geom_point(aes(y = dbh, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = dbh, x = prec, col = sp_id, fill = sp_id),
-              method = "lm") + 
+  geom_point(aes(y = log(dbh), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(dbh), x = prec, col = sp_id, fill = sp_id),
+              method = "loess") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
                                 "Pinpine" = "#db5f02"),
@@ -149,8 +149,8 @@ prcp_dbh <- ggplot(clean_target) +
 ## 4.3.- MAP10 ~ Hegyi ####
 
 prcp_hegyi <- ggplot(clean_target) + 
-  geom_point(aes(y = hegyi_index, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = hegyi_index, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(hegyi_index), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(hegyi_index), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -167,7 +167,6 @@ prcp_hegyi <- ggplot(clean_target) +
                                "P. pinea"),
                     name = "") +
   labs(tag = "C") +
-  ylim(0, 75) + 
   ylab("Hegyi index") +
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -183,8 +182,8 @@ prcp_hegyi <- ggplot(clean_target) +
 ## 4.4.- MAP10 ~ C ####
 
 prcp_c <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_c, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = percent_c, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(percent_c), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(percent_c), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -216,8 +215,8 @@ prcp_c <- ggplot(clean_target) +
 ## 4.5.- MAP10 ~ N ####
 
 prcp_n <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_n, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = percent_n, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(percent_n), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(percent_n), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -249,9 +248,9 @@ prcp_n <- ggplot(clean_target) +
 ## 4.6.- MAP10 ~ dC13 ####
 
 prcp_d13c <- ggplot(clean_target) + 
-  geom_point(aes(y = d13c, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d13c, x = prec, col = sp_id, fill = sp_id),
-              method = "lm") + 
+  geom_point(aes(y = log(-1*d13c), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(-1*d13c), x = prec, col = sp_id, fill = sp_id),
+              method = "loess") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
                                 "Pinpine" = "#db5f02"),
@@ -282,8 +281,8 @@ prcp_d13c <- ggplot(clean_target) +
 ## 4.7.- MAP10 ~ dN15 ####
 
 prcp_d15n <- ggplot(clean_target) + 
-  geom_point(aes(y = d15n, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d15n, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(-1*d15n), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(-1*d15n), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -315,8 +314,8 @@ prcp_d15n <- ggplot(clean_target) +
 ## 4.8.- MAP10 ~ dO18 ####
 
 prcp_d18o <- ggplot(clean_target) + 
-  geom_point(aes(y = d18o, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d18o, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(d18o), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(d18o), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -348,8 +347,8 @@ prcp_d18o <- ggplot(clean_target) +
 ## 4.9.- MAP10 ~ water content ####
 
 prcp_wc <- ggplot(clean_target) + 
-  geom_point(aes(y = wc_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = wc_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(wc_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(wc_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -381,8 +380,8 @@ prcp_wc <- ggplot(clean_target) +
 ## 4.10.- MAP10 ~ total chl ####
 
 prcp_chl_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = total_chl_fw_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = total_chl_fw_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(total_chl_fw_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(total_chl_fw_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -401,7 +400,6 @@ prcp_chl_fw <- ggplot(clean_target) +
   labs(tag = "J") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(0, 2500) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -416,8 +414,8 @@ prcp_chl_fw <- ggplot(clean_target) +
 ## 4.11.- MAP10 ~ carotenoids ####
 
 prcp_xc_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = xc_fw_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = xc_fw_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(xc_fw_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(xc_fw_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -436,7 +434,6 @@ prcp_xc_fw <- ggplot(clean_target) +
   labs(tag = "K") +
   ylab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(0, 80) + 
   theme_classic() + 
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -450,8 +447,8 @@ prcp_xc_fw <- ggplot(clean_target) +
 ## 4.12.- MAP10 ~ chla/b ####
 
 prcp_chl_ab <- ggplot(clean_target) + 
-  geom_point(aes(y = chla_chlb_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = chla_chlb_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(chla_chlb_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(chla_chlb_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -470,7 +467,6 @@ prcp_chl_ab <- ggplot(clean_target) +
   labs(tag = "L") +
   ylab(expression(paste("Chlorophyll a/b ratio"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(1.3, 3) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -484,8 +480,8 @@ prcp_chl_ab <- ggplot(clean_target) +
 ## 4.13.- MAP10 ~ chl/xc ####
 
 prcp_chl_xc <- ggplot(clean_target) + 
-  geom_point(aes(y = chl_xc_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = chl_xc_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(chl_xc_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(chl_xc_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -504,7 +500,6 @@ prcp_chl_xc <- ggplot(clean_target) +
   labs(tag = "M") +
   ylab(expression(paste("Chlorophylls/carotenoids ratio"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(15, 40) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -518,8 +513,8 @@ prcp_chl_xc <- ggplot(clean_target) +
 ## 4.14.- MAP10 ~ SLA ####
 
 prcp_sla <- ggplot(clean_target) + 
-  geom_point(aes(y = sla_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = sla_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = log(sla_22), x = prec, col = sp_id)) + 
+  geom_smooth(aes(y = log(sla_22), x = prec, col = sp_id, fill = sp_id),
               method = "lm") + 
   scale_color_manual(values = c("Abialba" = "#746fb2",
                                 "Pinsylv" = "#1b9e77",
@@ -550,7 +545,7 @@ prcp_sla <- ggplot(clean_target) +
 
 # 5.- Leaf traits plotting ####
 
-tiff("04_figures/04_02_prcp10_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
+tiff("04_figures/04_02_prcp10_leaf_scatter_sp_tf.tiff", units = "mm", width = 450, height = 400,
      res = 800, compression = "lzw")
 prcp_height + prcp_dbh + prcp_hegyi + prcp_c + 
   prcp_n + prcp_d13c + prcp_d15n + prcp_d18o +  
