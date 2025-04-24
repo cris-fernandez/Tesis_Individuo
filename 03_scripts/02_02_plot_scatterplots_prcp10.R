@@ -73,6 +73,18 @@ prcp <- climate %>%
 
 clean_target <- full_join(clean_target, prcp, by = "site")
 
+clean_target <- clean_target %>% filter(!sp_id == "Pinpine") %>% 
+  filter(!is.na(sp_id))
+
+# In order to separate hot and coldspots per species, a new id is required.
+# This id will allow the points to have different colours, as using different 
+# alpha values does not provide satisfying results...
+
+clean_target$sp_status <- paste(clean_target$sp_id, clean_target$spot_status, sep = "_")
+clean_target$sp_status <- fct_relevel(clean_target$sp_status, 
+                                       "Abialba_coldspot", "Abialba_hotspot",
+                                       "Pinsylv_coldspot", "Pinsylv_hotspot")
+
 # 4.- Leaf traits scatterplots ####
 
 # Scatterplots will be grouped in leaf variables and dendro variables,
@@ -83,22 +95,26 @@ clean_target <- full_join(clean_target, prcp, by = "site")
 ## 4.1.- MAP10 ~ height ####
 
 prcp_height <- ggplot(clean_target) + 
-  geom_point(aes(x = prec, y = height, col = sp_id)) + 
-  geom_smooth(aes(x = prec, y = height, col = sp_id, fill = sp_id),
+  geom_point(aes(x = prec, y = height, col = sp_status)) + 
+  geom_smooth(aes(x = prec, y = height, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
                     name = "") +
   labs(tag = "A") +
   ylab("Tree height (m)") +
@@ -116,22 +132,26 @@ prcp_height <- ggplot(clean_target) +
 ## 4.2.- MAP10 ~ dbh ####
 
 prcp_dbh <- ggplot(clean_target) + 
-  geom_point(aes(y = dbh, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = dbh, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = dbh, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = dbh, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
                     name = "") +
   labs(tag = "B") +
   ylab("Tree d.b.h. (cm)") +
@@ -149,22 +169,26 @@ prcp_dbh <- ggplot(clean_target) +
 ## 4.3.- MAP10 ~ Hegyi ####
 
 prcp_hegyi <- ggplot(clean_target) + 
-  geom_point(aes(y = hegyi_index, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = hegyi_index, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = hegyi_index, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = hegyi_index, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
                     name = "") +
   labs(tag = "C") +
   ylim(0, 75) + 
@@ -183,22 +207,26 @@ prcp_hegyi <- ggplot(clean_target) +
 ## 4.4.- MAP10 ~ C ####
 
 prcp_c <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_c, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = percent_c, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = percent_c, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = percent_c, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
                     name = "") +
   labs(tag = "D") +
   ylab(expression(paste("Leaf C content (%)"))) +
@@ -216,23 +244,27 @@ prcp_c <- ggplot(clean_target) +
 ## 4.5.- MAP10 ~ N ####
 
 prcp_n <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_n, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = percent_n, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = percent_n, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = percent_n, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "E") +
   ylab(expression(paste("Leaf N content (%)"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -249,23 +281,27 @@ prcp_n <- ggplot(clean_target) +
 ## 4.6.- MAP10 ~ dC13 ####
 
 prcp_d13c <- ggplot(clean_target) + 
-  geom_point(aes(y = d13c, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d13c, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d13c, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = d13c, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "F") +
   ylab(bquote("Leaves δ"~C^13~"(‰)")) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -282,23 +318,27 @@ prcp_d13c <- ggplot(clean_target) +
 ## 4.7.- MAP10 ~ dN15 ####
 
 prcp_d15n <- ggplot(clean_target) + 
-  geom_point(aes(y = d15n, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d15n, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d15n, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = d15n, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "G") +
   ylab(bquote("Leaves δ"~N^15~"(‰)")) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -315,23 +355,27 @@ prcp_d15n <- ggplot(clean_target) +
 ## 4.8.- MAP10 ~ dO18 ####
 
 prcp_d18o <- ggplot(clean_target) + 
-  geom_point(aes(y = d18o, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = d18o, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = d18o, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = d18o, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "H") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -348,23 +392,27 @@ prcp_d18o <- ggplot(clean_target) +
 ## 4.9.- MAP10 ~ water content ####
 
 prcp_wc <- ggplot(clean_target) + 
-  geom_point(aes(y = wc_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = wc_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = wc_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = wc_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "I") +
   ylab(expression(paste("Leaf water content (%)"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -381,23 +429,27 @@ prcp_wc <- ggplot(clean_target) +
 ## 4.10.- MAP10 ~ total chl ####
 
 prcp_chl_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = total_chl_fw_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = total_chl_fw_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = total_chl_fw_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = total_chl_fw_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "J") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -416,23 +468,27 @@ prcp_chl_fw <- ggplot(clean_target) +
 ## 4.11.- MAP10 ~ carotenoids ####
 
 prcp_xc_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = xc_fw_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = xc_fw_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = xc_fw_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = xc_fw_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "K") +
   ylab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -450,23 +506,27 @@ prcp_xc_fw <- ggplot(clean_target) +
 ## 4.12.- MAP10 ~ chla/b ####
 
 prcp_chl_ab <- ggplot(clean_target) + 
-  geom_point(aes(y = chla_chlb_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = chla_chlb_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = chla_chlb_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = chla_chlb_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "L") +
   ylab(expression(paste("Chlorophyll a/b ratio"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -484,23 +544,27 @@ prcp_chl_ab <- ggplot(clean_target) +
 ## 4.13.- MAP10 ~ chl/xc ####
 
 prcp_chl_xc <- ggplot(clean_target) + 
-  geom_point(aes(y = chl_xc_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = chl_xc_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = chl_xc_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = chl_xc_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "M") +
   ylab(expression(paste("Chlorophylls/carotenoids ratio"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
@@ -518,23 +582,27 @@ prcp_chl_xc <- ggplot(clean_target) +
 ## 4.14.- MAP10 ~ SLA ####
 
 prcp_sla <- ggplot(clean_target) + 
-  geom_point(aes(y = sla_22, x = prec, col = sp_id)) + 
-  geom_smooth(aes(y = sla_22, x = prec, col = sp_id, fill = sp_id),
+  geom_point(aes(y = sla_22, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = sla_22, x = prec, col = sp_status, fill = sp_status),
               method = "lm") + 
-  scale_color_manual(values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
-                     labels = c("A. alba",
-                                "P. sylvestris",
-                                "P. pinea"),
+  scale_color_manual(values = c("Abialba_coldspot" = "#746fb2",
+                                "Abialba_hotspot" = "#9d9ac9",
+                                "Pinsylv_coldspot" = "#1b9e77",
+                                "Pinsylv_hotspot" = "#5fbb9f"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
                      name = "") +
-  scale_fill_manual(values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
-                    labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+  scale_fill_manual(values = c("Abialba_coldspot" = "#746fb2",
+                               "Abialba_hotspot" = "#9d9ac9",
+                               "Pinsylv_coldspot" = "#1b9e77",
+                               "Pinsylv_hotspot" = "#5fbb9f"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
   labs(tag = "N") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab(expression(paste("MAP_10 (mm)"))) + 
