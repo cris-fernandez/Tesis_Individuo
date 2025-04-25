@@ -268,6 +268,7 @@ prcp_n <- ggplot(clean_target) +
   labs(tag = "E") +
   ylab(expression(paste("Leaf N content (%)"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
+  ylim(0, 4) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -416,6 +417,7 @@ prcp_wc <- ggplot(clean_target) +
   labs(tag = "I") +
   ylab(expression(paste("Leaf water content (%)"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
+  ylim(35, 80) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -453,7 +455,7 @@ prcp_chl_fw <- ggplot(clean_target) +
   labs(tag = "J") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(0, 2500) + 
+  ylim(250, 2500) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -492,7 +494,7 @@ prcp_xc_fw <- ggplot(clean_target) +
   labs(tag = "K") +
   ylab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(0, 80) + 
+  ylim(10, 80) + 
   theme_classic() + 
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -530,7 +532,7 @@ prcp_chl_ab <- ggplot(clean_target) +
   labs(tag = "L") +
   ylab(expression(paste("Chlorophyll a/b ratio"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
-  ylim(1.3, 3) + 
+  ylim(1.4, 3) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
