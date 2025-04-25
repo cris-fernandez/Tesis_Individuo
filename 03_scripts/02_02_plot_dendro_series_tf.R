@@ -174,7 +174,7 @@ psnav_plot <- ggplot(data = psylv_nav) +
                                          fill = spot_status), alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
-  xlab("Year") + 
+  xlab("") + 
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "C") +
   ggtitle("Navarra - RON/URZ") +
@@ -404,8 +404,7 @@ ppmad_plot <- ggplot(data = ppine_mad) +
                                          fill = spot_status), alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
-  xlab("") + 
-  ylab("") +
+  xlab("Year") + 
   ylab(expression(paste("BAI (mm² year"^"-1", ")"))) +
   labs(tag = "G") +
   ggtitle("Madrid - PEL/NAV") +
@@ -413,11 +412,15 @@ ppmad_plot <- ggplot(data = ppine_mad) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
+  scale_y_continuous(sec.axis = sec_axis(~.*10000, 
+                                         name = expression(paste("M.A.P. (mm)")))) +
   ylim(0, 10) +  
   scale_y_continuous(sec.axis = sec_axis(~.*250, 
-                                         name = "M.A.P. (mm)")) + 
+                                         name = "",
+                                         labels = NULL)) + 
   theme_classic() + 
-  theme(axis.text.x = element_blank(),
+  theme(axis.text.x = element_text(size = 20),
+        axis.title.x = element_text(size = 20),
         axis.ticks.length.x = rel(2),
         axis.title.y = element_text(size = 20),
         axis.minor.ticks.length.x.bottom = rel(0.7),
