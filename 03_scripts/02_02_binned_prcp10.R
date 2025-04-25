@@ -73,6 +73,9 @@ prcp <- climate %>%
 
 clean_target <- full_join(clean_target, prcp, by = "site")
 
+clean_target <- clean_target %>% filter(!sp_id == "Pinpine") %>% 
+  filter(!is.na(sp_id))
+
 ## 4.1.- MAP10 ~ height ####
 
 clean_target2 <- clean_target %>%
@@ -87,15 +90,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_height <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = height_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = height_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "A") +
   xlab("Tree height (m)") +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -123,15 +128,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_dbh <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = dbh_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = dbh_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "B") +
   xlab("Tree d.b.h. (cm)") +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -159,15 +166,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_hegyi <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = hegyi_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = hegyi_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "C") +
   xlab("Hegyi index") +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -195,15 +204,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_c <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = c_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = c_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "D") +
   xlab(expression(paste("Leaf C content (%)"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -231,15 +242,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_n <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = n_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = n_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "E") +
   xlab(expression(paste("Leaf N content (%)"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -267,15 +280,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_d13c <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = d13c_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = d13c_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "F") +
   xlab(bquote("Leaves δ"~C^13~"(‰)")) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -303,15 +318,17 @@ clean_target2 <- clean_target %>%
   ungroup()
 
 prcp_d15n <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = d15n_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = d15n_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "G") +
   xlab(bquote("Leaves δ"~N^15~"(‰)")) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -339,15 +356,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_d18o <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = d18o_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = d18o_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "H") +
   xlab(bquote("Leaves δ"~O^18~"(‰)")) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -375,15 +394,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_wc <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = wc_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = wc_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "I") +
   xlab(expression(paste("Leaf water content (%)"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -411,15 +432,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_chl_fw <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = chl_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = chl_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "J") +
   xlab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -447,15 +470,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_xc_fw <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = xc_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = xc_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
+                               "P. sylvestris"),
                     name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "K") +
   xlab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -483,15 +508,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_chl_ab <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = chl_ab_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = chl_ab_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+                               "P. sylvestris"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "L") +
   xlab(expression(paste("Chlorophyll a/b ratio"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -519,15 +546,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_chl_xc <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = chl_xc_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = chl_xc_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+                               "P. sylvestris"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "M") +
   xlab(expression(paste("Chlorophylls/carotenoids ratio"))) +
   ylab(expression(paste("MAP_10 (mm)"))) + 
@@ -555,15 +584,17 @@ clean_target2 <- clean_target2 %>%
   ungroup()
 
 prcp_sla <- ggplot(clean_target2) + 
-  geom_boxplot(aes(x = sla_cat, y = prec, fill = sp_id)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  geom_boxplot(aes(x = sla_cat, y = prec, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinsylv" = "#1b9e77"),
                     labels = c("A. alba",
-                               "P. sylvestris",
-                               "P. pinea"),
-                    name = "") +  
+                               "P. sylvestris"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
   labs(tag = "N") +
   xlab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   ylab(expression(paste("MAP_10 (mm)"))) + 
