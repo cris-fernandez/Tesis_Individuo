@@ -172,10 +172,6 @@ length(lat)
 
 # Function to locate the nearest layer to my point 
 
-nearest_index <- function(value, vector) {
-  which.min(abs(vector - value))
-}
-
 coord_indices <- apply(coords, 1, function(pt) {
   c(lon_i = nearest_index(pt[1], lon),
     lat_i = nearest_index(pt[2], lat))
@@ -270,12 +266,6 @@ length(lat)
 # The dimensions match the dimensions of the spei24_array :)
 
 ## 5.3.- Extracting the grids where coords are ####
-
-# Function to locate the nearest layer to my point 
-
-nearest_index <- function(value, vector) {
-  which.min(abs(vector - value))
-}
 
 coord_indices <- apply(coords, 1, function(pt) {
   c(lon_i = nearest_index(pt[1], lon),
