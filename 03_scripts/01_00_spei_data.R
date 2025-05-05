@@ -116,14 +116,15 @@ colnames(spei12_df) <- plots$plot_id
 
 ## 3.6.- Rearranging the data so it can be exported ####
 
-spei12_df$year <- rownames(spei12_df)
+spei12_df$date <- rownames(spei12_df)
 
 spei12_df <- spei12_df %>% 
-  pivot_longer(-year, names_to = "plot_id", values_to = "spei12") %>% 
-  mutate(year = substring(year, 1, 4),
-         year = as.numeric(year)) %>% 
-  filter(year > 1950) %>% 
-  mutate(month = rep(1:12, times = 6716))
+  pivot_longer(-date, names_to = "plot_id", values_to = "spei12") %>% 
+  mutate(year = substring(date, 1, 4),
+         year = as.numeric(year),
+         month = substring(date, 6, 7),
+         month = as.numeric(month)) %>% 
+  filter(year > 1949)
 
 # 4.- Reading spei raw data ####
 
@@ -216,14 +217,15 @@ colnames(spei18_df) <- plots$plot_id
 
 ## 4.6.- Rearranging the data so it can be exported ####
 
-spei18_df$year <- rownames(spei18_df)
+spei18_df$date <- rownames(spei18_df)
 
 spei18_df <- spei18_df %>% 
-  pivot_longer(-year, names_to = "plot_id", values_to = "spei18") %>% 
-  mutate(year = substring(year, 1, 4),
-         year = as.numeric(year)) %>% 
-  filter(year > 1950) %>% 
-  mutate(month = rep(1:12, times = 6716))
+  pivot_longer(-date, names_to = "plot_id", values_to = "spei18") %>% 
+  mutate(year = substring(date, 1, 4),
+         year = as.numeric(year),
+         month = substring(date, 6, 7),
+         month = as.numeric(month)) %>% 
+  filter(year > 1949)
 
 # 5.- Reading spei raw data ####
 
@@ -316,11 +318,21 @@ colnames(spei24_df) <- plots$plot_id
 
 ## 5.6.- Rearranging the data so it can be exported ####
 
-spei24_df$year <- rownames(spei24_df)
+spei24_df$date <- rownames(spei24_df)
 
 spei24_df <- spei24_df %>% 
-  pivot_longer(-year, names_to = "plot_id", values_to = "spei24") %>% 
-  mutate(year = substring(year, 1, 4),
-         year = as.numeric(year)) %>% 
-  filter(year > 1950) %>% 
-  mutate(month = rep(1:12, times = 6716))
+  pivot_longer(-date, names_to = "plot_id", values_to = "spei24") %>% 
+  mutate(year = substring(date, 1, 4),
+         year = as.numeric(year),
+         month = substring(date, 6, 7),
+         month = as.numeric(month)) %>% 
+  filter(year > 1949)
+
+# 6.- Merging ####
+
+spei_data <- full_join(spei12_df, spei18_df, by = c("date", "plot_id", "year", "month"))
+spei_data <- full_join(spei_data, spei24_df, by = c("date", "plot_id", "year", "month"))
+
+# 7.- Exporting ####
+
+write.csv(spei_data, "02_clean_data/02_00_dendro_series.csv")
