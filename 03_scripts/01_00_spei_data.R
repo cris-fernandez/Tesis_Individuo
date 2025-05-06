@@ -325,4 +325,4 @@ spei_data <- full_join(spei_data, spei24_df, by = c("date", "plot_id", "year", "
 
 # 7.- Exporting ####
 
-write.csv(spei_data, "02_clean_data/02_00_dendro_series.csv")
+write.csv(spei_data, "02_clean_data/02_00_spei_series.csv")
