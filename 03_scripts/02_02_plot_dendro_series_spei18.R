@@ -419,10 +419,51 @@ ppmad_plot <- ggplot(data = ppine_mad) +
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22))
 
-# 4.- Exporting ####
+# 4.- Defoliation insert ####
+
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+                         header = T, sep = ",") %>% 
+  dplyr::select(c(tree_number, spot_status, sp_id, mean_def_obs)) %>% 
+  filter(!is.na(sp_id))
+clean_target$sp_id <- factor(clean_target$sp_id, 
+                             levels=c("Abialba", "Pinsylv", "Pinpine"), ordered = TRUE)
+
+defoliation_plot <- ggplot(data = clean_target) + 
+  geom_boxplot(aes(x = sp_id, y = mean_def_obs, 
+                   fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#746fb2",
+                               "Pinsylv" = "#1b9e77",
+                               "Pinpine" = "#db5f02"),
+                    labels = c("A. alba",
+                               "P. sylvestris",
+                               "P. pinea"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     labels = c("Declining",
+                                "Non-declining"),
+                     guide = guide_legend(override.aes = list(fill = "gray")),
+                     name = "") + 
+  xlab("Species") + 
+  ylab("Tree defoliation (%)") +
+  labs(tag = "H") +
+  ylim(0, 90) +
+  theme_classic() + 
+  theme(axis.text.x = element_blank(),
+        axis.title.x = element_text(size = 20),
+        axis.ticks.length.x = rel(2),
+        axis.title.y = element_text(size = 20),
+        axis.minor.ticks.length.x.bottom = rel(0.7),
+        plot.tag = element_text(size = 22),
+        plot.title = element_text(size = 22))
+
+# 5.- Exporting ####
 
 tiff("04_figures/04_02_grouped_dendro_spei18.tiff", units = "mm", width = 700, height = 780,
      res = 700, compression = "lzw")
 abnav_plot + abhue_plot + psnav_plot + psmad_plot +
-  psgua_plot + pster_plot + ppmad_plot + plot_layout(ncol = 2)
+  psgua_plot + pster_plot + ppmad_plot + defoliation_plot + 
+  plot_layout(ncol = 2)
 dev.off()
