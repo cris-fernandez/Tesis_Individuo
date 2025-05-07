@@ -13,24 +13,31 @@ getwd()
 # 1.- Reading data ####
 
 climate_data <- read.csv("02_clean_data/02_00_climate_series.csv") %>% dplyr::select(-X)
+spei_data <- read.csv("02_clean_data/02_00_spei_series.csv") %>% dplyr::select(-X) %>% 
+  filter(year < 2023) %>% filter(month == 7)
 dendro_data <- read.csv("02_clean_data/02_02_dendro_series.csv") %>% dplyr::select(-X)
 
 # 2.- Tidying and joining ####
 
+spei_data$site <- substr(spei_data$plot_id, start = 1, stop = 3)
+spei_data <- spei_data %>% group_by(site, year) %>% 
+  summarise(mean_spei12 = mean(spei12, na.rm = T),
+            mean_spei18 = mean(spei18, na.rm = T),
+            mean_spei24 = mean(spei24, na.rm = T))
+
 dendro_data$site <- substr(dendro_data$plot_id, start = 1, stop = 3)
 
-dendro_climate <- full_join(climate_data, dendro_data, by = c("site", "year"))
+dendro_spei <- full_join(dendro_data, spei_data, by = c("site", "year"))
 
 # Now, we standardize BAI by dividing it by d.b.h.:
 
-dendro_climate <- dendro_climate %>% 
-  mutate(bai_tf = bai / dbh)
+dendro_spei$bai_tf <- dendro_spei$bai / dendro_spei$dbh
 
 # 3.- Plotting ####
 
 ## 3.1.- Abies NAVARRA ####
 
-abies_nav <- dendro_climate %>% 
+abies_nav <- dendro_spei %>% 
   filter(site == "BAS" | site ==  "SAR") %>% 
   filter(year > 1949)
 
@@ -41,7 +48,7 @@ mean_abies_nav <- abies_nav %>%
   mutate(spot_status = tolower(spot_status))
 
 abnav_plot <- ggplot(data = abies_nav) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -51,11 +58,11 @@ abnav_plot <- ggplot(data = abies_nav) +
                      name = "",
                      guide = "none") + 
   scale_fill_manual(values = c("Hotspot" = "red",
-                                "Coldspot" = "blue",
-                                "hotspot" = "#9d9ac9",
-                                "coldspot" = "#746fb2"),
-                     name = "",
-                     guide = "none") + 
+                               "Coldspot" = "blue",
+                               "hotspot" = "#9d9ac9",
+                               "coldspot" = "#746fb2"),
+                    name = "",
+                    guide = "none") + 
   geom_line(data = mean_abies_nav, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
   geom_ribbon(data = mean_abies_nav, aes(x = year, y = mean_bai,
                                          ymin = mean_bai - se_bai, 
@@ -71,10 +78,10 @@ abnav_plot <- ggplot(data = abies_nav) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
                                          name = "",
                                          labels = NULL)) + 
-  ylim(0, 175) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
@@ -85,7 +92,7 @@ abnav_plot <- ggplot(data = abies_nav) +
 
 ## 3.2.- Abies HUESCA ####
 
-abies_hue <- dendro_climate %>% 
+abies_hue <- dendro_spei %>% 
   filter(site == "FAG" | site ==  "OZA") %>% 
   filter(year > 1949)
 
@@ -96,7 +103,7 @@ mean_abies_hue <- abies_hue %>%
   mutate(spot_status = tolower(spot_status))
 
 abhue_plot <- ggplot(data = abies_hue) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -126,9 +133,9 @@ abhue_plot <- ggplot(data = abies_hue) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
-                                         name = "M.A.P. (mm)")) + 
-  ylim(0, 175) + 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
+                                         name = "July 12 month-SPEI ")) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
@@ -139,7 +146,7 @@ abhue_plot <- ggplot(data = abies_hue) +
 
 ## 3.3.- Sylv NAVARRA ####
 
-psylv_nav <- dendro_climate %>% 
+psylv_nav <- dendro_spei %>% 
   filter(site == "URZ" | site == "RON") %>% 
   filter(year > 1949)
 
@@ -150,7 +157,7 @@ mean_psylv_nav <- psylv_nav %>%
   mutate(spot_status = tolower(spot_status))
 
 psnav_plot <- ggplot(data = psylv_nav) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -180,12 +187,10 @@ psnav_plot <- ggplot(data = psylv_nav) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*10000, 
-                                         name = expression(paste("M.A.P. (mm)")))) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
                                          name = "",
                                          labels = NULL)) + 
-  ylim(0, 175) + 
   theme_classic() + 
   theme(axis.text.x = element_text(size = 20),
         axis.title.x = element_text(size = 20),
@@ -197,7 +202,7 @@ psnav_plot <- ggplot(data = psylv_nav) +
 
 ## 3.4.- Sylv MADRID ####
 
-psylv_mad <- dendro_climate %>% 
+psylv_mad <- dendro_spei %>% 
   filter(site == "GUA") %>% 
   filter(year > 1949)
 
@@ -208,7 +213,7 @@ mean_psylv_mad <- psylv_mad %>%
   mutate(spot_status = tolower(spot_status))
 
 psmad_plot <- ggplot(data = psylv_mad) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -238,11 +243,9 @@ psmad_plot <- ggplot(data = psylv_mad) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*10000, 
-                                         name = expression(paste("M.A.P. (mm)")))) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
-                                         name = "M.A.P. (mm)")) + 
-  ylim(0, 175) + 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
+                                         name = "July 12 month-SPEI ")) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
@@ -253,7 +256,7 @@ psmad_plot <- ggplot(data = psylv_mad) +
 
 ## 3.5.- Sylv GUADALAJARA ####
 
-psylv_gua <- dendro_climate %>% 
+psylv_gua <- dendro_spei %>% 
   filter(site == "ALU" | site == "ADO" | site == "TRA") %>% 
   filter(year > 1949)
 
@@ -264,7 +267,7 @@ mean_psylv_gua <- psylv_gua %>%
   mutate(spot_status = tolower(spot_status))
 
 psgua_plot <- ggplot(data = psylv_gua) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -294,10 +297,10 @@ psgua_plot <- ggplot(data = psylv_gua) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
                                          name = "",
                                          labels = NULL)) + 
-  ylim(0, 175) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
@@ -308,7 +311,7 @@ psgua_plot <- ggplot(data = psylv_gua) +
 
 ## 3.6.- Sylv TERUEL ####
 
-psylv_ter <- dendro_climate %>% 
+psylv_ter <- dendro_spei %>% 
   filter(site == "COR" | site == "CED") %>% 
   filter(year > 1949)
 
@@ -319,7 +322,7 @@ mean_psylv_ter <- psylv_ter %>%
   mutate(spot_status = tolower(spot_status))
 
 pster_plot <- ggplot(data = psylv_ter) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -349,11 +352,9 @@ pster_plot <- ggplot(data = psylv_ter) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*10000, 
-                                         name = expression(paste("M.A.P. (mm)")))) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
-                                         name = "M.A.P. (mm)")) + 
-  ylim(0, 175) + 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
+                                         name = "July 12 month-SPEI ")) + 
   theme_classic() + 
   theme(axis.text.x = element_text(size = 20),
         axis.title.x = element_text(size = 20),
@@ -365,7 +366,7 @@ pster_plot <- ggplot(data = psylv_ter) +
 
 ## 3.7.- Pinea MADRID ####
 
-ppine_mad <- dendro_climate %>% 
+ppine_mad <- dendro_spei %>% 
   filter(site == "NAV" | site ==  "PEL") %>% 
   filter(year > 1949)
 
@@ -376,7 +377,7 @@ mean_ppine_mad <- ppine_mad %>%
   mutate(spot_status = tolower(spot_status))
 
 ppmad_plot <- ggplot(data = ppine_mad) + 
-  geom_col(aes(x = year, y = 0.001  * Prcp), fill = "black", alpha = 0.1)  +
+  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -406,12 +407,9 @@ ppmad_plot <- ggplot(data = ppine_mad) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(sec.axis = sec_axis(~.*10000, 
-                                         name = expression(paste("M.A.P. (mm)")))) +
-  scale_y_continuous(sec.axis = sec_axis(~.*12.5, 
-                                         name = "",
-                                         labels = NULL)) + 
-  ylim(0, 175) + 
+  scale_y_continuous(limits = c(-100, 175),
+                     sec.axis = sec_axis(~.*0.025, 
+                                         name = "July 12 month-SPEI")) + 
   theme_classic() + 
   theme(axis.text.x = element_text(size = 20),
         axis.title.x = element_text(size = 20),
@@ -423,7 +421,7 @@ ppmad_plot <- ggplot(data = ppine_mad) +
 
 # 4.- Exporting ####
 
-tiff("04_figures/04_02_grouped_dendro_tf.tiff", units = "mm", width = 700, height = 780,
+tiff("04_figures/04_02_grouped_dendro_spei12.tiff", units = "mm", width = 700, height = 780,
      res = 700, compression = "lzw")
 abnav_plot + abhue_plot + psnav_plot + psmad_plot +
   psgua_plot + pster_plot + ppmad_plot + plot_layout(ncol = 2)
