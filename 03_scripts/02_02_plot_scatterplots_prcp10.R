@@ -303,7 +303,7 @@ prcp_d13c <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "F") +
+  labs(tag = "C") +
   ylab(bquote("Leaves δ"~C^13~"(‰)")) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -377,7 +377,7 @@ prcp_d18o <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "H") +
+  labs(tag = "D") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -452,7 +452,7 @@ prcp_chl_fw <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "J") +
+  labs(tag = "E") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("MAP_10 (mm)"))) + 
   ylim(250, 2500) + 
@@ -605,7 +605,7 @@ prcp_sla <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "N") +
+  labs(tag = "F") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -642,7 +642,7 @@ prcp_bai05 <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "O") +
+  labs(tag = "G") +
   ylab(expression(paste("Tree average growth 05 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -679,7 +679,7 @@ prcp_bai10 <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "P") +
+  labs(tag = "H") +
   ylab(expression(paste("Tree average growth 10 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("MAP_10 (mm)"))) + 
   theme_classic() +
@@ -692,6 +692,43 @@ prcp_bai10 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22))
 
+## 4.17.- MAP10 ~ C:N ####
+
+prcp_cn <- ggplot(clean_target) + 
+  geom_point(aes(y = percent_c/percent_n, x = prec, col = sp_status)) + 
+  geom_smooth(aes(y = percent_c/percent_n, x = prec, col = sp_status, fill = sp_status),
+              method = "lm") + 
+  scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
+                                "Abialba_hotspot" = "#aba8d0",
+                                "Pinsylv_coldspot" = "#188e6b",
+                                "Pinsylv_hotspot" = "#76c4ad"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
+                     name = "") +
+  scale_fill_manual(values = c("Abialba_coldspot" = "#6863a0",
+                               "Abialba_hotspot" = "#aba8d0",
+                               "Pinsylv_coldspot" = "#188e6b",
+                               "Pinsylv_hotspot" = "#76c4ad"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
+  labs(tag = "B") +
+  ylab(expression(paste("Leaf C:N ratio"))) +
+  xlab(expression(paste("MAP_10 (mm)"))) + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 9, vjust = - .85),
+        axis.title.x = element_text(size = 15, vjust = 1.15),
+        legend.text = element_text(size = 8),
+        plot.tag = element_text(size = 22)) 
+
 # 5.- Leaf traits plotting ####
 
 tiff("04_figures/04_02_prcp10_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
@@ -701,4 +738,11 @@ prcp_height + prcp_dbh + prcp_hegyi + prcp_c +
   prcp_wc + prcp_chl_fw + prcp_xc_fw + prcp_chl_ab +  
   prcp_chl_xc + prcp_sla + prcp_bai05 + prcp_bai10 +
   plot_layout(guides = 'collect', ncol = 4)
+dev.off()
+
+tiff("04_figures/04_02_prcp10_leaf_scatter_sp_cropped.tiff", units = "mm", width = 450, height = 200,
+     res = 800, compression = "lzw")
+  prcp_height + prcp_cn + prcp_d13c + prcp_d18o +  
+    prcp_chl_fw + prcp_sla + prcp_bai05 + prcp_bai10 +  
+    plot_layout(guides = 'collect', ncol = 4)
 dev.off()

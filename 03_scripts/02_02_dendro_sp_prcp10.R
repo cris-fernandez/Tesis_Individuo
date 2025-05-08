@@ -23,10 +23,10 @@ sp_data <- dendro_data %>% select(c(sp_id, site)) %>% unique() %>%
 
 climate_data <- full_join(climate_data, sp_data, by = "site")
 
-climate_data <- climate_data %>% group_by(site, year) %>% 
+climate_data <- climate_data %>% group_by(sp_id, year) %>% 
   summarise(mean_prcp = mean(Prcp, na.rm = T))
 
-dendro_climate <- full_join(climate_data, dendro_data, by = c("site", "year"))
+dendro_climate <- full_join(climate_data, dendro_data, by = c("sp_id", "year"))
 
 # Now, we standardize BAI by dividing it by d.b.h.:
 
@@ -46,9 +46,12 @@ mean_abies <- abies %>%
   summarise(mean_bai = mean(bai_tf, na.rm = T),
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
+prcp_abies <- abies %>% 
+  dplyr::select(year, mean_prcp) %>% 
+  unique()
 
 abies_plot <- ggplot(data = abies) + 
-  geom_col(aes(x = year, y = 0.001  * mean_prcp), fill = "black", alpha = 0.1)  +
+  geom_col(data = prcp_abies, aes(x = year, y = 0.08  * mean_prcp), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -102,8 +105,12 @@ mean_psylv <- psylv %>%
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
 
+prcp_psylv <- psylv %>% 
+  dplyr::select(year, mean_prcp) %>% 
+  unique()
+
 psylv_plot <- ggplot(data = psylv) + 
-  geom_col(aes(x = year, y = 0.001  * mean_prcp), fill = "black", alpha = 0.1)  +
+  geom_col(data = prcp_psylv, aes(x = year, y = 0.08  * mean_prcp), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -144,7 +151,7 @@ psylv_plot <- ggplot(data = psylv) +
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22))
 
-## 3.7.- Pinea MADRID ####
+## 3.3.- Pinea MADRID ####
 
 ppine <- dendro_climate %>% 
   filter(sp_id == "Pinpine") %>% 
@@ -156,8 +163,12 @@ mean_ppine <- ppine %>%
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
 
+prcp_ppine <- ppine %>% 
+  dplyr::select(year, mean_prcp) %>% 
+  unique()
+
 ppine_plot <- ggplot(data = ppine) + 
-  geom_col(aes(x = year, y = 0.001  * mean_prcp), fill = "black", alpha = 0.1)  +
+  geom_col(data = prcp_ppine, aes(x = year, y = 0.08  * mean_prcp), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -243,7 +254,7 @@ defoliation_plot <- ggplot(data = clean_target) +
 
 # 5.- Exporting ####
 
-tiff("04_figures/04_02_sp_dendro_prcp.tiff", units = "mm", width = 700, height = 780,
+tiff("04_figures/04_02_sp_dendro_prcp.tiff", units = "mm", width = 450, height = 250,
      res = 700, compression = "lzw")
 abies_plot + psylv_plot + ppine_plot + defoliation_plot + 
   plot_layout(ncol = 2)

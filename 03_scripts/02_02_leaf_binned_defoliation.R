@@ -201,7 +201,7 @@ def_n <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "E") +
+  labs(tag = "C") +
   ylab(expression(paste("Leaf N content (%)"))) +
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -285,7 +285,7 @@ def_d18o <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "H") +
+  labs(tag = "D") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -341,7 +341,7 @@ def_chl_fw <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "J") +
+  labs(tag = "E") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -453,7 +453,7 @@ def_sla <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "N") +
+  labs(tag = "F") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -481,7 +481,7 @@ def_bai05 <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "O") +
+  labs(tag = "G") +
   ylab(expression(paste("Tree average growth 05 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -509,7 +509,7 @@ def_bai10 <- ggplot(clean_target2) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "P") +
+  labs(tag = "H") +
   ylab(expression(paste("Tree average growth 10 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("Tree average defoliation (%)"))) + 
   theme_classic() +
@@ -522,6 +522,34 @@ def_bai10 <- ggplot(clean_target2) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
+## 4.17.- Def ~ C:N ####
+
+def_cn <- ggplot(clean_target2) + 
+  geom_boxplot(aes(x = def_cat, y = percent_c/percent_n, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv"),
+                    values = c("Abialba" = "#746fb2",
+                               "Pinsylv" = "#1b9e77"),
+                    labels = c("A. alba",
+                               "P. sylvestris"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
+  guides(alpha = "none") +
+  labs(tag = "B") +
+  ylab(expression(paste("Leaf C:N ratio"))) +
+  xlab(expression(paste("Tree average defoliation (%)"))) + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 9, vjust = - .85),
+        axis.title.x = element_text(size = 15, vjust = 1.15),
+        legend.text = element_text(size = 8),
+        plot.tag = element_text(size = 22))
+
 # 5.- Leaf traits plotting ####
 
 tiff("04_figures/04_02_leaf_binned_defoliation.tiff", units = "mm", width = 450, height = 400,
@@ -530,5 +558,12 @@ def_height + def_dbh + def_hegyi + def_c +
   def_n + def_d13c + def_d15n + def_d18o +  
   def_wc + def_chl_fw + def_xc_fw + def_chl_ab +  
   def_chl_xc + def_sla + def_bai05 + def_bai10 +
+  plot_layout(guides = 'collect', ncol = 4)
+dev.off()
+
+tiff("04_figures/04_02_leaf_binned_defoliation_cropped.tiff", units = "mm", width = 450, height = 200,
+     res = 800, compression = "lzw")
+def_height + def_cn + def_d13c + def_d18o +  
+  def_chl_fw + def_sla + def_bai05 + def_bai10 +
   plot_layout(guides = 'collect', ncol = 4)
 dev.off()

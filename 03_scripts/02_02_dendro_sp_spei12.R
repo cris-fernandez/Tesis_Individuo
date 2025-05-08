@@ -50,8 +50,15 @@ mean_abies <- abies %>%
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
 
+spei12_abies <- spei_data %>% 
+  filter(sp_id == "Abialba") %>% 
+  dplyr::select(year, mean_spei12) %>% 
+  group_by(year) %>% 
+  summarise(mean_spei12 = mean(mean_spei12, na.rm = T))
+  
+
 abies_plot <- ggplot(data = abies) + 
-  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
+  geom_col(data = spei12_abies, aes(x = year, y = 20 * mean_spei12), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -81,9 +88,10 @@ abies_plot <- ggplot(data = abies) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(limits = c(-100, 175),
-                     sec.axis = sec_axis(~.*0.025, 
+  scale_y_continuous(limits = c(-75, 175),
+                     sec.axis = sec_axis(~.*0.05, 
                                          name = "",
+                                         breaks = seq(-4, 4, 1),
                                          labels = NULL)) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
@@ -105,8 +113,14 @@ mean_psylv <- psylv %>%
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
 
+spei12_psylv <- spei_data %>% 
+  filter(sp_id == "Pinsylv") %>% 
+  dplyr::select(year, mean_spei12) %>% 
+  group_by(year) %>% 
+  summarise(mean_spei12 = mean(mean_spei12, na.rm = T))
+
 psylv_plot <- ggplot(data = psylv) + 
-  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
+  geom_col(data = spei12_psylv, aes(x = year, y = 20 * mean_spei12), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -136,9 +150,12 @@ psylv_plot <- ggplot(data = psylv) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(limits = c(-100, 175),
-                     sec.axis = sec_axis(~.*0.025, 
-                                         name = "July 12 month-SPEI ")) + 
+  scale_y_continuous(limits = c(-75, 175),
+                     sec.axis = sec_axis(~.*0.05, 
+                                         breaks = seq(-4, 4, 1),
+                                         name = "July 12 month-SPEI ",
+                                         labels = c("-4", "", "-2", "", "0",
+                                                    "", "2", "", "4"))) + 
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
@@ -159,8 +176,14 @@ mean_ppine <- ppine %>%
             se_bai = sd(bai_tf, na.rm = T) / sqrt(n())) %>% 
   mutate(spot_status = tolower(spot_status))
 
+spei12_ppine <- spei_data %>% 
+  filter(sp_id == "Pinpine") %>% 
+  dplyr::select(year, mean_spei12) %>% 
+  group_by(year) %>% 
+  summarise(mean_spei12 = mean(mean_spei12, na.rm = T))
+
 ppine_plot <- ggplot(data = ppine) + 
-  geom_col(aes(x = year, y = 0.5 * mean_spei12), fill = "black", alpha = 0.2)  +
+  geom_col(data = spei12_ppine, aes(x = year, y = 20 * mean_spei12), fill = "black", alpha = 0.35)  +
   geom_line(aes(x = year, y = bai_tf, col = spot_status, alpha = tree_number),
             size = 0.2) + 
   scale_color_manual(values = c("Hotspot" = "red",
@@ -190,9 +213,12 @@ ppine_plot <- ggplot(data = ppine) +
                      limits = c(1950, 2022),
                      guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
-  scale_y_continuous(limits = c(-100, 175),
-                     sec.axis = sec_axis(~.*0.025, 
-                                         name = "July 12 month-SPEI")) + 
+  scale_y_continuous(limits = c(-75, 175),
+                     sec.axis = sec_axis(~.*0.05, 
+                                         breaks = seq(-4, 4, 1),
+                                         name = "July 12 month-SPEI ",
+                                         labels = c("-4", "", "-2", "", "0",
+                                                    "", "2", "", "4"))) + 
   theme_classic() + 
   theme(axis.text.x = element_text(size = 20),
         axis.title.x = element_text(size = 20),
@@ -244,7 +270,7 @@ defoliation_plot <- ggplot(data = clean_target) +
 
 # 5.- Exporting ####
 
-tiff("04_figures/04_02_sp_dendro_spei12.tiff", units = "mm", width = 700, height = 520,
+tiff("04_figures/04_02_sp_dendro_spei12.tiff", units = "mm", width = 450, height = 250,
      res = 700, compression = "lzw")
 abies_plot + psylv_plot + ppine_plot + defoliation_plot + 
   plot_layout(ncol = 2)

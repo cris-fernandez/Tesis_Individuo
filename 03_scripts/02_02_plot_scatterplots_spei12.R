@@ -309,7 +309,7 @@ spei12_d13c <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "F") +
+  labs(tag = "C") +
   ylab(bquote("Leaves δ"~C^13~"(‰)")) +
   xlab(expression(paste("July 12 months-SPEI"))) + 
   theme_classic() +
@@ -385,7 +385,7 @@ spei12_d18o <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "H") +
+  labs(tag = "D") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
   xlab(expression(paste("July 12 months-SPEI"))) + 
   theme_classic() +
@@ -462,7 +462,7 @@ spei12_chl_fw <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "J") +
+  labs(tag = "E") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
   xlab(expression(paste("July 12 months-SPEI"))) + 
   ylim(250, 2500) + 
@@ -619,7 +619,7 @@ spei12_sla <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "N") +
+  labs(tag = "F") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab(expression(paste("July 12 months-SPEI"))) + 
   theme_classic() +
@@ -657,7 +657,7 @@ spei12_bai05 <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "O") +
+  labs(tag = "G") +
   ylab(expression(paste("Tree average growth 05 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("July 12 months-SPEI"))) + 
   theme_classic() +
@@ -695,7 +695,7 @@ spei12_bai10 <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
-  labs(tag = "P") +
+  labs(tag = "H") +
   ylab(expression(paste("Tree average growth 10 (mm² year"^"-1", ")"))) + 
   xlab(expression(paste("July 12 months-SPEI"))) + 
   theme_classic() +
@@ -708,6 +708,44 @@ spei12_bai10 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22))
 
+## 4.17.- SPEI12 ~ C:N ####
+
+spei12_cn <- ggplot(clean_target) + 
+  geom_point(aes(y = percent_c/percent_n, x = mean_spei12, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = percent_c/percent_n, x = mean_spei12, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
+  scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
+                                "Abialba_hotspot" = "#aba8d0",
+                                "Pinsylv_coldspot" = "#188e6b",
+                                "Pinsylv_hotspot" = "#76c4ad"),
+                     labels = c("A. alba - Healthy",
+                                "A. alba - Damaged",
+                                "P. sylvestris - Healthy",
+                                "P. sylvestris - Damaged"),
+                     name = "") +
+  scale_fill_manual(values = c("Abialba_coldspot" = "#6863a0",
+                               "Abialba_hotspot" = "#aba8d0",
+                               "Pinsylv_coldspot" = "#188e6b",
+                               "Pinsylv_hotspot" = "#76c4ad"),
+                    labels = c("A. alba - Healthy",
+                               "A. alba - Damaged",
+                               "P. sylvestris - Healthy",
+                               "P. sylvestris - Damaged"),
+                    name = "") +
+  labs(tag = "B") +
+  ylab(expression(paste("Leaf C:N ratio"))) +
+  xlab(expression(paste("July 12 months-SPEI"))) + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 9, vjust = - .85),
+        axis.title.x = element_text(size = 15, vjust = 1.15),
+        legend.text = element_text(size = 8),
+        plot.tag = element_text(size = 22)) 
+
 # 5.- Leaf traits plotting ####
 
 tiff("04_figures/04_02_spei12_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
@@ -716,5 +754,12 @@ spei12_height + spei12_dbh + spei12_hegyi + spei12_c +
   spei12_n + spei12_d13c + spei12_d15n + spei12_d18o +  
   spei12_wc + spei12_chl_fw + spei12_xc_fw + spei12_chl_ab +  
   spei12_chl_xc + spei12_sla + spei12_bai05 + spei12_bai10 +
+  plot_layout(guides = 'collect', ncol = 4)
+dev.off()
+
+tiff("04_figures/04_02_spei12_leaf_scatter_sp_cropped.tiff", units = "mm", width = 450, height = 200,
+     res = 800, compression = "lzw")
+spei12_height + spei12_cn + spei12_d13c + spei12_d18o +  
+  spei12_chl_fw + spei12_sla + spei12_bai05 + spei12_bai10 +
   plot_layout(guides = 'collect', ncol = 4)
 dev.off()
