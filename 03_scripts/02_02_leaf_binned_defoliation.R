@@ -529,6 +529,6 @@ tiff("04_figures/04_02_leaf_binned_defoliation.tiff", units = "mm", width = 450,
 def_height + def_dbh + def_hegyi + def_c + 
   def_n + def_d13c + def_d15n + def_d18o +  
   def_wc + def_chl_fw + def_xc_fw + def_chl_ab +  
-  def_chl_xc + def_sla + def_bai05 + def_bai10
+  def_chl_xc + def_sla + def_bai05 + def_bai10 +
   plot_layout(guides = 'collect', ncol = 4)
 dev.off()

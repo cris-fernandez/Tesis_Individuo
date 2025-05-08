@@ -60,18 +60,17 @@ clean_target <- clean_target %>%
 
 clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pinpine")
 
-# 5.- Reading climate data ####
+# 5.- Reading SPEI data ####
 
-climate <- read.csv("02_clean_data/02_00_climate_series.csv") %>% 
-  select(-X) %>% 
-  filter(year > 2011)
+spei <- read.csv("02_clean_data/02_00_spei_series.csv") %>% 
+  select(-X) %>% filter(month == 7)
 
-prcp <- climate %>% 
-  select(c(site, year, Prcp)) %>% 
-  group_by(site) %>% 
-  summarise(prec = mean(Prcp))
+spei18 <- spei %>% 
+  select(c(plot_id, year, spei18)) %>% 
+  group_by(plot_id) %>% 
+  summarise(mean_spei18 = mean(spei18, na.rm = T))
 
-clean_target <- full_join(clean_target, prcp, by = "site")
+clean_target <- full_join(clean_target, spei18, by = "plot_id")
 
 clean_target <- clean_target %>% filter(!sp_id == "Pinpine") %>% 
   filter(!is.na(sp_id))
@@ -82,8 +81,8 @@ clean_target <- clean_target %>% filter(!sp_id == "Pinpine") %>%
 
 clean_target$sp_status <- paste(clean_target$sp_id, clean_target$spot_status, sep = "_")
 clean_target$sp_status <- fct_relevel(clean_target$sp_status, 
-                                       "Abialba_coldspot", "Abialba_hotspot",
-                                       "Pinsylv_coldspot", "Pinsylv_hotspot")
+                                      "Abialba_coldspot", "Abialba_hotspot",
+                                      "Pinsylv_coldspot", "Pinsylv_hotspot")
 
 # 4.- Leaf traits scatterplots ####
 
@@ -92,12 +91,13 @@ clean_target$sp_status <- fct_relevel(clean_target$sp_status,
 
 # y variable in leaf traits will be defoliation
 
-## 4.1.- MAP10 ~ height ####
+## 4.1.- SPEI18 ~ height ####
 
-prcp_height <- ggplot(clean_target) + 
-  geom_point(aes(x = prec, y = height, col = sp_status)) + 
-  geom_smooth(aes(x = prec, y = height, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_height <- ggplot(clean_target) + 
+  geom_point(aes(x = mean_spei18, y = height, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(x = mean_spei18, y = height, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -116,9 +116,10 @@ prcp_height <- ggplot(clean_target) +
                                "P. sylvestris - Healthy",
                                "P. sylvestris - Damaged"),
                     name = "") +
+  guides(fill = "none") + 
   labs(tag = "A") +
   ylab("Tree height (m)") +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -129,12 +130,13 @@ prcp_height <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.2.- MAP10 ~ dbh ####
+## 4.2.- SPEI18 ~ dbh ####
 
-prcp_dbh <- ggplot(clean_target) + 
-  geom_point(aes(y = dbh, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = dbh, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_dbh <- ggplot(clean_target) + 
+  geom_point(aes(y = dbh, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = dbh, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -155,9 +157,9 @@ prcp_dbh <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "B") +
   ylab("Tree d.b.h. (cm)") +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
-  theme(legend.position = "none",
+  theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
         axis.text.y = element_text(size = 9),
         axis.title.y = element_text(size = 15),
@@ -166,12 +168,13 @@ prcp_dbh <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.3.- MAP10 ~ Hegyi ####
+## 4.3.- SPEI18 ~ Hegyi ####
 
-prcp_hegyi <- ggplot(clean_target) + 
-  geom_point(aes(y = hegyi_index, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = hegyi_index, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_hegyi <- ggplot(clean_target) + 
+  geom_point(aes(y = hegyi_index, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = hegyi_index, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -193,7 +196,7 @@ prcp_hegyi <- ggplot(clean_target) +
   labs(tag = "C") +
   ylim(0, 75) + 
   ylab("Hegyi index") +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -204,12 +207,13 @@ prcp_hegyi <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.4.- MAP10 ~ C ####
+## 4.4.- SPEI18 ~ C ####
 
-prcp_c <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_c, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = percent_c, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_c <- ggplot(clean_target) + 
+  geom_point(aes(y = percent_c, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = percent_c, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -230,7 +234,7 @@ prcp_c <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "D") +
   ylab(expression(paste("Leaf C content (%)"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -241,12 +245,13 @@ prcp_c <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.5.- MAP10 ~ N ####
+## 4.5.- SPEI18 ~ N ####
 
-prcp_n <- ggplot(clean_target) + 
-  geom_point(aes(y = percent_n, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = percent_n, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_n <- ggplot(clean_target) + 
+  geom_point(aes(y = percent_n, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = percent_n, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -267,7 +272,7 @@ prcp_n <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "E") +
   ylab(expression(paste("Leaf N content (%)"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(0, 4) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -279,12 +284,13 @@ prcp_n <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.6.- MAP10 ~ dC13 ####
+## 4.6.- SPEI18 ~ dC13 ####
 
-prcp_d13c <- ggplot(clean_target) + 
-  geom_point(aes(y = d13c, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = d13c, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_d13c <- ggplot(clean_target) + 
+  geom_point(aes(y = d13c, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = d13c, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -305,7 +311,7 @@ prcp_d13c <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "F") +
   ylab(bquote("Leaves δ"~C^13~"(‰)")) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -316,12 +322,13 @@ prcp_d13c <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.7.- MAP10 ~ dN15 ####
+## 4.7.- SPEI18 ~ dN15 ####
 
-prcp_d15n <- ggplot(clean_target) + 
-  geom_point(aes(y = d15n, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = d15n, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_d15n <- ggplot(clean_target) + 
+  geom_point(aes(y = d15n, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = d15n, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -342,7 +349,7 @@ prcp_d15n <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "G") +
   ylab(bquote("Leaves δ"~N^15~"(‰)")) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -353,12 +360,13 @@ prcp_d15n <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.8.- MAP10 ~ dO18 ####
+## 4.8.- SPEI18 ~ dO18 ####
 
-prcp_d18o <- ggplot(clean_target) + 
-  geom_point(aes(y = d18o, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = d18o, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_d18o <- ggplot(clean_target) + 
+  geom_point(aes(y = d18o, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = d18o, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -379,7 +387,7 @@ prcp_d18o <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "H") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
@@ -390,12 +398,13 @@ prcp_d18o <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.9.- MAP10 ~ water content ####
+## 4.9.- SPEI18 ~ water content ####
 
-prcp_wc <- ggplot(clean_target) + 
-  geom_point(aes(y = wc_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = wc_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_wc <- ggplot(clean_target) + 
+  geom_point(aes(y = wc_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = wc_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -416,7 +425,7 @@ prcp_wc <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "I") +
   ylab(expression(paste("Leaf water content (%)"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(35, 80) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -428,12 +437,13 @@ prcp_wc <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.10.- MAP10 ~ total chl ####
+## 4.10.- SPEI18 ~ total chl ####
 
-prcp_chl_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = total_chl_fw_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = total_chl_fw_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_chl_fw <- ggplot(clean_target) + 
+  geom_point(aes(y = total_chl_fw_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = total_chl_fw_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -454,7 +464,7 @@ prcp_chl_fw <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "J") +
   ylab(expression(paste("Leaf chlorophyll content (μg g"^"-1", ")"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(250, 2500) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -467,12 +477,13 @@ prcp_chl_fw <- ggplot(clean_target) +
         plot.tag = element_text(size = 22)) 
 
 
-## 4.11.- MAP10 ~ carotenoids ####
+## 4.11.- SPEI18 ~ carotenoids ####
 
-prcp_xc_fw <- ggplot(clean_target) + 
-  geom_point(aes(y = xc_fw_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = xc_fw_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_xc_fw <- ggplot(clean_target) + 
+  geom_point(aes(y = xc_fw_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = xc_fw_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -493,7 +504,7 @@ prcp_xc_fw <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "K") +
   ylab(expression(paste("Leaf carotenoids content (μg g"^"-1", ")"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(10, 80) + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -505,12 +516,13 @@ prcp_xc_fw <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.12.- MAP10 ~ chla/b ####
+## 4.18.- SPEI18 ~ chla/b ####
 
-prcp_chl_ab <- ggplot(clean_target) + 
-  geom_point(aes(y = chla_chlb_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = chla_chlb_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_chl_ab <- ggplot(clean_target) + 
+  geom_point(aes(y = chla_chlb_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = chla_chlb_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -531,7 +543,7 @@ prcp_chl_ab <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "L") +
   ylab(expression(paste("Chlorophyll a/b ratio"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(1.4, 3) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -543,12 +555,13 @@ prcp_chl_ab <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 4.13.- MAP10 ~ chl/xc ####
+## 4.13.- SPEI18 ~ chl/xc ####
 
-prcp_chl_xc <- ggplot(clean_target) + 
-  geom_point(aes(y = chl_xc_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = chl_xc_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_chl_xc <- ggplot(clean_target) + 
+  geom_point(aes(y = chl_xc_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = chl_xc_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -569,7 +582,7 @@ prcp_chl_xc <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "M") +
   ylab(expression(paste("Chlorophylls/carotenoids ratio"))) +
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   ylim(15, 40) + 
   theme_classic() +
   theme(legend.position = "right",
@@ -581,12 +594,13 @@ prcp_chl_xc <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22))
 
-## 4.14.- MAP10 ~ SLA ####
+## 4.14.- SPEI18 ~ SLA ####
 
-prcp_sla <- ggplot(clean_target) + 
-  geom_point(aes(y = sla_22, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = sla_22, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_sla <- ggplot(clean_target) + 
+  geom_point(aes(y = sla_22, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = sla_22, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -607,7 +621,7 @@ prcp_sla <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "N") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -618,12 +632,13 @@ prcp_sla <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22))
 
-## 4.15.- MAP10 ~ BAI05 ####
+## 4.15.- SPEI18 ~ BAI05 ####
 
-prcp_bai05 <- ggplot(clean_target) + 
-  geom_point(aes(y = mean_05, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = mean_05, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_bai05 <- ggplot(clean_target) + 
+  geom_point(aes(y = mean_05, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = mean_05, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -644,7 +659,7 @@ prcp_bai05 <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "O") +
   ylab(expression(paste("Tree average growth 05 (mm² year"^"-1", ")"))) + 
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -655,12 +670,13 @@ prcp_bai05 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22))
 
-## 4.16.- MAP10 ~ BAI10 ####
+## 4.16.- SPEI18 ~ BAI10 ####
 
-prcp_bai10 <- ggplot(clean_target) + 
-  geom_point(aes(y = mean_10, x = prec, col = sp_status)) + 
-  geom_smooth(aes(y = mean_10, x = prec, col = sp_status, fill = sp_status),
-              method = "lm") + 
+spei18_bai10 <- ggplot(clean_target) + 
+  geom_point(aes(y = mean_10, x = mean_spei18, col = sp_status), 
+             position = position_jitter(width = 0.002, height = 0)) + 
+  geom_smooth(aes(y = mean_10, x = mean_spei18, col = sp_status, fill = sp_status),
+              method = "lm", show.legend = FALSE) + 
   scale_color_manual(values = c("Abialba_coldspot" = "#6863a0",
                                 "Abialba_hotspot" = "#aba8d0",
                                 "Pinsylv_coldspot" = "#188e6b",
@@ -681,7 +697,7 @@ prcp_bai10 <- ggplot(clean_target) +
                     name = "") +
   labs(tag = "P") +
   ylab(expression(paste("Tree average growth 10 (mm² year"^"-1", ")"))) + 
-  xlab(expression(paste("MAP_10 (mm)"))) + 
+  xlab(expression(paste("July 18 months-SPEI"))) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -694,11 +710,11 @@ prcp_bai10 <- ggplot(clean_target) +
 
 # 5.- Leaf traits plotting ####
 
-tiff("04_figures/04_02_prcp10_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
+tiff("04_figures/04_02_spei18_leaf_scatter_sp.tiff", units = "mm", width = 450, height = 400,
      res = 800, compression = "lzw")
-prcp_height + prcp_dbh + prcp_hegyi + prcp_c + 
-  prcp_n + prcp_d13c + prcp_d15n + prcp_d18o +  
-  prcp_wc + prcp_chl_fw + prcp_xc_fw + prcp_chl_ab +  
-  prcp_chl_xc + prcp_sla + prcp_bai05 + prcp_bai10 +
+spei18_height + spei18_dbh + spei18_hegyi + spei18_c + 
+  spei18_n + spei18_d13c + spei18_d15n + spei18_d18o +  
+  spei18_wc + spei18_chl_fw + spei18_xc_fw + spei18_chl_ab +  
+  spei18_chl_xc + spei18_sla + spei18_bai05 + spei18_bai10 +
   plot_layout(guides = 'collect', ncol = 4)
 dev.off()
