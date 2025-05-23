@@ -62,7 +62,13 @@ clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pin
 
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
-# 5.- Calculating the mean values ####
+# 5.- Normalization ####
+
+clean_target <- clean_target %>%
+  mutate(across(where(is.numeric), ~ (. - min(., na.rm = TRUE)) / 
+                  (max(., na.rm = TRUE) - min(., na.rm = TRUE))))
+  
+# 6.- Calculating the mean values ####
 
 # Mean values are calculated by spot status, as they are needed 
 # for the calculation of the response ratio 
@@ -80,11 +86,9 @@ rr_target <- clean_target %>%
             mean_c = mean(percent_c, na.rm = T),
             mean_n = mean(percent_n, na.rm = T),
             mean_cn = mean(cn_ratio, na.rm = T),
-            mean_d13c = mean(leaf_d13c, na.rm = T),
-            mean_d15n = mean(lead_d15n, na.rm = T),
-            mean_d18o = mean(leaf_d18o, na.rm = T),
-            mean_d13c_17 = mean(wood_d13c_17, na.rm = T),
-            mean_d13c_22 = mean(wood_d13c_22, na.rm = T),
+            mean_d13c = mean(d13c, na.rm = T),
+            mean_d15n = mean(d15n, na.rm = T),
+            mean_d18o = mean(d18o, na.rm = T),
             mean_sla = mean(sla_22, na.rm = T),
             mean_age = mean(age, na.rm = T),
             mean_hegyi = mean(hegyi_index, na.rm = T),
@@ -115,11 +119,9 @@ sd_target <- clean_target %>%
             se_c = sd(percent_c, na.rm = T) / sqrt(n()),
             se_n = sd(percent_n, na.rm = T) / sqrt(n()),
             se_cn = sd(cn_ratio, na.rm = T) / sqrt(n()),
-            se_d13c = sd(leaf_d13c, na.rm = T) / sqrt(n()),
-            se_d15n = sd(lead_d15n, na.rm = T) / sqrt(n()),
-            se_d18o = sd(leaf_d18o, na.rm = T) / sqrt(n()),
-            se_d13c_17 = sd(wood_d13c_17, na.rm = T) / sqrt(n()),
-            se_d13c_22 = sd(wood_d13c_22, na.rm = T) / sqrt(n()),
+            se_d13c = sd(d13c, na.rm = T) / sqrt(n()),
+            se_d15n = sd(d15n, na.rm = T) / sqrt(n()),
+            se_d18o = sd(d18o, na.rm = T) / sqrt(n()),
             se_sla = sd(sla_22, na.rm = T) / sqrt(n()),
             se_age = sd(age, na.rm = T) / sqrt(n()),
             se_hegyi = sd(hegyi_index, na.rm = T) / sqrt(n()),
@@ -187,15 +189,14 @@ rr_df$response_ratio <- abs(log(rr_df$mean_hotspot / rr_df$mean_coldspot))
 
 rr_df <- rr_df %>% 
   mutate(se_rr = sqrt((se_hotspot / mean_hotspot)^2 + (se_coldspot / mean_coldspot)^2))
-  
+
 # 9.- Plotting`####
 
 varnames <- c("BAI since 1980", "BAI", "BAI 20 years", "BAI 15 years", "BAI 10 years", 
               "BAI 05 years", "Hegyi Index", "Height", "Age", "Rt 2012", "Rs 2017", "Rt 2022",
               "d.b.h.", "Carotenoids content", "SLA", "Rs 2012", "N content", 
-              "Leaf δ15N", "Chlorophylls content", "Chl / carotenoids", "Chl a / Chl b",
-              "Leaf C:N", "Rt 2017", "Leaf δ13C", "Wood δ13C 2017", "Wood δ13C 2022", 
-              "Leaf δ18C", "C content") %>% rev()
+              "δ15N", "Chlorophylls content", "Chl / carotenoids", "Chl a / Chl b",
+              "Leaf C:N", "Rt 2017", "δ13C", "δ18C", "C content") %>% rev()
 
 rr_plot <- ggplot(rr_df) + 
   geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
@@ -203,7 +204,7 @@ rr_plot <- ggplot(rr_df) +
   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
                      y = fct_reorder(var, response_ratio)), height = 0, size = 1.1) + 
   geom_vline(xintercept = 0, linetype = "dashed", 
-               color = "gray35", size = .15) + 
+             color = "gray35", size = .15) + 
   scale_y_discrete(labels = varnames) + 
   xlab("log(Response ratio)") + 
   ylab("") + 
@@ -214,8 +215,8 @@ rr_plot <- ggplot(rr_df) +
         axis.text.y = element_text(size = 16),
         axis.title.x = element_text(size = 16))
 
-tiff("04_figures/04_03_ranked_response_ratios.tiff", units = "mm", 
+tiff("04_figures/04_03_ranked_response_ratios_norm.tiff", units = "mm", 
      width = 200, height = 300,
      res = 700, compression = "lzw")
-  rr_plot
+rr_plot
 dev.off()
