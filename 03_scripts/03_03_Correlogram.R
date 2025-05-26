@@ -70,14 +70,37 @@ clean_target <- clean_target %>%
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, chl_fw_22, xc_fw_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, lead_d15n, wood_d13c_17, wood_d13c_22, sla_22,
+                  leaf_d18o, leaf_d15n, wood_d13c_17, wood_d13c_22, sla_22,
                   age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
-                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17))
+                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
+  select(sort(names(.)))
 
-# correlo <- ggpairs(clean_target) Not very efficient
+colnames(clean_target) <- c("Age", "Chlorophylls content", "Chl / carotenoids", "Chl a / Chl b",
+             "Leaf C:N", "d.b.h.", "Hegyi Index", "Height", "Leaf δ13C", "Leaf δ15N", 
+             "Leaf δ18C", "BAI 05 years", "BAI 10 years", "BAI 15 years", 
+             "BAI since 1980", "BAI 20 years", "BAI", "C content", "N content",
+             "Rs 2012", "Rs 2017", "Rt 2012", "Rt 2017", "Rt 2022", "SLA", 
+             "Wood δ13C 2017", "Wood δ13C 2022", "Carotenoids content")
+
+# 7.- Making the correlogram ####
+# First I need to remove na values from the correlogram 
 
 clean_target2 <- na.omit(clean_target)
 
+# Now I make the correlogram and reorder the variables in alphabetical order
+
 correlogram <- cor(clean_target2)
-ggcorrplot(correlogram)
+orden <- sort(colnames(correlogram)) %>% rev()
+correlogram <- correlogram[orden, orden]
+
+# P-value matrix creation, also by alphabetical order
+
+p_matrix <- cor_pmat(clean_target2)
+p_matrix <- p_matrix[orden, orden]
+
+correlogram <- ggcorrplot(correlogram, 
+                          type = "lower",
+                          lab = TRUE,
+                          method = "circle", 
+                          p.mat = p_matrix, insig = "blank")
 
