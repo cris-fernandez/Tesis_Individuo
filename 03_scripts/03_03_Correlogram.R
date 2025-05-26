@@ -104,3 +104,8 @@ correlogram <- ggcorrplot(correlogram,
                           method = "circle", 
                           p.mat = p_matrix, insig = "blank")
 
+tiff("04_figures/04_03_correlogram.tiff", units = "mm", 
+     width = 300, height = 300,
+     res = 700, compression = "lzw")
+correlogram
+dev.off()
