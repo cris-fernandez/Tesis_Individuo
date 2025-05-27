@@ -76,13 +76,13 @@ clean_target <- clean_target %>%
   select(sort(names(.)))
 
 colnames(clean_target) <- c("Age", "Chlorophylls content", "Chl / carotenoids", "Chl a / Chl b",
-             "Leaf C:N", "d.b.h.", "Hegyi Index", "Height", "Leaf δ13C", "Leaf δ15N", 
-             "Leaf δ18C", "BAI 05 years", "BAI 10 years", "BAI 15 years", 
-             "BAI since 1980", "BAI 20 years", "BAI", "C content", "N content",
-             "Rs 2012", "Rs 2017", "Rt 2012", "Rt 2017", "Rt 2022", "SLA", 
-             "Wood δ13C 2017", "Wood δ13C 2022", "Carotenoids content")
+                            "Leaf C:N", "d.b.h.", "Hegyi Index", "Height", "Leaf δ13C", "Leaf δ15N", 
+                            "Leaf δ18C", "BAI 05 years", "BAI 10 years", "BAI 15 years", 
+                            "BAI since 1980", "BAI 20 years", "BAI", "C content", "N content",
+                            "Rs 2012", "Rs 2017", "Rt 2012", "Rt 2017", "Rt 2022", "SLA", 
+                            "Wood δ13C 2017", "Wood δ13C 2022", "Carotenoids content")
 
-# 6.- Correlogram ####
+# 7.- Making the correlogram ####
 # First I need to remove na values from the correlogram 
 
 clean_target2 <- na.omit(clean_target)
@@ -102,50 +102,10 @@ correlogram <- ggcorrplot(correlogram,
                           type = "lower",
                           lab = TRUE,
                           method = "circle", 
-                          p.mat = p_matrix, 
-                          insig = "blank")
+                          p.mat = p_matrix, insig = "blank")
 
-# 7.- Plotting ####
-
-tiff("04_figures/04_03_correlogram.tiff", units = "mm", 
+tiff("04_figures/04_03_pca.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 correlogram
 dev.off()
-
-
-# 8.- Correlogram - no wood isotopes ####
-
-# Data availability for wood isotopes is limited, thus reducing the rows with 
-# no NAs that can be utilized for the correlogram...
-
-clean_target3 <- clean_target %>% 
-  dplyr::select(-c(`Wood δ13C 2017`, `Wood δ13C 2022`)) %>% 
-  na.omit() # 345 instead of 90 observations... much more
-
-# Now I make the correlogram and reorder the variables in alphabetical order
-
-correlogram_nowood <- cor(clean_target3)
-orden_nowood <- sort(colnames(correlogram_nowood)) %>% rev()
-correlogram_nowood <- correlogram_nowood[orden_nowood, orden_nowood]
-
-# P-value matrix creation, also by alphabetical order
-
-p_matrix_nowood <- cor_pmat(clean_target3)
-p_matrix_nowood <- p_matrix_nowood[orden_nowood, orden_nowood]
-
-correlogram_nowood <- ggcorrplot(correlogram_nowood, 
-                          type = "lower",
-                          lab = TRUE,
-                          method = "circle", 
-                          p.mat = p_matrix_nowood, 
-                          insig = "blank")
-
-# 9.- Plotting ####
-
-tiff("04_figures/04_03_correlogram_nowood.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-correlogram_nowood
-dev.off()
-
