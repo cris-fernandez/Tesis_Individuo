@@ -80,7 +80,6 @@ clean_target <- clean_target %>%
 norm_target <- clean_target %>%
   mutate(defoliation_ST = (mean_def_obs - mean(mean_def_obs, na.rm = T)) / sd(mean_def_obs, na.rm = T),
          height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         dbh_ST = (dbh - mean(dbh, na.rm = T)) / sd(dbh, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
@@ -93,7 +92,7 @@ norm_target <- clean_target %>%
 
 norm_target <- norm_target %>% select(contains("_ST"))
 
-colnames(norm_target) <- c("Defoliation", "Height", "d.b.h.", "SLA", "Age", 
+colnames(norm_target) <- c("Defoliation", "Height", "SLA", "Age", 
                            "Hegyi Index", "BAI since 1980", "Rt 2012", 
                            "Rs 2012", "Rt 2017", "Rs 2017", "Rt 2022")
 
@@ -144,56 +143,4 @@ tiff("04_figures/04_04_Vuln_contribution_plot.tiff", units = "mm",
      width = 300, height = 300,
      res = 700, compression = "lzw")
 contrib
-dev.off()
-
-# 12.- Correlations matrix - no wood ####
-# "_nw" means "no wood"
-
-# Omission of NAs
-norm_target_nw <- clean_target %>% 
-  dplyr::select(-c(wood_d13c_17, wood_d13c_22)) %>% 
-  na.omit()
-
-# The chart is needed for the PCA:
-
-correlogram_nw <- cor(norm_target_nw)
-ggcorrplot(correlogram_nw)
-
-# 13.- PCA analysis ####
-
-pca_results_nw <- princomp(correlogram_nw)
-summary(pca_results_nw)
-
-# The first two components explain only 78.5% of the data variance!
-
-pca_results_nw$loadings[, 1:2]
-
-# 14.- Scree plot ####
-
-scree_nw <- fviz_eig(pca_results_nw, addlabels = T, 
-                     barfill = "black", barcolor = "black")
-
-tiff("04_figures/04_04_Vuln_screeplot_nw.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-scree_nw
-dev.off()
-
-# 15.- Biplot ####
-
-tiff("04_figures/04_04_Vuln_biplot_nw.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-fviz_pca_var(pca_results_nw, col.var = "black")
-dev.off()
-
-# 15.- Variable contribution ####
-
-contrib_nw <- fviz_cos2(pca_results_nw, choice = "var", axes = 1:2,
-                        fill = "black", color = "black")
-
-tiff("04_figures/04_04_Vuln_contribution_plot_nw.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-contrib_nw
 dev.off()
