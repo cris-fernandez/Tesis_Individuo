@@ -68,11 +68,8 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(mean_def_obs, height, dbh, chl_fw_22, xc_fw_22, chla_chlb_22,
-                  chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, leaf_d15n, wood_d13c_17, wood_d13c_22, sla_22,
-                  age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
-                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
+  dplyr::select(c(mean_def_obs, height, dbh, sla_22, age, hegyi_index, 
+                  mean_1980, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
   select(sort(names(.)))
 
 # 6.- Data normalization ####
@@ -84,27 +81,10 @@ norm_target <- clean_target %>%
   mutate(defoliation_ST = (mean_def_obs - mean(mean_def_obs, na.rm = T)) / sd(mean_def_obs, na.rm = T),
          height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
          dbh_ST = (dbh - mean(dbh, na.rm = T)) / sd(dbh, na.rm = T),
-         chl_ST = (chl_fw_22 - mean(chl_fw_22, na.rm = T)) / sd(chl_fw_22, na.rm = T),
-         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
-         chl_ab_ST = (chla_chlb_22 - mean(chla_chlb_22, na.rm = T)) / sd(chla_chlb_22, na.rm = T),
-         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
-         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
-         cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
-         leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
-         leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
-         wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
-         wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
-         bai_ST = (mean_bai - mean(mean_bai, na.rm = T)) / sd(mean_bai, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
-         bai_20_ST = (mean_20 - mean(mean_20, na.rm = T)) / sd(mean_20, na.rm = T),
-         bai_15_ST = (mean_15 - mean(mean_15, na.rm = T)) / sd(mean_15, na.rm = T),
-         bai_10_ST = (mean_10 - mean(mean_10, na.rm = T)) / sd(mean_10, na.rm = T),
-         bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
          Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
@@ -112,6 +92,10 @@ norm_target <- clean_target %>%
          Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
 
 norm_target <- norm_target %>% select(contains("_ST"))
+
+colnames(norm_target) <- c("Defoliation", "Height", "d.b.h.", "SLA", "Age", 
+                           "Hegyi Index", "BAI since 1980", "Rt 2012", 
+                           "Rs 2012", "Rt 2017", "Rs 2017", "Rt 2022")
 
 # 7.- Correlations matrix ####
 
@@ -137,15 +121,15 @@ pca_results$loadings[, 1:2]
 scree <- fviz_eig(pca_results, addlabels = T, 
                   barfill = "black", barcolor = "black")
 
-tiff("04_figures/04_03_screeplot.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_screeplot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
-  scree
+scree
 dev.off()
 
 # 10.- Biplot ####
 
-tiff("04_figures/04_03_biplot.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_biplot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 fviz_pca_var(pca_results, col.var = "black")
@@ -156,7 +140,7 @@ dev.off()
 contrib <- fviz_cos2(pca_results, choice = "var", axes = 1:2,
                      fill = "black", color = "black")
 
-tiff("04_figures/04_03_contribution_plot.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_contribution_plot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 contrib
@@ -187,9 +171,9 @@ pca_results_nw$loadings[, 1:2]
 # 14.- Scree plot ####
 
 scree_nw <- fviz_eig(pca_results_nw, addlabels = T, 
-                  barfill = "black", barcolor = "black")
+                     barfill = "black", barcolor = "black")
 
-tiff("04_figures/04_03_screeplot_nw.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_screeplot_nw.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 scree_nw
@@ -197,7 +181,7 @@ dev.off()
 
 # 15.- Biplot ####
 
-tiff("04_figures/04_03_biplot_nw.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_biplot_nw.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 fviz_pca_var(pca_results_nw, col.var = "black")
@@ -206,9 +190,9 @@ dev.off()
 # 15.- Variable contribution ####
 
 contrib_nw <- fviz_cos2(pca_results_nw, choice = "var", axes = 1:2,
-                     fill = "black", color = "black")
+                        fill = "black", color = "black")
 
-tiff("04_figures/04_03_contribution_plot_nw.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_contribution_plot_nw.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 contrib_nw
