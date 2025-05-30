@@ -63,18 +63,25 @@ pinpine_crop <- st_intersection(pinpine, st_union(countries))
 pinsylv_crop <- st_intersection(pinsylv, st_union(countries))
 abialba_crop <- st_intersection(abialba, st_union(countries))
 
-# 5.- Plotting
+# 5.- Sites coordinates ####
+
+sites <- read.csv("")
+
+# 6.- Plotting
 
 ggplot() +
-  geom_sf(data = neighbours, fill = "gray95", color = "gray30") +  # Siluetas
-  geom_sf(data = provinces_sf, fill = NA, color = "gray30", linewidth = 0.4) +  
-  geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.4) +
-  geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.4) +
-  geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.4) +
+  geom_sf(data = neighbours, fill = "gray96", col = "gray30") +  # Siluetas
+  geom_sf(data = provinces_sf, aes(fill = grupo), col = NA, linewidth = 0.6) +  
+  geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
+  geom_sf(data = provinces_sf, fill = NA, color = "gray30", linewidth = 0.45) +  
   scale_fill_manual(name = "",
-                    values = c("Abies alba" = "blue",
-                               "Pinus sylvestris" = "green",
-                               "Pinus pinea" = "orange")) +
+                    values = c("Abies alba" = "#746fb2",
+                               "Pinus sylvestris" = "#1b9e77",
+                               "Pinus pinea" = "#db5f02",
+                               "in" = "gray70",
+                               "out" = "gray88")) +
   theme_minimal() +
   theme_minimal() +
   labs(title = "") + 
