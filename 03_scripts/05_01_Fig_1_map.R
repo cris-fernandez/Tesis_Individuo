@@ -69,42 +69,49 @@ sites <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibfor
                          header = T, sep = ",") %>% 
   dplyr::select(c(plot_id, site, geo_lat, geo_lon, sp_id)) %>% 
   filter(grepl("01", plot_id)) %>% 
-  mutate(sp_id = ifelse(sp_id == "Pinpine", "Pinus pinea",
-                        ifelse(sp_id == "Abialba", "Abies alba", 
-                               "Pinus sylvestris")))
+  mutate(sp_id = ifelse(sp_id == "Pinpine", "Pinuspinea",
+                        ifelse(sp_id == "Abialba", "Abiesalba", 
+                               "Pinussylvestris")))
 
 
-# 6.- Plotting
+# 6.- Plotting ####
 
-ggplot() +
+distrib_map <- ggplot() +
   geom_sf(data = neighbours, fill = "gray96", col = "gray30") +  # Siluetas
   geom_sf(data = provinces_sf, aes(fill = grupo), col = NA, linewidth = 0.6) +  
-  geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.45) +
-  geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.45) +
-  geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.45) +
-  geom_sf(data = provinces_sf, fill = NA, color = "gray30", linewidth = 0.45) +  
+  geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
+  geom_sf(data = provinces_sf, fill = NA, color = "gray30", linewidth = 0.5) +  
+  geom_point(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
+             col = "black", shape = 22, size = 5, stroke = 1.75) + 
   scale_fill_manual(name = "",
                     values = c("Abies alba" = "#746fb2",
                                "Pinus sylvestris" = "#1b9e77",
                                "Pinus pinea" = "#db5f02",
+                               "Abiesalba" = "#746fb2",
+                               "Pinussylvestris" = "#1b9e77",
+                               "Pinuspinea" = "#db5f02",
                                "in" = "gray70",
-                               "out" = "gray88")) +
-  # geom_dotplot(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
-  #              shape = 15, size = 3, col = "black") TRY THIS
-  geom_point(data = sites, aes(x = geo_lon, y = geo_lat, col = sp_id),
-             shape = 15, size = 3) + 
-  geom_point(data = sites, aes(x = geo_lon, y = geo_lat),
-             col = "black", shape = 0, size = 3) + 
-  scale_color_manual(name = "",
-                    values = c("Abies alba" = "#746fb2",
-                               "Pinus sylvestris" = "#1b9e77",
-                               "Pinus pinea" = "#db5f02")) +
+                               "out" = "gray88"),
+                    breaks = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea")) +
   theme_minimal() +
   theme_minimal() +
   labs(title = "") + 
+  xlab("") + 
+  ylab("") + 
   theme(legend.position = "bottom") +
   coord_sf(xlim = c(-12, 06), ylim = c(35, 45.5), expand = FALSE) +
-  theme(panel.grid = element_line(color = "gray90"))
+  theme(panel.grid = element_line(color = "gray90"),
+        legend.text = element_text(face = 'italic', size = 22))
 
+# 7.- Exporting ####
+
+tiff("04_figures/05_01_distrib_map.tiff", units = "mm", width = 250, height = 250,
+     res = 800, compression = "lzw")
+distrib_map
+dev.off()
 
 
