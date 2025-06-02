@@ -59,7 +59,13 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target %>% filter(!mean_def_obs == 100)
 
-clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pinpine")
+clean_target2 <- clean_target %>% 
+  mutate(sp_id = "all")
+
+clean_target <- rbind(clean_target, clean_target2)
+clean_target$sp_id <- as.factor(clean_target$sp_id)
+clean_target <- clean_target %>%
+  mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine", "all"))
 
 # 5.- Boxplots ####
 
@@ -67,13 +73,15 @@ clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pin
 
 box_height <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = height, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -97,13 +105,15 @@ box_height <- ggplot(clean_target) +
 
 box_hegyi <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = hegyi_index, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -128,13 +138,15 @@ box_hegyi <- ggplot(clean_target) +
 
 box_age <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = age, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -160,13 +172,15 @@ box_age <- ggplot(clean_target) +
 
 box_sla <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = sla_22, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -190,13 +204,15 @@ box_sla <- ggplot(clean_target) +
 
 box_bai80 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = mean_1980, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -220,13 +236,15 @@ box_bai80 <- ggplot(clean_target) +
 
 box_rt12 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt12, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -250,13 +268,15 @@ box_rt12 <- ggplot(clean_target) +
 
 box_rt17 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt17, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -280,13 +300,15 @@ box_rt17 <- ggplot(clean_target) +
 
 box_rt22 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt22, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -310,13 +332,15 @@ box_rt22 <- ggplot(clean_target) +
 
 box_rs12 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rs12, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -340,13 +364,15 @@ box_rs12 <- ggplot(clean_target) +
 
 box_rs17 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rs17, fill = sp_id, alpha = spot_status)) + 
-  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
                     labels = c("A. alba",
                                "P. sylvestris",
-                               "P. pinea"),
+                               "P. pinea",
+                               "All"),
                     name = "") +
   scale_alpha_manual(breaks = c("hotspot", "coldspot"),
                      values = c("hotspot" = 0.5,
@@ -371,6 +397,6 @@ box_rs17 <- ggplot(clean_target) +
 tiff("04_figures/04_04_Vuln_boxplots.tiff", units = "mm", width = 450, height = 500,
      res = 800, compression = "lzw")
 box_height + box_hegyi + box_age + box_sla + box_bai80 + box_rt12 +
-box_rt17 + box_rt12 + box_rs12 + box_rs17 + 
+box_rt17 + box_rt22 + box_rs12 + box_rs17 + 
   guide_area() + plot_layout(guides = 'collect', ncol = 3)
 dev.off()
