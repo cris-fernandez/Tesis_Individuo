@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "ggplot2",
         "FactoMineR", "factoextra", "png", "maps", "sf", "rnaturalearth",
-        "rnaturalearthdata", "mapSpain") #list of packages
+        "rnaturalearthdata", "mapSpain", "ggspatial", "cowplot") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -21,9 +21,10 @@ plot(st_geometry(provinces_sf))
 st_crs(provinces_sf)
 
 provinces_sf <- provinces_sf %>% st_set_crs(4326) %>% 
-  filter(!nuts2.name == "Canarias") %>% # They appear on the map otherwise
-  mutate(grupo = ifelse(ine.prov.name %in% c("Guadalajara", "Madrid", "Teruel", "Huesca", "Navarra"),
-                        "in", "out"))
+  filter(!nuts2.name == "Canarias")
+
+provinces_ibf <- provinces_sf %>% 
+  filter(ine.prov.name %in% c("Guadalajara", "Madrid", "Teruel", "Huesca", "Navarra"))
 
 # 2.- Neighboring countries ####
 
@@ -74,44 +75,99 @@ sites <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibfor
                                "Pinussylvestris")))
 
 
-# 6.- Plotting ####
+# 6.- Plotting map A ####
 
 distrib_map <- ggplot() +
-  geom_sf(data = neighbours, fill = "gray96", col = "gray30") +  # Siluetas
-  geom_sf(data = provinces_sf, aes(fill = grupo), col = NA, linewidth = 0.6) +  
+  geom_sf(data = neighbours, fill = "gray96", col = NA) + 
+  geom_sf(data = provinces_sf, fill = "#ffffff", col = "#d5d5d5", linewidth = 0.6) +  
+  geom_sf(data = provinces_ibf, fill = "#d3d3d3", col = "black", linewidth = 0.6) +  
   geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
   geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
   geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
-  geom_sf(data = provinces_sf, fill = NA, color = "gray30", linewidth = 0.5) +  
+  geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
+  scale_fill_manual(name = "",
+                    values = c("Abies alba" = "#746fb2",
+                               "Pinus sylvestris" = "#1b9e77",
+                               "Pinus pinea" = "#db5f02"),
+                    breaks = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea")) +
+  theme_minimal() +
+  labs(title = "") + 
+  xlab("") + 
+  ylab("") + 
+  theme(legend.position = "bottom") +
+  coord_sf(xlim = c(-12, 05), ylim = c(35, 45.5), expand = FALSE) +
+  theme(panel.grid = element_line(color = "gray90"),
+        legend.text = element_text(face = 'italic', size = 22),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none",
+        panel.border = element_rect(colour = "black", 
+                                    fill = NA, 
+                                    linewidth = 1),
+        panel.background = element_rect(fill = "#ffffff")) + 
+  ggspatial::annotation_scale(location = "br",
+                              bar_cols = c("black", "white"),
+                              text_family = "sans")
+
+# 7.- Plotting map B ####
+
+focus_map <- ggplot() +
+  geom_sf(data = neighbours, fill = "gray96", col = NA) +
+  geom_sf(data = provinces_sf, fill = "#ffffff", col = "#d5d5d5", linewidth = 0.6) +  
+  geom_sf(data = provinces_ibf, fill = "#d3d3d3", col = "black", linewidth = 0.6) +  
+  geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
+  geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
+  geom_sf_text(data = provinces_ibf, aes(label = ine.prov.name), size = 4, 
+               family = "sans", col = "#565656") +
   geom_point(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
-             col = "black", shape = 22, size = 5, stroke = 1.75) + 
+             col = "black", shape = 22, size = 5, stroke = 1.35) +
   scale_fill_manual(name = "",
                     values = c("Abies alba" = "#746fb2",
                                "Pinus sylvestris" = "#1b9e77",
                                "Pinus pinea" = "#db5f02",
                                "Abiesalba" = "#746fb2",
                                "Pinussylvestris" = "#1b9e77",
-                               "Pinuspinea" = "#db5f02",
-                               "in" = "gray70",
-                               "out" = "gray88"),
+                               "Pinuspinea" = "#db5f02"),
                     breaks = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea")) +
-  theme_minimal() +
   theme_minimal() +
   labs(title = "") + 
   xlab("") + 
   ylab("") + 
   theme(legend.position = "bottom") +
-  coord_sf(xlim = c(-12, 06), ylim = c(35, 45.5), expand = FALSE) +
+  coord_sf(xlim = c(-5.5, 1), ylim = c(39.5, 43.5), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
-        legend.text = element_text(face = 'italic', size = 22))
+        legend.text = element_text(face = 'italic', size = 22),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 1)) + 
+  ggspatial::annotation_scale(location = "br",
+                              bar_cols = c("black", "white"),
+                              text_family = "sans") + 
+  ggspatial::annotation_north_arrow(
+    location = "bl", which_north = "true",
+    pad_x = unit(0.1, "mm"), pad_y = unit(0.4, "mm"),
+    style = ggspatial::north_arrow_fancy_orienteering(
+      fill = c("black", "white"),
+      line_col = "#565656",
+      text_family = "sans"))
+
+# 8.- Assembling both maps ####
+
+final_map <- ggdraw() +
+  draw_plot(focus_map) + 
+  draw_plot(distrib_map, x = 0.09, y = 0.60, 
+            width = 0.3, height = 0.3) + 
+  draw_plot_label(label = "A", x = 0.10, y = 0.9, size = 16) +
+  draw_plot_label(label = "B", x = 0.135, y = 0.85, size = 16) 
+
 
 # 7.- Exporting ####
 
-tiff("04_figures/05_01_distrib_map.tiff", units = "mm", width = 250, height = 250,
+tiff("04_figures/05_01_fig1_map.tiff", units = "mm", width = 250, height = 250,
      res = 800, compression = "lzw")
-distrib_map
+final_map
 dev.off()
-
-
