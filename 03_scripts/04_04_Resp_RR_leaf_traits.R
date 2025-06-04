@@ -70,9 +70,9 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 rr_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   group_by(spot_status) %>% 
-  summarise(mean_def = mean(mean_def_obs, na.rm = T),
-            mean_wc = mean(wc_22, na.rm = T),
+  summarise(mean_wc = mean(wc_22, na.rm = T),
             mean_sla = mean(sla_22, na.rm = T),
+            mean_ewt = mean(ewt_22, na.rm = T),
             mean_chl = mean(chl_fw_22, na.rm = T),
             mean_chl_a = mean(chlor_a_fw_22, na.rm = T),
             mean_chl_b = mean(chlor_b_fw_22, na.rm = T),
@@ -82,39 +82,34 @@ rr_target <- clean_target %>%
             mean_c = mean(percent_c, na.rm = T),
             mean_n = mean(percent_n, na.rm = T),
             mean_cn = mean(cn_ratio, na.rm = T),
-            
-            mean_bai80 = mean(mean_1980, na.rm = T),
-            mean_bai20 = mean(mean_20, na.rm = T),
-            mean_bai15 = mean(mean_15, na.rm = T),
-            mean_bai10 = mean(mean_10, na.rm = T),
-            mean_bai05 = mean(mean_05, na.rm = T),
-            mean_rt12 = mean(Rt12, na.rm = T),
-            mean_rt17 = mean(Rt17, na.rm = T),
-            mean_rt22 = mean(Rt22, na.rm = T),
-            mean_rs12 = mean(Rs12, na.rm = T),
-            mean_rs17 = mean(Rs17, na.rm = T))
+            mean_leaf_d13c = mean(leaf_d13c, na.rm = T),
+            mean_leaf_d15n = mean(leaf_d15n, na.rm = T),
+            mean_leaf_d18o = mean(leaf_d18o, na.rm = T),
+            mean_wood_d13c_17 = mean(wood_d13c_17, na.rm = T),
+            mean_wood_d13c_22 = mean(wood_d13c_22, na.rm = T))
 
 # The standard deviations per group for the calculation of SE later:
 
 sd_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   group_by(spot_status) %>% 
-  summarise(se_height = sd(height, na.rm = T) / sqrt(n()),
-            se_dbh = sd(dbh, na.rm = T) / sqrt(n()),
+  summarise(se_wc = sd(wc_22, na.rm = T) / sqrt(n()),
             se_sla = sd(sla_22, na.rm = T) / sqrt(n()),
-            se_age = sd(age, na.rm = T) / sqrt(n()),
-            se_hegyi = sd(hegyi_index, na.rm = T) / sqrt(n()),
-            se_bai = sd(mean, na.rm = T) / sqrt(n()),
-            se_bai80 = sd(mean_1980, na.rm = T) / sqrt(n()),
-            se_bai20 = sd(mean_20, na.rm = T) / sqrt(n()),
-            se_bai15 = sd(mean_15, na.rm = T) / sqrt(n()),
-            se_bai10 = sd(mean_10, na.rm = T) / sqrt(n()),
-            se_bai05 = sd(mean_05, na.rm = T) / sqrt(n()),
-            se_rt12 = sd(Rt12, na.rm = T) / sqrt(n()),
-            se_rt17 = sd(Rt17, na.rm = T) / sqrt(n()),
-            se_rt22 = sd(Rt22, na.rm = T) / sqrt(n()),
-            se_rs12 = sd(Rs12, na.rm = T) / sqrt(n()),
-            se_rs17 = sd(Rs17, na.rm = T) / sqrt(n()))
+            se_ewt = sd(ewt_22, na.rm = T) / sqrt(n()),
+            se_chl = sd(chl_fw_22, na.rm = T) / sqrt(n()),
+            se_chl_a = sd(chlor_a_fw_22, na.rm = T) / sqrt(n()),
+            se_chl_b = sd(chlor_b_fw_22, na.rm = T) / sqrt(n()),
+            se_chl_ab = sd(chla_chlb_22, na.rm = T) / sqrt(n()),
+            se_xc = sd(xc_fw_22, na.rm = T) / sqrt(n()),
+            se_chl_xc = sd(chl_xc_22, na.rm = T) / sqrt(n()),
+            se_c = sd(percent_c, na.rm = T) / sqrt(n()),
+            se_n = sd(percent_n, na.rm = T) / sqrt(n()),
+            se_cn = sd(cn_ratio, na.rm = T) / sqrt(n()),
+            se_leaf_d13c = sd(leaf_d13c, na.rm = T) / sqrt(n()),
+            se_leaf_d15n = sd(leaf_d15n, na.rm = T) / sqrt(n()),
+            se_leaf_d18o = sd(leaf_d18o, na.rm = T) / sqrt(n()),
+            se_wood_d13c_17 = sd(wood_d13c_17, na.rm = T) / sqrt(n()),
+            se_wood_d13c_22 = sd(wood_d13c_22, na.rm = T) / sqrt(n()))
 
 
 # Data wrangling to obtain the desired structure: two columns 
@@ -171,9 +166,11 @@ rr_df <- rr_df %>%
 
 # 9.- Plotting ####
 
-varnames <- c("BAI since 1980", "BAI", "BAI 20 years", "BAI 15 years", "BAI 10 years", 
-              "BAI 05 years", "Hegyi Index", "Height", "Age", "Rt 2012", "Rs 2017", "Rt 2022",
-              "d.b.h.", "SLA", "Rs 2012", "Rt 2017") %>% rev()
+varnames <- c("Chl. a", "Chl. b", "Carotenoids", "SLA",
+              "Leaves N content", "Leaves δ15N", "Chl.", "Chl. / Carotenoids ratio", 
+              "Chl. a / Chl. b ratio", "EWT", "Leaves C:N ratio",
+              "Leaves WC", "Leaves δ13C", "Wood δ13C 2017", "Wood δ13C 2022",
+              "Leaves δ18O", "Leaves C content") %>% rev()
 
 rr_plot <- ggplot(rr_df) + 
   geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
@@ -192,7 +189,7 @@ rr_plot <- ggplot(rr_df) +
         axis.text.y = element_text(size = 16),
         axis.title.x = element_text(size = 16))
 
-tiff("04_figures/04_04_Vuln_response_ratios.tiff", units = "mm", 
+tiff("04_figures/04_04_Resp_response_ratios.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 rr_plot
@@ -229,7 +226,7 @@ rr_plot2 <- ggplot(rr_df2) +
         axis.text.y = element_text(size = 16),
         axis.title.x = element_text(size = 16))
 
-tiff("04_figures/04_04_Vuln_response_ratios_selection.tiff", units = "mm", 
+tiff("04_figures/04_04_Resp_response_ratios_selection.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 rr_plot2
