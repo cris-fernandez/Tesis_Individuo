@@ -200,14 +200,17 @@ dev.off()
 # These variables are discarded after making the correlogram, so we avoid 
 # using redundant variables
 
-discarded_vars <- c("bai", "bai20", "bai15", "bai10", "bai05", "dbh")
+discarded_vars <- c("chl_b", "xc", "chl", "chl_xc", "chl_ab", "ewt", "cn",
+                    "wood_d13c_17", "wood_d13c_22", "c")
 rr_df2 <- rr_df %>% 
   filter(!var %in% discarded_vars)
 
 # 9.- Plotting ####
 
-varnames2 <- c("BAI since 1980", "Hegyi Index", "Height", "Age", "Rt 2012", 
-               "Rs 2017", "Rt 2022", "SLA", "Rs 2012", "Rt 2017") %>% rev()
+varnames2 <- c("Chl. a", "SLA",
+               "Leaves N content", "Leaves δ15N",
+               "Leaves WC", "Leaves δ13C", 
+               "Leaves δ18O") %>% rev()
 
 rr_plot2 <- ggplot(rr_df2) + 
   geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
