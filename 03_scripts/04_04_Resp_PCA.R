@@ -68,8 +68,9 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, dbh, sla_22, age, hegyi_index, 
-                  mean_1980, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
+  dplyr::select(c(wc_22, sla_22,
+                  chlor_a_fw_22, percent_n,
+                  leaf_d13c, leaf_d15n, leaf_d18o)) %>% 
   select(sort(names(.)))
 
 # 6.- Data normalization ####
@@ -78,22 +79,20 @@ clean_target <- clean_target %>%
 # the manual standardization, I will test both procedures
 
 norm_target <- clean_target %>%
-  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
+  mutate(chl_a_ST = (chlor_a_fw_22 - mean(chlor_a_fw_22, na.rm = T)) / sd(chlor_a_fw_22, na.rm = T),
+         leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
+         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
-         hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
-         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
-         Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
-         Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
-         Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
-         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
+         wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
 
 norm_target <- norm_target %>% select(contains("_ST"))
 
-colnames(norm_target) <- c("Height", "SLA", "Age", 
-                           "Hegyi Index", "BAI since 1980", "Rt 2012", 
-                           "Rs 2012", "Rt 2017", "Rs 2017", "Rt 2022")
+colnames(norm_target) <- c("Chl. a", "Leaves δ13C",
+                            "Leaves δ15N", "Leaves δ18O", 
+                            "Leaves N content", "SLA", 
+                            "Leaves WC")
 
 # 7.- Correlations matrix ####
 
@@ -119,7 +118,7 @@ pca_results$loadings[, 1:2]
 scree <- fviz_eig(pca_results, addlabels = T, 
                   barfill = "black", barcolor = "black")
 
-tiff("04_figures/04_04_Vuln_screeplot.tiff", units = "mm", 
+tiff("04_figures/04_05_Resp_screeplot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 scree
@@ -127,7 +126,7 @@ dev.off()
 
 # 10.- Biplot ####
 
-tiff("04_figures/04_04_Vuln_biplot.tiff", units = "mm", 
+tiff("04_figures/04_05_Resp_biplot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 fviz_pca_var(pca_results, col.var = "black")
@@ -138,7 +137,7 @@ dev.off()
 contrib <- fviz_cos2(pca_results, choice = "var", axes = 1:2,
                      fill = "black", color = "black")
 
-tiff("04_figures/04_04_Vuln_contribution_plot.tiff", units = "mm", 
+tiff("04_figures/04_05_Resp_contribution_plot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 contrib

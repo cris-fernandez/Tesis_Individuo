@@ -76,13 +76,13 @@ clean_target <- clean_target %>%
                   wood_d13c_17, wood_d13c_22)) %>% 
   select(sort(names(.)))
 
-# colnames(clean_target) <- c("Chl.", "Chl. / Carotenoids ratio", 
-#                             "Chl. a / Chl. b ratio", "Chl. a", "Chl. b",
-#                             "Leaves C:N ratio", "EWT", "Leaves δ13C", 
-#                             "Leaves δ15N", "Leaves δ18O", "Leaves C content",
-#                             "Leaves N content", "SLA", "Leaves WC", 
-#                             "Wood δ13C 2017", "Wood δ13C 2022",
-#                             "Carotenoids")
+colnames(clean_target) <- c("Chl.", "Chl. / Carotenoids ratio",
+                            "Chl. a / Chl. b ratio", "Chl. a", "Chl. b",
+                            "Leaves C:N ratio", "EWT", "Leaves δ13C",
+                            "Leaves δ15N", "Leaves δ18O", "Leaves C content",
+                            "Leaves N content", "SLA", "Leaves WC",
+                            "Wood δ13C 2017", "Wood δ13C 2022",
+                            "Carotenoids")
 
 # 6.- Correlogram ####
 # First I need to remove na values from the correlogram 
