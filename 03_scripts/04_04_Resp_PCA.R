@@ -106,12 +106,8 @@ ggcorrplot(correlogram)
 
 # 8.- PCA analysis ####
 
-pca_results <- princomp(correlogram)
+pca_results <- prcomp(norm_target, scale = F) # I already scaled by myself
 summary(pca_results)
-
-# The first two components explain only 78.5% of the data variance!
-
-pca_results$loadings[, 1:2]
 
 # 9.- Scree plot ####
 

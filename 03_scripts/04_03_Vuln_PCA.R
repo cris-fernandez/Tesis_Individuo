@@ -109,10 +109,6 @@ ggcorrplot(correlogram)
 pca_results <- prcomp(norm_target, scale = F) # I already scaled by myself
 summary(pca_results)
 
-# The first two components explain only 68.46% of the data variance!
-
-pca_results$loadings[, 1:2]
-
 # 9.- Scree plot ####
 
 scree <- fviz_eig(pca_results, addlabels = T, 

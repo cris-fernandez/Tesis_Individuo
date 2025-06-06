@@ -74,3 +74,35 @@ clean_target <- clean_target %>%
 
 # 6.- PCA of vulnerability 
 
+## 6.1.- Standardization ####
+
+norm_target <- clean_target %>%
+  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
+         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
+         age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
+         hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
+         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
+         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
+         Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
+         Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
+         Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
+         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
+
+norm_target <- norm_target %>% select(contains("_ST"))
+
+## 6.2.- Correlogram ####
+
+norm_target <- na.omit(norm_target)
+
+correlogram <- cor(norm_target)
+ggcorrplot(correlogram)
+
+# 8.- PCA analysis ####
+
+pca_results <- princomp(norm_target)
+pca_result <- prcomp(norm_target, scale. = FALSE)
+summary(pca_results)
+
+# The first two components explain only 78.5% of the data variance!
+
+pca_results$loadings[, 1:3]
