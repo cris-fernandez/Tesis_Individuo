@@ -68,7 +68,7 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, dbh, sla_22, age, hegyi_index, 
+  dplyr::select(c(height, sla_22, age, hegyi_index, 
                   mean_1980, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
   select(sort(names(.)))
 
@@ -79,7 +79,6 @@ clean_target <- clean_target %>%
 
 norm_target <- clean_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
@@ -91,7 +90,7 @@ norm_target <- clean_target %>%
 
 norm_target <- norm_target %>% select(contains("_ST"))
 
-colnames(norm_target) <- c("Height", "SLA", "Age", 
+colnames(norm_target) <- c("Height", "Age", 
                            "Hegyi Index", "BAI since 1980", "Rt 2012", 
                            "Rs 2012", "Rt 2017", "Rs 2017", "Rt 2022")
 
@@ -107,10 +106,10 @@ ggcorrplot(correlogram)
 
 # 8.- PCA analysis ####
 
-pca_results <- princomp(correlogram)
+pca_results <- prcomp(norm_target, scale = F) # I already scaled by myself
 summary(pca_results)
 
-# The first two components explain only 78.5% of the data variance!
+# The first two components explain only 68.46% of the data variance!
 
 pca_results$loadings[, 1:2]
 

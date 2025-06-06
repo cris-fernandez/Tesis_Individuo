@@ -68,6 +68,9 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(mean_def_obs, height, dbh, sla_22, age, hegyi_index, 
+  dplyr::select(c(height, dbh, sla_22, age, hegyi_index, 
                   mean_1980, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
   select(sort(names(.)))
+
+# 6.- PCA of vulnerability 
+
