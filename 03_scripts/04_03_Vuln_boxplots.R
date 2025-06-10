@@ -101,10 +101,10 @@ box_height <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.2.- Hegyi index ####
+## 5.2.- d.b.h. ####
 
-box_hegyi <- ggplot(clean_target) + 
-  geom_boxplot(aes(x = sp_id, y = hegyi_index, fill = sp_id, alpha = spot_status)) + 
+box_dbh <- ggplot(clean_target) + 
+  geom_boxplot(aes(x = sp_id, y = dbh, fill = sp_id, alpha = spot_status)) + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
                     values = c("Abialba" = "#746fb2",
                                "Pinsylv" = "#1b9e77",
@@ -121,11 +121,10 @@ box_hegyi <- ggplot(clean_target) +
                      name = "") + 
   guides(alpha = "none") +
   labs(tag = "B") +
-  ylab("Hegyi index") +
+  ylab(expression(paste("Tree d.b.h. (cm)"))) + 
   xlab("") + 
-  ylim(0, 75) + 
   theme_classic() +
-  theme(legend.position = "none",
+  theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
         axis.text.y = element_text(size = 9),
         axis.title.y = element_text(size = 15),
@@ -166,9 +165,40 @@ box_age <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
+## 5.4.- Hegyi index ####
 
+box_hegyi <- ggplot(clean_target) + 
+  geom_boxplot(aes(x = sp_id, y = hegyi_index, fill = sp_id, alpha = spot_status)) + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine", "all"),
+                    values = c("Abialba" = "#746fb2",
+                               "Pinsylv" = "#1b9e77",
+                               "Pinpine" = "#db5f02",
+                               "all" = "#5e5e6d"),
+                    labels = c("A. alba",
+                               "P. sylvestris",
+                               "P. pinea",
+                               "All"),
+                    name = "") +
+  scale_alpha_manual(breaks = c("hotspot", "coldspot"),
+                     values = c("hotspot" = 0.5,
+                                "coldspot" = 1),
+                     name = "") + 
+  guides(alpha = "none") +
+  labs(tag = "A") +
+  ylab("Hegyi index") +
+  xlab("") + 
+  ylim(0, 75) + 
+  theme_classic() +
+  theme(legend.position = "right",
+        legend.key.size = unit(1, "cm"),
+        axis.text.y = element_text(size = 9),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_blank(),
+        axis.title.x = element_text(size = 15, vjust = 1.15),
+        legend.text = element_text(size = 8),
+        plot.tag = element_text(size = 22)) 
 
-## 5.4.- SLA ####
+## 5.5.- SLA ####
 
 box_sla <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = sla_22, fill = sp_id, alpha = spot_status)) + 
@@ -187,7 +217,7 @@ box_sla <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "D") +
+  labs(tag = "B") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() +
@@ -200,7 +230,7 @@ box_sla <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.5.- BAI 1980 ####
+## 5.6.- BAI 1980 ####
 
 box_bai80 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = mean_1980, fill = sp_id, alpha = spot_status)) + 
@@ -219,8 +249,8 @@ box_bai80 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "E") +
-  ylab(expression(paste("Tree mean BAI since 1980 (mm² year"^"-1", ")"))) + 
+  labs(tag = "A") +
+  ylab(expression(paste("Tree mean BAI since \n1980 (mm² year"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -232,7 +262,7 @@ box_bai80 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.6.- Rt 2012 ####
+## 5.7.- Rt 2012 ####
 
 box_rt12 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt12, fill = sp_id, alpha = spot_status)) + 
@@ -251,7 +281,7 @@ box_rt12 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "F") +
+  labs(tag = "B") +
   ylab(expression(paste("Tree 2012 Resistance"))) + 
   xlab("") + 
   theme_classic() +
@@ -264,7 +294,7 @@ box_rt12 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.7.- Rt 2017 ####
+## 5.8.- Rt 2017 ####
 
 box_rt17 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt17, fill = sp_id, alpha = spot_status)) + 
@@ -283,7 +313,7 @@ box_rt17 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "G") +
+  labs(tag = "C") +
   ylab(expression(paste("Tree 2017 Resistance"))) + 
   xlab("") + 
   theme_classic() +
@@ -296,7 +326,7 @@ box_rt17 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.8.- Rt 2022 ####
+## 5.9.- Rt 2022 ####
 
 box_rt22 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rt22, fill = sp_id, alpha = spot_status)) + 
@@ -315,7 +345,7 @@ box_rt22 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "H") +
+  labs(tag = "D") +
   ylab(expression(paste("Tree 2022 Resistance"))) + 
   xlab("") + 
   theme_classic() +
@@ -328,7 +358,7 @@ box_rt22 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.9.- Rs 2012 ####
+## 5.10.- Rs 2012 ####
 
 box_rs12 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rs12, fill = sp_id, alpha = spot_status)) + 
@@ -347,7 +377,7 @@ box_rs12 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "I") +
+  labs(tag = "E") +
   ylab(expression(paste("Tree 2012 Resilience"))) + 
   xlab("") + 
   theme_classic() +
@@ -360,7 +390,7 @@ box_rs12 <- ggplot(clean_target) +
         legend.text = element_text(size = 8),
         plot.tag = element_text(size = 22)) 
 
-## 5.10.- Rs 2017 ####
+## 5.11.- Rs 2017 ####
 
 box_rs17 <- ggplot(clean_target) + 
   geom_boxplot(aes(x = sp_id, y = Rs17, fill = sp_id, alpha = spot_status)) + 
@@ -379,9 +409,10 @@ box_rs17 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "J") +
+  labs(tag = "F") +
   ylab(expression(paste("Tree 2017 Resilience"))) + 
   xlab("") + 
+  ylim(0, 3.5) + 
   theme_classic() +
   theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
@@ -394,9 +425,31 @@ box_rs17 <- ggplot(clean_target) +
 
 # 6.- Leaf traits plotting ####
 
-tiff("04_figures/04_04_Vuln_boxplots.tiff", units = "mm", width = 450, height = 500,
+# tiff("04_figures/04_04_Vuln_boxplots.tiff", units = "mm", width = 450, height = 500,
+#      res = 800, compression = "lzw")
+# box_height + box_hegyi + box_age + box_sla + box_bai80 + box_rt12 +
+# box_rt17 + box_rt22 + box_rs12 + box_rs17 + 
+#   guide_area() + plot_layout(guides = 'collect', ncol = 3)
+# dev.off()
+
+# 7.- Plotting separately ####
+# Charlotte prefers it that way 
+
+tiff("04_figures/04_04_Vuln_size_boxplots.tiff", units = "mm", width = 500, height = 100,
      res = 800, compression = "lzw")
-box_height + box_hegyi + box_age + box_sla + box_bai80 + box_rt12 +
+box_height + box_dbh + box_age + 
+  guide_area() + plot_layout(guides = 'collect', ncol = 4)
+dev.off()
+
+tiff("04_figures/04_04_Vuln_traits_boxplots.tiff", units = "mm", width = 400, height = 100,
+     res = 800, compression = "lzw")
+box_hegyi + box_sla + 
+  guide_area() + plot_layout(guides = 'collect', ncol = 4)
+dev.off()
+
+tiff("04_figures/04_04_Vuln_growth_boxplots.tiff", units = "mm", width = 400, height = 200,
+     res = 800, compression = "lzw")
+box_bai80 + box_rt12 +
 box_rt17 + box_rt22 + box_rs12 + box_rs17 + 
-  guide_area() + plot_layout(guides = 'collect', ncol = 3)
+  guide_area() + plot_layout(guides = 'collect', ncol = 4)
 dev.off()
