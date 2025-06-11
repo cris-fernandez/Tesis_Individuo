@@ -69,7 +69,7 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 rr_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
-  group_by(spot_status) %>% 
+  group_by(spot_status, sp_id) %>% 
   summarise(mean_height = mean(height, na.rm = T),
             mean_dbh = mean(dbh, na.rm = T),
             mean_sla = mean(sla_22, na.rm = T),
@@ -91,7 +91,7 @@ rr_target <- clean_target %>%
 
 sd_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
-  group_by(spot_status) %>% 
+  group_by(spot_status, sp_id) %>% 
   summarise(se_height = sd(height, na.rm = T) / sqrt(n()),
             se_dbh = sd(dbh, na.rm = T) / sqrt(n()),
             se_sla = sd(sla_22, na.rm = T) / sqrt(n()),
@@ -113,24 +113,28 @@ sd_target <- clean_target %>%
 # Data wrangling to obtain the desired structure: two columns 
 # with every variable in different rows
 
-rownames(rr_target) <- rr_target$spot_status
+rownames(rr_target) <- paste0(rr_target$spot_status, "_", 
+                              rr_target$sp_id)
 rr_target <- rr_target %>% 
   t() %>% 
   as.data.frame()
 
-rownames(sd_target) <- sd_target$spot_status
+rownames(sd_target) <- paste0(sd_target$spot_status, "_", 
+                              sd_target$sp_id)
 sd_target <- sd_target %>% 
   t() %>% 
   as.data.frame
 
 # Removal of the former sp_status column 
 
-rr_target <- rr_target[-which(rownames(rr_target) == "spot_status"), ]
-sd_target <- sd_target[-which(rownames(sd_target) == "spot_status"), ]
+rr_target <- rr_target[-c(which(rownames(rr_target) == "spot_status"),
+                          which(rownames(rr_target) == "sp_id")), ]
+sd_target <- sd_target[-c(which(rownames(sd_target) == "spot_status"),
+                          which(rownames(sd_target) == "sp_id")), ]
 
 # 6.- Joining data frames ####
 
-# First, we need to make sure the "var" column matches both dataframes
+# Then, we need to make sure the "var" column matches both dataframes
 
 rr_target <- rr_target %>% 
   mutate(var = rownames(rr_target)) %>% 
@@ -143,39 +147,64 @@ sd_target <- sd_target %>%
 # Now, we can join by var:
 
 rr_df <- full_join(rr_target, sd_target, by = "var")
-colnames(rr_df) <- c("mean_coldspot", "mean_hotspot", "var", "se_coldspot", "se_hotspot")
+colnames(rr_df) <- c("mean_coldspot_Abialba", "mean_coldspot_Pinsylv", "mean_coldspot_Pinpine",
+                     "mean_hotspot_Abialba", "mean_hotspot_Pinsylv", "mean_hotspot_Pinpine",
+                     "var", 
+                     "se_coldspot_Abialba", "se_coldspot_Pinsylv", "se_coldspot_Pinpine",
+                     "se_hotspot_Abialba", "se_hotspot_Pinsylv", "se_hotspot_Pinpine")
+
+rr_df2 <- rr_df %>%
+  pivot_longer(cols = -var, names_to = c("stat", "spot_status", "sp_id"),
+               names_pattern = "(mean|se)_(coldspot|hotspot)_(.*)") %>% 
+  mutate(var_status = paste0(stat, "_", spot_status)) %>% 
+  dplyr::select(-c(stat, spot_status)) %>% 
+  pivot_wider(names_from = "var_status",
+              values_from = "value") %>% 
+  mutate_at(vars(mean_hotspot, mean_coldspot, se_hotspot, se_coldspot), as.numeric)
 
 # 7.- Calculating the log response ratio ####
 
-# We first need to transform all variables but "var" to numeric
-
-rr_df <- rr_df %>% 
-  mutate_at(vars(mean_hotspot, mean_coldspot, se_hotspot, se_coldspot), as.numeric)
-
-rr_df$response_ratio <- abs(log(rr_df$mean_hotspot / rr_df$mean_coldspot))
+rr_df2$response_ratio <- abs(log(rr_df2$mean_hotspot / rr_df2$mean_coldspot))
 
 # 8.- Calculating SE ####
 
 # The SE of a response ratio equales the square root of the sum of squares of 
 # the quotient of SE and the mean of each set (hot and coldspot) 
 
-rr_df <- rr_df %>% 
+rr_df2 <- rr_df2 %>% 
   mutate(se_rr = sqrt((se_hotspot / mean_hotspot)^2 + (se_coldspot / mean_coldspot)^2))
 
-# 9.- Plotting ####
+# 9.- Adding a column to reorder by Pinsylv values ####
 
-varnames <- c("BAI since 1980", "BAI", "BAI 20 years", "BAI 15 years", "BAI 10 years", 
-              "BAI 05 years", "Hegyi Index", "Height", "Age", "Rt 2012", "Rs 2017", "Rt 2022",
-              "d.b.h.", "SLA", "Rs 2012", "Rt 2017") %>% rev()
+rr_psy <- rr_df2 %>% 
+  filter(sp_id == "Pinsylv") %>% 
+  dplyr::select(var, response_ratio) %>% 
+  rename(psy_rr = response_ratio)
+rr_df2 <- full_join(rr_df2, rr_psy, by = "var")
 
-rr_plot <- ggplot(rr_df) + 
-  geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
-             size = 2.5) +
+# 10.- Plotting ####
+
+varnames <- c("BAI 10 years", "BAI 15 years", "BAI 20 years", "BAI since 1980", 
+              "BAI 05 years", "BAI", "Rs 2012", "Rt 2012", "Age", "Rs 2017", 
+              "Hegyi Index", "Height", "Rt 2017", "d.b.h.", "Rt 2022", "SLA") %>% rev()
+
+rr_plot <- ggplot(rr_df2) + 
+  geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
+             size = 2.5, position = position_dodge(width = 0.3)) +
   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
-                     y = fct_reorder(var, response_ratio)), height = 0, size = 1.1) + 
+                     y = fct_reorder(var, response_ratio), col = sp_id), height = 0, size = 1.1, 
+                 position = position_dodge(width = 0.3)) + 
   geom_vline(xintercept = 0, linetype = "dashed", 
              color = "gray35", size = .15) + 
-  scale_y_discrete(labels = varnames) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#746fb2",
+                               "Pinsylv" = "#1b9e77",
+                               "Pinpine" = "#db5f02"),
+                     labels = c("A. alba",
+                               "P. sylvestris",
+                               "P. pinea"),
+                     name = "") +
+  scale_y_discrete(labels = varnames) +
   xlab("log(Response ratio)") + 
   ylab("") + 
   theme_classic() + 
@@ -185,45 +214,46 @@ rr_plot <- ggplot(rr_df) +
         axis.text.y = element_text(size = 16),
         axis.title.x = element_text(size = 16))
 
-tiff("04_figures/04_04_Vuln_response_ratios.tiff", units = "mm", 
+tiff("04_figures/04_04_Vuln_response_ratios_sp.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 rr_plot
 dev.off()
 
-# 10.- Plotting after var. selection ####
-
-# These variables are discarded after making the correlogram, so we avoid 
-# using redundant variables
-
-discarded_vars <- c("bai", "bai20", "bai15", "bai10", "bai05", "dbh")
-rr_df2 <- rr_df %>% 
-  filter(!var %in% discarded_vars)
-
-# 9.- Plotting ####
-
-varnames2 <- c("BAI since 1980", "Hegyi Index", "Height", "Age", "Rt 2012", 
-              "Rs 2017", "Rt 2022", "SLA", "Rs 2012", "Rt 2017") %>% rev()
-
-rr_plot2 <- ggplot(rr_df2) + 
-  geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
-             size = 2.5) +
-  geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
-                     y = fct_reorder(var, response_ratio)), height = 0, size = 1.1) + 
-  geom_vline(xintercept = 0, linetype = "dashed", 
-             color = "gray35", size = .15) + 
-  scale_y_discrete(labels = varnames2) + 
-  xlab("log(Response ratio)") + 
-  ylab("") + 
-  theme_classic() + 
-  theme(panel.grid.major.y = element_line(),
-        panel.grid.minor.y = element_line(),
-        axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
-        axis.title.x = element_text(size = 16))
-
-tiff("04_figures/04_04_Vuln_response_ratios_selection.tiff", units = "mm", 
-     width = 200, height = 200,
-     res = 700, compression = "lzw")
-rr_plot2
-dev.off()
+# # 10.- Plotting after var. selection ####
+# 
+# # These variables are discarded after making the correlogram, so we avoid 
+# # using redundant variables
+# 
+# discarded_vars <- c("bai", "bai20", "bai15", "bai10", "bai05", "dbh")
+# rr_df2 <- rr_df %>% 
+#   filter(!var %in% discarded_vars)
+# 
+# # 9.- Plotting ####
+# 
+# varnames2 <- c("BAI since 1980", "Hegyi Index", "Height", "Age", "Rt 2012", 
+#                "Rs 2017", "Rt 2022", "SLA", "Rs 2012", "Rt 2017") %>% rev()
+# 
+# rr_plot2 <- ggplot(rr_df2) + 
+#   geom_point(aes(y = fct_reorder(var, response_ratio), x = response_ratio), 
+#              size = 2.5, position = position_dodge(width = 0.9)) +
+#   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
+#                      y = fct_reorder(var, response_ratio)), height = 0, size = 1.1, 
+#                  position = position_dodge(width = 0.9)) + 
+#   geom_vline(xintercept = 0, linetype = "dashed", 
+#              color = "gray35", size = .15) + 
+#   # scale_y_discrete(labels = varnames2) + 
+#   xlab("log(Response ratio)") + 
+#   ylab("") + 
+#   theme_classic() + 
+#   theme(panel.grid.major.y = element_line(),
+#         panel.grid.minor.y = element_line(),
+#         axis.text.x = element_text(size = 16),
+#         axis.text.y = element_text(size = 16),
+#         axis.title.x = element_text(size = 16))
+# 
+# tiff("04_figures/04_04_Vuln_response_ratios_selection.tiff", units = "mm", 
+#      width = 200, height = 200,
+#      res = 700, compression = "lzw")
+# rr_plot2
+# dev.off()

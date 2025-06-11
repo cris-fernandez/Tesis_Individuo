@@ -145,7 +145,7 @@ sd_target <- sd_target %>%
 # Now, we can join by var:
 
 rr_df <- full_join(rr_target, sd_target, by = "var")
-colnames(rr_df) <- c("mean_hotspot", "mean_coldspot", "var", "se_hotspot", "se_coldspot")
+colnames(rr_df) <- c("mean_coldspot", "mean_hotspot", "var", "se_coldspot", "se_hotspot")
 
 # 7.- Calculating the log response ratio ####
 

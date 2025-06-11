@@ -61,7 +61,10 @@ clean_target <- clean_target %>%
 
 clean_target$sp_id <- fct_relevel(clean_target$sp_id, "Abialba", "Pinsylv", "Pinpine")
 
-clean_target <- clean_target[!is.na(clean_target$sp_id), ]
+clean_target <- clean_target[!is.na(clean_target$sp_id), ] 
+
+clean_target <- clean_target %>% 
+  filter(sp_id == "Pinsylv")
 
 # 5.- Reading SPEI data ####
 
@@ -76,8 +79,7 @@ spei12 <- spei %>%
 clean_target <- full_join(clean_target, spei12, by = "plot_id")
 
 clean_target <- clean_target %>% 
-  filter(!is.na(sp_id)) %>% 
-  filter(sp_id == "Pinsylv")
+  filter(!is.na(sp_id))
 
 # 6.- Selecting variables ####
 
@@ -133,8 +135,8 @@ clean_target <- full_join(clean_target, model_df, by = "tree_number") %>%
 
 # 10.- Model ####
 
-modelo_vuln <- lmer(mean_def_obs ~ PC1*mean_spei12 + PC2* mean_spei12 + PC3*mean_spei12 + (1 | site/plot_id), 
-                   data = clean_target)
+modelo_vuln <- lmer(mean_def_obs ~ PC1 + PC2 + PC3 + mean_spei12 + (1 | site/plot_id), 
+                    data = clean_target)
 summary(modelo_vuln)
 
 anova(modelo_vuln)
