@@ -69,7 +69,9 @@ clean_target$category <- paste0(clean_target$sp_id, "_", clean_target$spot_statu
 
 # It is necessary to perform a Wilcoxon test to see differences between 
 # groups (species + spot status). Since most of the data might not be normally 
-# distributed, Wilcoxon test is recommended
+# distributed, Wilcoxon test is recommended. The Bonferroni correction could 
+# be made afterwards, but 'pairwise.wilcox.test' already has an argument that
+# allows us to choose the correction method, so it can be done straightforward :)
 
 # Variable selection. We will create two dataframes, one with "vulnerability" 
 # variables, and another one with "response" variables
@@ -88,43 +90,60 @@ resp_df <- clean_target %>%
                   leaf_d13c, leaf_d15n, leaf_d18o,
                   wood_d13c_17, wood_d13c_22))
 
-pairwise.wilcox.test(density_df$mainsp_density, density_df$spot_status)
+vuln_wilcox <- list()
 
-# Inicializamos lista para guardar resultados
-
-phys_vars <- names(vuln_df)[sapply(vuln_df, is.numeric)]
-
-# Inicializamos lista para guardar resultados
-results <- list()
-
-# Loop por especie y variable
-for (sp in unique(vuln_df$sp_id)) {
-  df_sp <- subset(vuln_df, sp_id == sp)
-  
-  for (var in phys_vars) {
-    # Extraer valores por grupo
-    vals_hot <- df_sp[df_sp$spot_status == "hotspot", var, drop = TRUE]
-    vals_cold <- df_sp[df_sp$spot_status == "coldspot", var, drop = TRUE]
-    
-    # Solo si hay datos suficientes
-    if (length(vals_hot) > 2 & length(vals_cold) > 2) {
-      test <- wilcox.test(vals_hot, vals_cold)
-      results[[length(results) + 1]] <- data.frame(
-        sp_id = sp,
-        variable = var,
-        p_value = test$p.value
-      )
-    }
-  }
+for (i in 1:(ncol(vuln_df)-2)) { # Because category and tree_number are not numeric
+ vuln_wilcox[[i]] <- pairwise.wilcox.test(vuln_df[, i+2], vuln_df$category,
+                                          p.adjust.method = "bonferroni")
+ print(i)
 }
 
-# Unir todos los resultados
-results_df <- do.call(rbind, results)
+# Not enough values (too many NAs) for wood isotopes, hence wood variables will 
+# be removed
 
-# Corrección de Bonferroni
-results_df$p_adj <- p.adjust(results_df$p_value, method = "bonferroni")
-results_df$significant <- results_df$p_adj < 0.05
+resp_df <- resp_df %>% 
+  dplyr::select(-c(wood_d13c_17, wood_d13c_22))
 
-# Mostrar solo diferencias significativas
-sig_results <- subset(results_df, significant == TRUE)
-print(sig_results[order(sig_results$p_adj), ])
+resp_wilcox <- list()
+
+for (i in 1:(ncol(resp_df)-2)) { # Because category and tree_number are not numeric
+  resp_wilcox[[i]] <- pairwise.wilcox.test(resp_df[, i+2], resp_df$category,
+                                           p.adjust.method = "bonferroni")
+  print(i)
+} # All good :)
+
+# 6.- Grouping results in a single df ####
+
+# We need to create vectors with the name of the variable analyzed, which 
+# is each name of the original vuln_ and resp_df
+
+vuln_vars <- names(vuln_df)[3:ncol(vuln_df)]
+resp_vars <- names(resp_df)[3:ncol(resp_df)]
+
+# Function to convert p-values matrix to dataframe
+convert_pw_wilcox <- function(result_list, var_names, tipo) {
+  out <- list()
+  
+  for (i in seq_along(result_list)) {
+    pvals <- result_list[[i]]$p.value
+    if (is.null(pvals)) next  # Skip if NA
+    
+    df_long <- as.data.frame(as.table(pvals)) %>%
+      rename(Group1 = Var1, Group2 = Var2, P_value_adjusted = Freq) %>%
+      mutate(Variable = var_names[i], Tipo = tipo)
+    
+    out[[i]] <- df_long
+  }
+  
+  bind_rows(out)
+}
+
+
+vuln_df_long <- convert_pw_wilcox(vuln_wilcox, vuln_vars, "vuln")
+resp_df_long <- convert_pw_wilcox(resp_wilcox, resp_vars, "resp")
+
+# 7.- Exporting ####
+
+write.csv(vuln_df_long, "02_clean_data/06_01_pvals_bonferroni_vuln.csv")
+write.csv(resp_df_long, "02_clean_data/06_01_pvals_bonferroni_resp.csv")
+
