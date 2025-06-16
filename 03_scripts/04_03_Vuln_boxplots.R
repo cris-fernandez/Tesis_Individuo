@@ -184,7 +184,7 @@ box_hegyi <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "A") +
+  labs(tag = "D") +
   ylab("Hegyi index") +
   xlab("") + 
   ylim(0, 75) + 
@@ -377,7 +377,7 @@ box_rs12 <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "E") +
+  labs(tag = "C") +
   ylab(expression(paste("Tree 2012 Resilience"))) + 
   xlab("") + 
   theme_classic() +
@@ -435,21 +435,34 @@ box_rs17 <- ggplot(clean_target) +
 # 7.- Plotting separately ####
 # Charlotte prefers it that way 
 
-tiff("04_figures/04_04_Vuln_size_boxplots.tiff", units = "mm", width = 500, height = 100,
+# tiff("04_figures/04_04_Vuln_size_boxplots.tiff", units = "mm", width = 500, height = 100,
+#      res = 800, compression = "lzw")
+# box_height + box_dbh + box_age + 
+#   guide_area() + plot_layout(guides = 'collect', ncol = 4)
+# dev.off()
+# 
+# tiff("04_figures/04_04_Vuln_traits_boxplots.tiff", units = "mm", width = 400, height = 100,
+#      res = 800, compression = "lzw")
+# box_hegyi + box_sla + 
+#   guide_area() + plot_layout(guides = 'collect', ncol = 4)
+# dev.off()
+# 
+# tiff("04_figures/04_04_Vuln_growth_boxplots.tiff", units = "mm", width = 400, height = 200,
+#      res = 800, compression = "lzw")
+# box_bai80 + box_rt12 +
+# box_rt17 + box_rt22 + box_rs12 + box_rs17 + 
+#   guide_area() + plot_layout(guides = 'collect', ncol = 4)
+# dev.off()
+
+tiff("04_figures/04_04_Vuln_first_boxplots.tiff", units = "mm", width = 400, height = 300,
      res = 800, compression = "lzw")
-box_height + box_dbh + box_age + 
-  guide_area() + plot_layout(guides = 'collect', ncol = 4)
+box_height + box_dbh + guide_area() + 
+  box_age + box_hegyi + plot_layout(guides = 'collect', ncol = 3,
+                                    widths = c(2, 2, .5))
 dev.off()
 
-tiff("04_figures/04_04_Vuln_traits_boxplots.tiff", units = "mm", width = 400, height = 100,
+tiff("04_figures/04_04_Vuln_second_boxplots.tiff", units = "mm", width = 500, height = 300,
      res = 800, compression = "lzw")
-box_hegyi + box_sla + 
-  guide_area() + plot_layout(guides = 'collect', ncol = 4)
-dev.off()
-
-tiff("04_figures/04_04_Vuln_growth_boxplots.tiff", units = "mm", width = 400, height = 200,
-     res = 800, compression = "lzw")
-box_bai80 + box_rt12 +
-box_rt17 + box_rt22 + box_rs12 + box_rs17 + 
-  guide_area() + plot_layout(guides = 'collect', ncol = 4)
+box_bai80 + box_rt12 + box_rs12 + guide_area() + 
+  plot_layout(guides = 'collect', ncol = 4, widths = c(2, 2, 2,.5))
 dev.off()
