@@ -381,7 +381,7 @@ box_rs12 <- ggplot(clean_target) +
   ylab(expression(paste("Tree 2012 Resilience"))) + 
   xlab("") + 
   theme_classic() +
-  theme(legend.position = "none",
+  theme(legend.position = "right",
         legend.key.size = unit(1, "cm"),
         axis.text.y = element_text(size = 9),
         axis.title.y = element_text(size = 15),
@@ -461,7 +461,7 @@ box_height + box_dbh + guide_area() +
                                     widths = c(2, 2, .5))
 dev.off()
 
-tiff("04_figures/04_04_Vuln_second_boxplots.tiff", units = "mm", width = 500, height = 300,
+tiff("04_figures/04_04_Vuln_second_boxplots.tiff", units = "mm", width = 500, height = 150,
      res = 800, compression = "lzw")
 box_bai80 + box_rt12 + box_rs12 + guide_area() + 
   plot_layout(guides = 'collect', ncol = 4, widths = c(2, 2, 2,.5))

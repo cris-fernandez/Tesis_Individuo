@@ -120,7 +120,7 @@ box_sla <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "A") +
+  labs(tag = "C") +
   ylab(expression(paste("Tree average SLA (cm² g"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() +
@@ -152,7 +152,7 @@ box_wc <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "B") +
+  labs(tag = "D") +
   ylab("Leaf water content (%)") +
   xlab("") + 
   theme_classic() +
@@ -184,7 +184,7 @@ box_d13c <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "C") +
+  labs(tag = "E") +
   ylab(bquote("Leaves δ"~C^13~"(‰)")) +
   xlab("") + 
   theme_classic() +
@@ -216,7 +216,7 @@ box_d18o <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "D") +
+  labs(tag = "C") +
   ylab(bquote("Leaves δ"~O^18~"(‰)")) +
   xlab("") + 
   theme_classic() +
@@ -248,7 +248,7 @@ box_n <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "A") +
+  labs(tag = "B") +
   ylab(expression(paste("Leaf N content (%)"))) +
   xlab("") + 
   theme_classic() +
@@ -305,17 +305,23 @@ box_d15n <- ggplot(clean_target) +
 # 7.- Plotting separately ####
 # Charlotte prefers it that way 
 
-tiff("04_figures/04_04_Resp_pigments_boxplots.tiff", units = "mm", width = 150, height = 100,
-     res = 800, compression = "lzw")
-box_chl
-dev.off()
+# tiff("04_figures/04_04_Resp_pigments_boxplots.tiff", units = "mm", width = 150, height = 100,
+#      res = 800, compression = "lzw")
+# box_chl
+# dev.off()
+# 
+# tiff("04_figures/04_04_Resp_wue_boxplots.tiff", units = "mm", width = 400, height = 300,
+#      res = 800, compression = "lzw")
+# box_sla + box_wc  + guide_area() + box_d13c + box_d18o + plot_layout(guides = 'collect', ncol = 3)
+# dev.off()
+# 
+# tiff("04_figures/04_04_Resp_nutrients_boxplots.tiff", units = "mm", width = 400, height = 150,
+#      res = 800, compression = "lzw")
+# box_n + box_d15n + guide_area() + plot_layout(guides = 'collect', ncol = 3)
+# dev.off()
 
-tiff("04_figures/04_04_Resp_wue_boxplots.tiff", units = "mm", width = 400, height = 300,
+tiff("04_figures/04_04_Resp_boxplots.tiff", units = "mm", width = 500, height = 300,
      res = 800, compression = "lzw")
-box_sla + box_wc  + guide_area() + box_d13c + box_d18o + plot_layout(guides = 'collect', ncol = 3)
-dev.off()
-
-tiff("04_figures/04_04_Resp_nutrients_boxplots.tiff", units = "mm", width = 400, height = 150,
-     res = 800, compression = "lzw")
-box_n + box_d15n + guide_area() + plot_layout(guides = 'collect', ncol = 3)
+box_chl + box_n + box_sla + box_wc + box_d13c + guide_area() + 
+  plot_layout(guides = 'collect', ncol = 3)
 dev.off()

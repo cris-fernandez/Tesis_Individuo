@@ -85,7 +85,7 @@ vuln_df <- clean_target %>%
 resp_df <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   dplyr::select(c(category, tree_number, wc_22, ewt_22, sla_22,
-                  chl_fw_22, chlor_a_fw_22, chlor_b_fw_22, chla_chlb_22, 
+                  total_chl_fw_22, chlor_a_fw_22, chlor_b_fw_22, chla_chlb_22, 
                   xc_fw_22, chl_xc_22, percent_c, percent_n, cn_ratio,
                   leaf_d13c, leaf_d15n, leaf_d18o,
                   wood_d13c_17, wood_d13c_22))
@@ -147,3 +147,24 @@ resp_df_long <- convert_pw_wilcox(resp_wilcox, resp_vars, "resp")
 write.csv(vuln_df_long, "02_clean_data/06_01_pvals_bonferroni_vuln.csv")
 write.csv(resp_df_long, "02_clean_data/06_01_pvals_bonferroni_resp.csv")
 
+pairwise.wilcox.test(resp_df$total_chl_fw_22, resp_df$category,
+                     p.adjust.method = "bonferroni")
+
+# ewe <- pairwise.wilcox.test(vuln_df$Rs12, resp_df$category,
+#                      p.adjust.method = "bonferroni")
+# # multcompView::multcompLetters(ewe$p.value)
+# 
+# 
+# pmat <- ewe$p.value
+# 
+# # Crear matriz completa simétrica
+# full_pmat <- pmat
+# full_pmat[upper.tri(full_pmat)] <- t(pmat)[upper.tri(pmat)]
+# full_pmat <- t(full_pmat)
+# 
+# # Poner diagonal a 1 (p-valor de comparar grupo consigo mismo)
+# diag(full_pmat) <- 1
+
+# Ahora sí usar multcompLetters()
+letters <- multcompView::multcompLetters(full_pmat)
+print(letters)
