@@ -100,7 +100,7 @@ sd_soil <- sd_soil %>%
 rr_soil <- rr_soil[-which(rownames(rr_soil) == "spot_status"), ]
 sd_soil <- sd_soil[-which(rownames(sd_soil) == "spot_status"), ]
 
-# 6.- Joining data frames ####
+# 3.- Joining data frames ####
 
 # First, we need to make sure the "var" column matches both dataframes
 
@@ -117,7 +117,7 @@ sd_soil <- sd_soil %>%
 rr_df <- full_join(rr_soil, sd_soil, by = "var")
 colnames(rr_df) <- c("mean_hotspot", "mean_coldspot", "var", "se_hotspot", "se_coldspot")
 
-# 7.- Calculating the log response ratio ####
+# 4.- Calculating the log response ratio ####
 
 # We first need to transform all variables but "var" to numeric
 
@@ -126,7 +126,7 @@ rr_df <- rr_df %>%
 
 rr_df$response_ratio <- abs(log(rr_df$mean_hotspot / rr_df$mean_coldspot))
 
-# 8.- Calculating SE ####
+# 5.- Calculating SE ####
 
 # The SE of a response ratio equales the square root of the sum of squares of 
 # the quotient of SE and the mean of each set (hot and coldspot) 
@@ -134,7 +134,7 @@ rr_df$response_ratio <- abs(log(rr_df$mean_hotspot / rr_df$mean_coldspot))
 rr_df <- rr_df %>% 
   mutate(se_rr = sqrt((se_hotspot / mean_hotspot)^2 + (se_coldspot / mean_coldspot)^2))
 
-# 9.- Plotting`####
+# 6.- Plotting`####
 
 varnames <- c("Ca content (mean)", "P content (sd)", "K content (mean)", 
               "Soil pH (sd)", "Clay proportion (sd)", "Ca content (sd)",
