@@ -2,7 +2,7 @@ rm(list=ls()) #Clearing Gl environment
 
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
-        "FactoMineR", "factoextra", "lme4", "sjPlot", "effects") #list of packages
+        "FactoMineR", "factoextra", "lme4", "sjPlot", "effects", "car") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -79,7 +79,19 @@ clean_target <- clean_target %>%
   filter(!is.na(sp_id)) %>% 
   filter(sp_id == "Pinsylv")
 
-# 6.- Selecting variables ####
+# 6.- Reading Prcp data ####
+
+climate <- read.csv("02_clean_data/02_00_climate_full_data.csv") %>% 
+  dplyr::select(-X) %>% 
+  filter(year > 1979) %>% 
+  group_by(plot_id) %>% 
+  summarise(Prcp = mean(MAP, na.rm = T),
+            Tmax = mean(T_max, na.rm = T),
+            Tmin = mean(T_min, na.rm = T))
+
+clean_target <- full_join(clean_target, climate, by = "plot_id")
+
+# 7.- Selecting variables ####
 
 pca_target <- clean_target %>% 
   dplyr::select(c(tree_number, site, plot_id, mean_def_obs, height, age, hegyi_index, 
@@ -128,14 +140,104 @@ model_df <- cbind(norm_target, components) %>%
   dplyr::select(c(tree_number, PC1, PC2, PC3))
 
 clean_target <- full_join(clean_target, model_df, by = "tree_number") %>% 
-  dplyr::select(c(plot_id, tree_number, site, mean_def_obs, PC1, PC2, PC3, mean_spei12)) %>% 
-  na.omit()
+  dplyr::select(c(plot_id, tree_number, site, mean_def_obs, PC1, PC2, PC3, mean_spei12,
+                  Prcp, Tmax, Tmin, height, age, hegyi_index, 
+                  mean_1980, Rt12, Rt17, Rt22, Rs12, Rs17)) %>% 
+  na.omit() %>%
+  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
+         age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
+         hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
+         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
+         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
+         Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
+         Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
+         Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
+         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T),
+         Prcp_ST = (Prcp - mean(Prcp, na.rm = T)) / sd(Prcp, na.rm = T),
+         Tmax_ST = (Rt22 - mean(Tmax, na.rm = T)) / sd(Tmax, na.rm = T),
+         Tmin_ST = (Prcp - mean(Tmin, na.rm = T)) / sd(Tmin, na.rm = T),
+         SPEI12_ST = (mean_spei12 - mean(mean_spei12, na.rm = T)) / sd(mean_spei12, na.rm = T))
+
+str(clean_target)
 
 # 10.- Model ####
 
-modelo_vuln <- lmer(mean_def_obs ~ PC1*mean_spei12 + PC2* mean_spei12 + PC3*mean_spei12 + (1 | site/plot_id), 
-                   data = clean_target)
+# modelo_vuln <- lmer(mean_def_obs ~ PC1*mean_spei12 + PC2* mean_spei12 + PC3*mean_spei12 + (1 | site/plot_id), 
+#                    data = clean_target)
+# modelo_vuln <- lmer(mean_def_obs ~ PC1 + PC2 + PC3 + mean_spei12 + (1 | site), 
+#                     data = clean_target) Sigue aumentando el REML
+
+# modelo_vuln <- lmer(mean_def_obs ~ PC1*Prcp_ST + 
+#                       PC2* Prcp_ST + PC3*Prcp_ST + (1 | site/plot_id), 
+#                     data = clean_target) Mejor pero pf
+
+# modelo_vuln <- lmer(mean_def_obs ~ PC1 + PC2 + PC3 + Prcp_ST +
+#        height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
+#        Rt12_ST + Rs12_ST + (1 | site), data = clean_target)
+#                     
+# I dont think it makes statistical sense to include PCs and the variables that 
+# make them up...
+
+modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+                    height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
+                    Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + Rt22_ST + 
+                      (1 | site), data = clean_target)
+
 summary(modelo_vuln)
+
+plot(modelo_vuln) 
+
+# There are some assymmetries that should not be there ideally...
+
+# 11.- VIF ####
+
+# Variance inflation factor, it helps us detect multicolinearity problems 
+# among the fixed effects (not the random variables)
+
+lm_vuln <- lm(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+                      height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
+                      Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + Rt22_ST, 
+              data = clean_target)
+vif(lm_vuln)
+alias(lm_vuln) # Rt22 is giving problems
+
+
+lm_vuln <- lm(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+                height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
+                Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST,
+              data = clean_target)
+vif(lm_vuln)
+
+# No major colninarity problems, as everything stays below 3 (some prefer 
+# to use 10 as the value of reference, so even better in that case!)
+
+# 12.- Dredge ####
+
+# Dredge compares models by their REML value, which gives us an idea of 
+# how well their fit is. Smaller REML values imply a better fit, and therefore
+# a more precise model
+
+modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+                      height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
+                      Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + # Now without Rt22 
+                      (1 | site), data = clean_target)
+
+options(na.action = "na.fail") # Crucial for dredge 
+
+dredge_vuln <- dredge(modelo_vuln) 
+
+# Lets see all models with delta < 2
+dredge_vuln <- subset(dredge_vuln, delta < 2)
+
+# Model 1916 is the most parsimonious one, with 2 variables less! 
+
+modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+                      height_ST + age_ST +  bai_1980_ST + 
+                      Rs12_ST + Rt17_ST + Rs17_ST + 
+                      (1 | site/plot_id), data = clean_target)
+summary(modelo_vuln)
+
+# 13.- 
 
 anova(modelo_vuln)
 plot_model(modelo_vuln, type = "pred", terms = c("mean_spei12"))
