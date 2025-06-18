@@ -21,6 +21,7 @@ clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_loca
 clean_target <- clean_target %>% 
   select(-contains("_23"))
 
+
 # 3.- Additional IDs ####
 
 clean_target$pair_id <- ifelse(grepl("NAV|PEL", clean_target$plot_id) == T, "Mad-Pinpine",
