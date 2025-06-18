@@ -61,9 +61,8 @@ mean_precipitation <- full_join(coord_plots, mean_precipitation, by = c("lat", "
 ## 3.5.- Mean annual precipitation per plot ####
 
 mean_ppt <- mean_precipitation %>% 
-  mutate(site = substr(plot_id, start = 1, stop = 3)) %>% 
-  select(c(site, year, MAP)) %>% 
-  group_by(site) %>% 
+  select(c(plot_id, year, MAP)) %>% 
+  group_by(plot_id) %>% 
   summarise(avg_MAP = mean(MAP))
 
 
@@ -127,8 +126,7 @@ climate_data <- full_join(climate_data, mean_tmin, by = c("lat", "lon", "year", 
 # 7.- Means per site ####
 
 climate_data_site <- climate_data %>% 
-  mutate(site = substr(plot_id, start = 1, stop = 3)) %>% 
-  group_by(site) %>% 
+  group_by(plot_id) %>% 
   summarise(Tmin = mean(T_min),
             Tmax = mean(T_max),
             Prcp = mean(MAP))
@@ -136,13 +134,13 @@ climate_data_site <- climate_data %>%
 # 8.- Time series per site ####
 
 climate_data_series <- climate_data %>% 
-  mutate(site = substr(plot_id, start = 1, stop = 3)) %>% 
-  group_by(site, year) %>% 
+  group_by(plot_id, year) %>% 
   summarise(Tmin = mean(T_min),
             Tmax = mean(T_max),
             Prcp = mean(MAP))
 
 # 9.- Exportation ####
 
+write.csv(climate_data, "02_clean_data/02_00_climate_full_data.csv")
 write.csv(climate_data_site, "02_clean_data/02_00_climate_means.csv")
 write.csv(climate_data_series, "02_clean_data/02_00_climate_series.csv")
