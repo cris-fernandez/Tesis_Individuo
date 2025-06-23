@@ -2,7 +2,8 @@ rm(list=ls()) #Clearing Gl environment
 
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
-        "FactoMineR", "factoextra", "lme4", "sjPlot", "effects", "car") #list of packages
+        "FactoMineR", "factoextra", "lme4", "sjPlot", "effects", "car", 
+        "ggeffects", "sjPlot") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -154,8 +155,8 @@ clean_target <- full_join(clean_target, model_df, by = "tree_number") %>%
          Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
          Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T),
          Prcp_ST = (Prcp - mean(Prcp, na.rm = T)) / sd(Prcp, na.rm = T),
-         Tmax_ST = (Rt22 - mean(Tmax, na.rm = T)) / sd(Tmax, na.rm = T),
-         Tmin_ST = (Prcp - mean(Tmin, na.rm = T)) / sd(Tmin, na.rm = T),
+         Tmax_ST = (Tmax - mean(Tmax, na.rm = T)) / sd(Tmax, na.rm = T),
+         Tmin_ST = (Tmax - mean(Tmin, na.rm = T)) / sd(Tmin, na.rm = T),
          SPEI12_ST = (mean_spei12 - mean(mean_spei12, na.rm = T)) / sd(mean_spei12, na.rm = T))
 
 str(clean_target)
@@ -198,13 +199,14 @@ lm_vuln <- lm(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
                       height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
                       Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + Rt22_ST, 
               data = clean_target)
-vif(lm_vuln)
+
+vif(lm_vuln) # Tmax is more highly correlated
 alias(lm_vuln) # Rt22 is giving problems
 
 
-lm_vuln <- lm(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+lm_vuln <- lm(mean_def_obs ~ SPEI12_ST + Prcp_ST +
                 height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
-                Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST,
+                Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + Rt22_ST,
               data = clean_target)
 vif(lm_vuln)
 
@@ -217,10 +219,10 @@ vif(lm_vuln)
 # how well their fit is. Smaller REML values imply a better fit, and therefore
 # a more precise model
 
-modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Prcp_ST + # Now without Tmax 
                       height_ST + age_ST + hegyi_index_ST + bai_1980_ST + 
-                      Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + # Now without Rt22 
-                      (1 | site), data = clean_target)
+                      Rt12_ST + Rs12_ST + Rt17_ST + Rs17_ST + 
+                      Rt22_ST + (1 | site), data = clean_target)
 
 options(na.action = "na.fail") # Crucial for dredge 
 
@@ -231,36 +233,87 @@ dredge_vuln <- subset(dredge_vuln, delta < 2)
 
 # Model 1916 is the most parsimonious one, with 2 variables less! 
 
-modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Tmax_ST + Prcp_ST +
+modelo_vuln <- lmer(mean_def_obs ~ SPEI12_ST + Prcp_ST +
                       height_ST + age_ST +  bai_1980_ST + 
-                      Rs12_ST + Rt17_ST + Rs17_ST + 
+                      Rs12_ST + Rt17_ST + Rs17_ST + Rt22_ST + 
                       (1 | site/plot_id), data = clean_target)
 summary(modelo_vuln)
 
-# 13.- 
+# 13.- Plotting marginal effects ####
 
-anova(modelo_vuln)
-plot_model(modelo_vuln, type = "pred", terms = c("mean_spei12"))
+# These are predictions based only on ONE fixed effect, ignoring (=constant) 
+# the rest of effects
 
-plot(modelo_vuln) # No pattern, I guess
-qqnorm(resid(modelo_vuln))
-qqline(resid(modelo_vuln))
-performance::check_model(modelo_vuln)
+age_effects <- ggpredict(modelo_vuln, terms = "age_ST")
+rt17_effects <- ggpredict(modelo_vuln, terms = "Rt17_ST")
+rs17_effects <- ggpredict(modelo_vuln, terms = "Rs17_ST")
+rs12_effects <- ggpredict(modelo_vuln, terms = "Rs12_ST")
+rt22_effects <- ggpredict(modelo_vuln, terms = "Rt22_ST")
+bai_effects <- ggpredict(modelo_vuln, terms = "bai_1980_ST")
+spei_effects <- ggpredict(modelo_vuln, terms = "SPEI12_ST")
+prcp_effects <- ggpredict(modelo_vuln, terms = "Prcp_ST")
 
-##### 6.1.2.-  Effect plotting #####
+# Plot:
 
-ef_all <- Effect(c("mean_spei12"), modelo_vuln)
-ef_all <- ggplot(as.data.frame(ef_all),
-                 aes(mean_spei12, fit, colour = "red", 
-                     fill = "red")) +
-  geom_line() +
-  ## colour = NA suppresses edges of the ribbon
-  geom_ribbon(colour = NA, alpha = 0.1,
-              aes(ymin = lower, ymax = upper)) +
-  ## add rug plot based on original data
-  geom_rug(data = ef_all$data,aes(y=NULL), sides = "b") +
-  ylab("mean_def_obs") + xlab("") + labs(tag = "(b)") +
-  theme_classic() +
-  theme(legend.position = "none")
+age_effects_plot <- plot(age_effects) + 
+  xlab("Age") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
 
-ef_all
+bai_effects_plot <- plot(bai_effects) + 
+  xlab("Basal Area Increment (BAI)") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+rt17_effects_plot <- plot(rt17_effects) + 
+  xlab("2017 Resistance") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+rs17_effects_plot <- plot(rs17_effects) + 
+  xlab("2017 Resilience") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+rs12_effects_plot <- plot(rs12_effects) + 
+  xlab("2012 Resilience") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+rt22_effects_plot <- plot(rs12_effects) + 
+  xlab("2022 Resistance") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+prcp_effects_plot <- plot(prcp_effects) + 
+  xlab("M.A.P.") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+spei_effects_plot <- plot(spei_effects) + 
+  xlab("SPEI12") + 
+  ylab("Defoliation (%)") + 
+  theme_classic()
+
+# 14.- Conditional effects ####
+# Shows all fixed effect at IC95%
+
+plot_model(modelo_vuln, type = "est", show.values = TRUE, value.offset = .3,
+           title = "Model fixed effects")
+
+# 15.- Random by group ####
+
+plot_model(modelo_vuln, type = "re", sort.est = TRUE,
+           title = "Random effects")
+
+# 16.- Residuals ####
+
+plot_model(modelo_vuln, type = "diag", title = "Diagnóstico de residuos")
+
+# anova(modelo_vuln)
+# plot_model(modelo_vuln, type = "pred", terms = c("mean_spei12"))
+# 
+# plot(modelo_vuln) # No pattern, I guess
+# qqnorm(resid(modelo_vuln))
+# qqline(resid(modelo_vuln))
+# performance::check_model(modelo_vuln)
