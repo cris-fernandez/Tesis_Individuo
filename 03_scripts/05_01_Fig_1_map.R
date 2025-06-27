@@ -164,8 +164,64 @@ final_map <- ggdraw() +
   draw_plot_label(label = "A", x = 0.10, y = 0.9, size = 16) +
   draw_plot_label(label = "B", x = 0.135, y = 0.85, size = 16) 
 
+# 9.- General distribution map ####
 
-# 7.- Exporting ####
+# First I need to generate a shapefile with all countries:
+
+mundo <- world %>% 
+  st_transform(crs = 4326)
+
+# Checking if geometries are all valid:
+
+invalid_pinpine <- st_is_valid(pinpine)
+invalid_pinsylv <- st_is_valid(pinsylv)
+invalid_abialba <- st_is_valid(abialba)
+invalid_mundo <- st_is_valid(mundo) # Observation no. 168 is not valid: Egypt
+
+mundo <- world %>% 
+  filter(!admin == "Egypt")
+
+# Cropping distribution areas
+
+pinpine_world <- st_intersection(pinpine, st_union(mundo))
+pinsylv_world <- st_intersection(pinsylv, st_union(mundo))
+abialba_world <- st_intersection(abialba, st_union(mundo))
+
+# 10.- Plotting map A ####
+
+distrib_world <- ggplot() +
+  geom_sf(data = mundo, fill = "#d3d3d3", alpha = 0.6, col = "black", linewidth = 0.6) +  
+  geom_sf(data = abialba_world, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinsylv_world, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
+  geom_sf(data = pinpine_world, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
+  geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
+  scale_fill_manual(name = "",
+                    values = c("Abies alba" = "#746fb2",
+                               "Pinus sylvestris" = "#1b9e77",
+                               "Pinus pinea" = "#db5f02"),
+                    breaks = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea")) +
+  theme_minimal() +
+  labs(title = "") + 
+  xlab("") + 
+  ylab("") + 
+  theme(legend.position = "bottom") +
+  coord_sf(xlim = c(-15, 145), ylim = c(35, 80), expand = FALSE) +
+  theme(panel.grid = element_line(color = "gray90"),
+        legend.text = element_text(face = 'italic', size = 22),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none",
+        panel.border = element_rect(colour = "black", 
+                                    fill = NA, 
+                                    linewidth = 1),
+        panel.background = element_rect(fill = "#ffffff")) + 
+  ggspatial::annotation_scale(location = "br",
+                              bar_cols = c("black", "white"),
+                              text_family = "sans")
+
+# 9.- Exporting ####
 
 tiff("04_figures/05_01_fig1_map.tiff", units = "mm", width = 250, height = 250,
      res = 800, compression = "lzw")
