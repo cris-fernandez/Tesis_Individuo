@@ -148,8 +148,8 @@ focus_map <- ggplot() +
                               bar_cols = c("black", "white"),
                               text_family = "sans") + 
   ggspatial::annotation_north_arrow(
-    location = "bl", which_north = "true",
-    pad_x = unit(0.1, "mm"), pad_y = unit(0.4, "mm"),
+    location = "tr", which_north = "true",
+    pad_x = unit(0.9, "mm"), pad_y = unit(0.9, "mm"),
     style = ggspatial::north_arrow_fancy_orienteering(
       fill = c("black", "white"),
       line_col = "#565656",
@@ -159,10 +159,9 @@ focus_map <- ggplot() +
 
 final_map <- ggdraw() +
   draw_plot(focus_map) + 
-  draw_plot(distrib_map, x = 0.09, y = 0.60, 
+  draw_plot(distrib_map, x = 0.09, y = 0.56, 
             width = 0.3, height = 0.3) + 
-  draw_plot_label(label = "A", x = 0.10, y = 0.9, size = 16) +
-  draw_plot_label(label = "B", x = 0.135, y = 0.85, size = 16) 
+  draw_plot_label(label = "B", x = 0.09, y = 0.92, size = 30)
 
 # 9.- General distribution map ####
 
@@ -207,11 +206,11 @@ distrib_world <- ggplot() +
   xlab("") + 
   ylab("") + 
   theme(legend.position = "bottom") +
-  coord_sf(xlim = c(-15, 145), ylim = c(35, 80), expand = FALSE) +
+  coord_sf(xlim = c(-15, 65), ylim = c(35, 75), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
         legend.text = element_text(face = 'italic', size = 22),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
+        # axis.text.x = element_blank(),
+        # axis.text.y = element_blank(),
         legend.position = "none",
         panel.border = element_rect(colour = "black", 
                                     fill = NA, 
@@ -219,11 +218,23 @@ distrib_world <- ggplot() +
         panel.background = element_rect(fill = "#ffffff")) + 
   ggspatial::annotation_scale(location = "br",
                               bar_cols = c("black", "white"),
-                              text_family = "sans")
+                              text_family = "sans") + 
+  draw_plot_label(label = "A", x = 0.09, y = 0.8, size = 20) + 
+  ggspatial::annotation_north_arrow(
+    location = "tr", which_north = "true",
+    pad_x = unit(0.1, "mm"), pad_y = unit(0.4, "mm"),
+    style = ggspatial::north_arrow_fancy_orienteering(
+      fill = c("black", "white"),
+      line_col = "#565656",
+      text_family = "sans"))
+
+distrib_world <- ggdraw() + 
+  draw_plot(distrib_world) + 
+  draw_plot_label(label = "A", x = 0.09, y = 0.92, size = 30)
 
 # 9.- Exporting ####
 
-tiff("04_figures/05_01_fig1_map.tiff", units = "mm", width = 250, height = 250,
-     res = 800, compression = "lzw")
-final_map
+tiff("04_figures/05_01_fig1_panels.tiff", units = "mm", width = 250, height = 450,
+     res = 600, compression = "lzw")
+distrib_world/plot_spacer()/final_map + plot_layout(heights = c(5, 0, 5))
 dev.off()
