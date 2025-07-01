@@ -74,7 +74,7 @@ clean_target <- clean_target %>%
                   leaf_d18o, leaf_d15n, wood_d13c_17, wood_d13c_22, sla_22,
                   age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
                   mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, 
-                  tree_number, sp_id)) %>% 
+                  tree_number, sp_id, spot_status)) %>% 
   dplyr::select(sort(names(.)))
 
 # 6.- Data normalization ####
@@ -113,7 +113,8 @@ norm_target <- clean_target %>%
          Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
          Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
 
-norm_target <- norm_target %>% dplyr::select(contains("_ST"))
+norm_target <- norm_target %>% dplyr::select(contains("_ST")) %>% 
+  dplyr::select(-spot_status)
 
 # 7.- Correlations matrix ####
 
@@ -132,47 +133,71 @@ ggcorrplot(correlogram)
 pca_results <- princomp(norm_target)
 summary(pca_results)
 
-# The first two components explain only 39.72% of the data variance!
+# The first two components explain only 39.73% of the data variance!
 
 pca_results$loadings[, 1:2]
 
-pca_df <- cbind(norm_target, pca_results$scores)
+pca_df <- cbind(norm_target, pca_results$scores) # Scores for the points
 pca_df$sp_id <- clean_target$sp_id
+pca_df$spot_status <- clean_target$spot_status
 
-# 9.- Scree plot ####
+# 9.- Biplot ####
 
-scree <- fviz_eig(pca_results, addlabels = T, 
-                  barfill = "black", barcolor = "black")
+# Just to compare whether we are making the biplot correctly or not
 
-tiff("04_figures/04_03_screeplot.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-  scree
-dev.off()
-
-# 10.- Biplot ####
-
-tiff("04_figures/04_03_biplot.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
 fviz_pca_var(pca_results, col.var = "black")
-dev.off()
 
-# 11.- Variable contribution ####
 
-contrib <- fviz_cos2(pca_results, choice = "var", axes = 1:2,
-                     fill = "black", color = "black")
+# 10.- Biplot - manually ####
 
-tiff("04_figures/04_03_contribution_plot.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-contrib
-dev.off()
+loadings_df <- as.data.frame(pca_results$loadings[, 1:2])
+loadings_df$variable <- rownames(loadings_df)
+scale_factor <- 7  # ajusta según visualización
 
-# 12.- EXPERIMENT ####
+loadings_df <- loadings_df %>% 
+  mutate(Comp.1 = scale_factor*Comp.1,
+         Comp.2 = scale_factor*Comp.2)
 
-scale_factor <- 4  # ajusta según visualización
+
 # Biplot con densidad y vectores
+
+dens <- kde2d(
+  x = pca_df$Comp.1,
+  y = pca_df$Comp.2,
+  n = 200  # resolución
+)
+
+dens_df <- as.data.frame(expand.grid(
+  x = dens$x,
+  y = dens$y
+))
+dens_df$z <- as.vector(dens$z)
+
+ggplot() +
+  geom_raster(data = dens_df, aes(x = x, y = y, fill = z), interpolate = TRUE) +
+  scale_fill_gradientn(
+    colours = c(
+      scales::alpha("black", 0),
+      scales::alpha("black", 0.1),
+      scales::alpha("black", 0.2),
+      scales::alpha("black", 0.3),
+      scales::alpha("black", 0.4)
+    ),
+    name = "Densidad"
+  ) +
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = sp_id), alpha = 0.6) +
+  theme_minimal()
+
+
+ggplot(pca_df) + 
+  geom_point(aes(x = Comp.1, y = Comp.2), alpha = 0.5) + 
+  geom_density_2d_filled(aes(x = Comp.1, y = Comp.2), geom = "polygon",
+                         alpha = 0.4) +
+  geom_segment()
+
+
+
+
 ggplot(pca_df, aes(x = Comp.1, y = Comp.2)) +
   stat_density_2d(aes(fill = ..level..), geom = "polygon", color = NA, alpha = 0.6) +
   scale_fill_viridis_c() +
@@ -184,10 +209,11 @@ ggplot(pca_df, aes(x = Comp.1, y = Comp.2)) +
   geom_text(data = pca_df,
             aes(x = Comp.1 * scale_factor * 1.1, y = Comp.2 * scale_factor * 1.1, label = varnames),
             size = 3.5, fontface = "bold") +
-  theme_minimal(base_size = 12) +
+  theme_classic(base_size = 12)
+
++
   coord_equal() +
   labs(title = "PCA biplot con densidad y vectores",
        x = paste0("PC1 (", round(summary(pca_real)$importance[2,1]*100, 1), "%)"),
        y = paste0("PC2 (", round(summary(pca_real)$importance[2,2]*100, 1), "%)")) +
   theme(legend.position = "right")
-
