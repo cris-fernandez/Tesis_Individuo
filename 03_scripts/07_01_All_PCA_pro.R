@@ -150,70 +150,131 @@ fviz_pca_var(pca_results, col.var = "black")
 
 # 10.- Biplot - manually ####
 
-loadings_df <- as.data.frame(pca_results$loadings[, 1:2])
-loadings_df$variable <- rownames(loadings_df)
-scale_factor <- 7  # ajusta según visualización
+## 10.1.- Loadings dataframe
+
+loadings_df <- as.data.frame(pca_results$loadings[, 1:2]) # They are not merged
+# into pca_df as they have different row numbers
+
+loadings_df$variable <- rownames(loadings_df) # So we know what variable is which
+
+## 10.2.- Scale factor ####
+
+# Scale factor is just a constant number used to multiply the length of the vectors 
+# thus allowing us to see them more clearly
+
+scale_factor <- 15 
+
+## 10.3.- Multiplying ####
 
 loadings_df <- loadings_df %>% 
-  mutate(Comp.1 = scale_factor*Comp.1,
-         Comp.2 = scale_factor*Comp.2)
+  mutate(Comp.1 = scale_factor * Comp.1,
+         Comp.2 = scale_factor * Comp.2)
 
+## 10.4.- Density raster ####
 
-# Biplot con densidad y vectores
+# Instead of using the argument stat_density_2d, we will create a raster, as 
+# it allows us to better customize the looks and looks better <3
 
-dens <- kde2d(
-  x = pca_df$Comp.1,
-  y = pca_df$Comp.2,
-  n = 200  # resolución
-)
+# This is performed with kde2d, which does a Two-Dimensional Kernel Density Estimation
 
-dens_df <- as.data.frame(expand.grid(
-  x = dens$x,
-  y = dens$y
-))
+dens <- kde2d(x = pca_df$Comp.1,
+              y = pca_df$Comp.2,
+              n = 200)  # resolution
+
+dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
 dens_df$z <- as.vector(dens$z)
 
-ggplot() +
+## 10.5.- Biplot, all ####
+
+biplot_all <- ggplot() +
   geom_raster(data = dens_df, aes(x = x, y = y, fill = z), interpolate = TRUE) +
-  scale_fill_gradientn(
-    colours = c(
-      scales::alpha("black", 0),
-      scales::alpha("black", 0.1),
-      scales::alpha("black", 0.2),
-      scales::alpha("black", 0.3),
-      scales::alpha("black", 0.4)
-    ),
-    name = "Densidad"
-  ) +
-  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = sp_id), alpha = 0.6) +
-  theme_minimal()
-
-
-ggplot(pca_df) + 
-  geom_point(aes(x = Comp.1, y = Comp.2), alpha = 0.5) + 
-  geom_density_2d_filled(aes(x = Comp.1, y = Comp.2), geom = "polygon",
-                         alpha = 0.4) +
-  geom_segment()
-
-
-
-
-ggplot(pca_df, aes(x = Comp.1, y = Comp.2)) +
-  stat_density_2d(aes(fill = ..level..), geom = "polygon", color = NA, alpha = 0.6) +
-  scale_fill_viridis_c() +
-  geom_point(aes(color = sp_id), size = 1, alpha = 0.3) +
-  geom_segment(data = pca_df,
-               aes(x = 0, y = 0, xend = Comp.1 * scale_factor, yend = Comp.2 * scale_factor),
+  scale_fill_gradientn(colours = c(scales::alpha("black", 0),
+                                   scales::alpha("black", 0.4))) +
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2), color = "black", 
+             alpha = 0.6) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
-  geom_text(data = pca_df,
-            aes(x = Comp.1 * scale_factor * 1.1, y = Comp.2 * scale_factor * 1.1, label = varnames),
-            size = 3.5, fontface = "bold") +
-  theme_classic(base_size = 12)
+  guides(fill = "none") +
+  xlab("PC1 (26.66 %)") + 
+  ylab("PC2 (13.07 %)") + 
+  labs(tag = "A") +
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20),
+        plot.tag = element_text(size = 22),
+        panel.border = element_rect(color = "black", 
+                                    fill = NA, 
+                                    linewidth = 0.5)) + 
+  geom_text(data = loadings_df,
+            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = variable),
+            size = 3.5, fontface = "bold")
 
-+
-  coord_equal() +
-  labs(title = "PCA biplot con densidad y vectores",
-       x = paste0("PC1 (", round(summary(pca_real)$importance[2,1]*100, 1), "%)"),
-       y = paste0("PC2 (", round(summary(pca_real)$importance[2,2]*100, 1), "%)")) +
-  theme(legend.position = "right")
+## 10.6.- Biplot, sp ####
+
+biplot_sp <- ggplot() +
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = sp_id), 
+             alpha = 0.6) +
+  scale_colour_manual(name = "",
+                      values = c("Abialba" = "#746fb2",
+                                 "Pinsylv" = "#1b9e77",
+                                 "Pinpine" = "#db5f02"),
+                      labels = c("Abialba" = "Abies alba",
+                                 "Pinsylv" = "Pinus sylvestris",
+                                 "Pinpine" = "Pinus pinea")) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
+               arrow = arrow(length = unit(0.2, "cm")),
+               color = "black", size = 0.8) +
+  guides(fill = "none") +
+  xlab("PC1 (26.66 %)") + 
+  ylab("PC2 (13.07 %)") + 
+  labs(tag = "B") +
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20),
+        plot.tag = element_text(size = 22),
+        panel.border = element_rect(color = "black", 
+                                    fill = NA, 
+                                    linewidth = 0.5))
+
+## 10.7.- Biplot, status ####
+
+biplot_status <- ggplot() +
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = spot_status), 
+             alpha = 0.6) +
+  scale_colour_manual(name = "",
+                      values = c("hotspot" = "red4",
+                                 "coldspot" = "navy"),
+                      labels = c("hotspot" = "Declining",
+                                 "coldspot" = "Non-declining")) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
+               arrow = arrow(length = unit(0.2, "cm")),
+               color = "black", size = 0.8) +
+  guides(fill = "none") +
+  xlab("PC1 (26.66 %)") + 
+  ylab("PC2 (13.07 %)") + 
+  labs(tag = "C") +
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20),
+        plot.tag = element_text(size = 22),
+        panel.border = element_rect(color = "black", 
+                                    fill = NA, 
+                                    linewidth = 0.5))
+
+biplot_all / (biplot_sp + biplot_status)
