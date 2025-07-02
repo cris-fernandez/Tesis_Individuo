@@ -157,6 +157,15 @@ loadings_df <- as.data.frame(pca_results$loadings[, 1:2]) # They are not merged
 
 loadings_df$variable <- rownames(loadings_df) # So we know what variable is which
 
+# Adding a column with the proper names of the variables to appear on the PCA:
+
+loadings_df$varnames <- c("Defoliation", "Height", "d.b.h.", "Chl.", "Carotenoids",
+                          "Chl. a / b", "Chl. / carotenoids", "Leaves C content",
+                          "Leaves N content", "Leaves C:N ratio", "Leaves δ13C",
+                          "Leaves δ15N", "Leaves δ18O", "SLA", "Age", "Hegyi Index",
+                          "BAI", "BAI 1980", "BAI 20", "BAI 15", "BAI 10", "BAI 05",
+                          "Rt12", "Rs12", "Rt17", "Rs17", "Rt22")
+
 ## 10.2.- Scale factor ####
 
 # Scale factor is just a constant number used to multiply the length of the vectors 
@@ -184,12 +193,30 @@ dens <- kde2d(x = pca_df$Comp.1,
 dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
 dens_df$z <- as.vector(dens$z)
 
-## 10.5.- Biplot, all ####
+
+## 10.5.- Density 50% ####
+
+# To add a dashed contour line marking the space where the 50% of the trees 
+# might appear, we just need to calculate the density at the 50th percentile
+
+z_sorted <- sort(as.vector(dens$z))
+cdf <- cumsum(z_sorted) / sum(z_sorted)
+
+level_50 <- z_sorted[which.min(abs(cdf - 0.5))]
+
+
+## 10.6.- Biplot, all ####
 
 biplot_all <- ggplot() +
   geom_raster(data = dens_df, aes(x = x, y = y, fill = z), interpolate = TRUE) +
   scale_fill_gradientn(colours = c(scales::alpha("black", 0),
                                    scales::alpha("black", 0.4))) +
+  geom_contour(data = dens_df,
+               aes(x = x, y = y, z = z),
+               breaks = level_50,
+               color = "grey40",
+               size = 0.7,
+               linetype = "dashed") + 
   geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2), color = "black", 
              alpha = 0.6) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
@@ -212,14 +239,14 @@ biplot_all <- ggplot() +
                                     fill = NA, 
                                     linewidth = 0.5)) + 
   geom_text(data = loadings_df,
-            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = variable),
+            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
             size = 3.5, fontface = "bold")
 
-## 10.6.- Biplot, sp ####
+## 10.7.- Biplot, sp ####
 
 biplot_sp <- ggplot() +
   geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = sp_id), 
-             alpha = 0.6) +
+             alpha = 1, size = 2.75) +
   scale_colour_manual(name = "",
                       values = c("Abialba" = "#746fb2",
                                  "Pinsylv" = "#1b9e77",
@@ -232,26 +259,28 @@ biplot_sp <- ggplot() +
   geom_segment(data = loadings_df,
                aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
-               color = "black", size = 0.8) +
+               color = "grey50", size = 0.8, alpha = 0.5) +
   guides(fill = "none") +
   xlab("PC1 (26.66 %)") + 
   ylab("PC2 (13.07 %)") + 
   labs(tag = "B") +
   theme_classic() + 
-  theme(axis.text.x = element_text(size = 15),
+  theme(legend.text = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20),
         plot.tag = element_text(size = 22),
         panel.border = element_rect(color = "black", 
                                     fill = NA, 
-                                    linewidth = 0.5))
+                                    linewidth = 0.5),
+        legend.position = c(0.98, 0.02))
 
-## 10.7.- Biplot, status ####
+## 10.8.- Biplot, status ####
 
 biplot_status <- ggplot() +
   geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = spot_status), 
-             alpha = 0.6) +
+             alpha = 1, size = 2.75) +
   scale_colour_manual(name = "",
                       values = c("hotspot" = "red4",
                                  "coldspot" = "navy"),
@@ -262,19 +291,28 @@ biplot_status <- ggplot() +
   geom_segment(data = loadings_df,
                aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
-               color = "black", size = 0.8) +
+               color = "grey50", size = 0.8, alpha = 0.5) +
   guides(fill = "none") +
   xlab("PC1 (26.66 %)") + 
   ylab("PC2 (13.07 %)") + 
   labs(tag = "C") +
   theme_classic() + 
-  theme(axis.text.x = element_text(size = 15),
+  theme(legend.text = element_text(size = 18),
+        axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20),
         plot.tag = element_text(size = 22),
         panel.border = element_rect(color = "black", 
                                     fill = NA, 
-                                    linewidth = 0.5))
+                                    linewidth = 0.5),
+        legend.position = c(0.98, 0.02))
 
-biplot_all / (biplot_sp + biplot_status)
+
+tiff("04_figures/07_01_pca_pro.tiff", units = "mm", 
+     width = 400, height = 400,
+     res = 700, compression = "lzw")
+biplot_all / (biplot_sp + biplot_status) + 
+  plot_layout(guides = 'collect', heights = c(2.5, 1))
+dev.off()
+
