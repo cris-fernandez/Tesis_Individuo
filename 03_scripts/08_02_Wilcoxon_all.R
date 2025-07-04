@@ -71,6 +71,11 @@ clean_target <- clean_target %>%
 
 clean_target$category <- paste0(clean_target$sp_id, "_", clean_target$spot_status)
 
+# Outlayers:
+clean_target <- clean_target %>% 
+  mutate(hegyi_index = ifelse(hegyi_index > 75, NA, hegyi_index),
+         mean_def_obs = ifelse(mean_def_obs > 90, NA, mean_def_obs))
+
 # 5.- Selecting variables ####
 
 clean_target <- clean_target %>% 
@@ -151,3 +156,6 @@ status_pairs <- traits_df_long %>%
          match = ifelse(grupo1 == grupo2, "Yes", "No")) %>% 
   filter(match == "Yes") %>% 
   na.omit()
+status_count <- status_pairs %>% 
+  group_by(Variable) %>% 
+  summarise(significant_difs = sum(significant, na.rm = T))
