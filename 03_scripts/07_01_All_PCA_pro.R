@@ -73,7 +73,7 @@ clean_target <- clean_target %>%
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
                   leaf_d18o, leaf_d15n, wood_d13c_17, wood_d13c_22, sla_22,
                   age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
-                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, 
+                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, wc_22,
                   tree_number, sp_id, spot_status)) %>% 
   dplyr::select(sort(names(.)))
 
@@ -111,7 +111,8 @@ norm_target <- clean_target %>%
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
          Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
          Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
-         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
+         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T),
+         wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
 
 norm_target <- norm_target %>% dplyr::select(contains("_ST")) %>% 
   dplyr::select(-spot_status)
@@ -164,7 +165,7 @@ loadings_df$varnames <- c("Defoliation", "Height", "d.b.h.", "Chl.", "Carotenoid
                           "Leaves N content", "Leaves C:N ratio", "Leaves δ13C",
                           "Leaves δ15N", "Leaves δ18O", "SLA", "Age", "Hegyi Index",
                           "BAI", "BAI 1980", "BAI 20", "BAI 15", "BAI 10", "BAI 05",
-                          "Rt12", "Rs12", "Rt17", "Rs17", "Rt22")
+                          "Rt12", "Rs12", "Rt17", "Rs17", "Rt22", "LWC")
 
 ## 10.2.- Scale factor ####
 
