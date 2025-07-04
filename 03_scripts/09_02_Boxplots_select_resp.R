@@ -255,5 +255,6 @@ box_d15n <- ggplot(clean_target) +
 tiff("04_figures/09_02_select_boxplots_resp.tiff", units = "mm", width = 500, height = 300,
      res = 800, compression = "lzw")
 box_defo + box_wc + box_chl_xc + 
-  box_d13c + box_d15n +  plot_layout(guides = 'collect', ncol = 3)
+  box_d13c + box_d15n +  guide_area() + 
+  plot_layout(guides = 'collect', ncol = 3)
 dev.off()
