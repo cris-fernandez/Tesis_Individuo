@@ -71,13 +71,32 @@ clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
 
+# 5.- Adding climate & SPEI data ####
+
+climate_plot <- read.csv("02_clean_data/02_00_climate_means.csv", 
+                         header = T, sep = ",") %>% dplyr::select(-X)
+spei_plot <- read.csv("02_clean_data/02_00_spei_series.csv", 
+                      header = T, sep = ",") %>% dplyr::select(-X) %>% 
+  group_by(plot_id) %>% 
+  summarise(mean_spei12 = mean(spei12, na.rm = T),
+            mean_spei18 = mean(spei18, na.rm = T),
+            mean_spei24 = mean(spei24, na.rm = T))
+
+
+clean_target <- full_join(clean_target, climate_plot, by = "plot_id")
+clean_target <- full_join(clean_target, spei_plot, by = "plot_id")
+
 # 5.- Selecting variables ####
 
 clean_target <- clean_target %>% 
-  dplyr::select(c(age, height, hegyi_index, Rs12, mean_1980,
-                  mean_def_obs, wc_22, percent_n, leaf_d13c, 
-                  mean_05, total_chl_fw_22, 
-                  tree_number, sp_id, spot_status, vigor_id)) %>% 
+  mutate(cn_ratio = percent_c / percent_n) %>% 
+  rename(mean_bai = mean) %>% 
+  dplyr::select(c(mean_def_obs, height, dbh, total_chl_fw_22, chla_chlb_22,
+                  chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
+                  leaf_d18o, leaf_d15n, sla_22, xc_fw_22,
+                  age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
+                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, wc_22,
+                  tree_number, sp_id, spot_status, Tmax, Prcp, mean_spei12, vigor_id)) %>% 
   dplyr::select(sort(names(.)))
 
 # 6.- Data normalization ####
@@ -89,16 +108,38 @@ clean_target <- na.omit(clean_target)
 
 norm_target <- clean_target %>%
   mutate(defoliation_ST = (mean_def_obs - mean(mean_def_obs, na.rm = T)) / sd(mean_def_obs, na.rm = T),
+         height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
+         dbh_ST = (dbh - mean(dbh, na.rm = T)) / sd(dbh, na.rm = T),
          chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
+         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
+         chl_ab_ST = (chla_chlb_22 - mean(chla_chlb_22, na.rm = T)) / sd(chla_chlb_22, na.rm = T),
+         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
+         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
+         cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
+         # wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
+         # wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
+         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
+         bai_ST = (mean_bai - mean(mean_bai, na.rm = T)) / sd(mean_bai, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
+         bai_20_ST = (mean_20 - mean(mean_20, na.rm = T)) / sd(mean_20, na.rm = T),
+         bai_15_ST = (mean_15 - mean(mean_15, na.rm = T)) / sd(mean_15, na.rm = T),
+         bai_10_ST = (mean_10 - mean(mean_10, na.rm = T)) / sd(mean_10, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
+         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
-         wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
-
+         Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
+         Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
+         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T),
+         wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T),
+         Tmax_ST = (Tmax - mean(Tmax, na.rm = T)) / sd(Tmax, na.rm = T),
+         Prcp_ST = (Prcp - mean(Prcp, na.rm = T)) / sd(Prcp, na.rm = T),
+         spei12_ST = (mean_spei12 - mean(mean_spei12, na.rm = T)) / sd(mean_spei12, na.rm = T))
 
 norm_target <- norm_target %>% dplyr::select(contains("_ST")) %>% 
   dplyr::select(-spot_status)
@@ -142,16 +183,19 @@ loadings_df$variable <- rownames(loadings_df) # So we know what variable is whic
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-loadings_df$varnames <- c("Defoliation", "Chl.", "N content", "Leaves δ13C",
-                          "Age", "Hegyi Index", "BAI 1980", "BAI 05", 
-                          "Rs12", "LWC")
+loadings_df$varnames <- c("Defoliation", "Height", "dbh", 
+                          "Chl.", "Carotenoids", "Chl. a/b", "Chl. / xc", 
+                          "C", "N", "C:N", "δ13C", "δ15N", "δ18O", "SLA", 
+                          "age", "Hegyi", "BAI", "BAI80", "BAI20", "BAI15",
+                          "BAI10", "BAI05", "Rt12", "Rs12", "Rt17", "Rs17",
+                          "Rt22", "LWC", "Tmax", "Prcp", "SPEI12")
 
 ## 10.2.- Scale factor ####
 
 # Scale factor is just a constant number used to multiply the length of the vectors 
 # thus allowing us to see them more clearly
 
-scale_factor <- 7 
+scale_factor <- 20 
 
 ## 10.3.- Multiplying ####
 
@@ -173,7 +217,6 @@ dens <- kde2d(x = pca_df$Comp.1,
 dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
 dens_df$z <- as.vector(dens$z)
 
-
 ## 10.5.- Density 50% ####
 
 # To add a dashed contour line marking the space where the 50% of the trees 
@@ -184,11 +227,10 @@ cdf <- cumsum(z_sorted) / sum(z_sorted)
 
 level_50 <- z_sorted[which.min(abs(cdf - 0.5))]
 
-## 10.5.bis: chatgpt
-# Lista de niveles de vigor_id
+# Assigning each density value to each vigor_id factor:
+
 vigor_levels <- levels(pca_df$vigor_id)
 
-# Función para crear densidad + contorno 50%
 dens_list <- lapply(vigor_levels, function(v) {
   data_sub <- pca_df %>% filter(vigor_id == v)
   dens <- kde2d(x = data_sub$Comp.1, y = data_sub$Comp.2, n = 200)
@@ -205,8 +247,6 @@ dens_list <- lapply(vigor_levels, function(v) {
   list(data = dens_df, level_50 = level_50)
 })
 
-# Unir todas las densidades en un solo dataframe
-dens_df_all <- do.call(rbind, lapply(dens_list, function(x) x$data))
 
 # Crear un dataframe con los niveles de contorno 50% por grupo
 level_50_df <- data.frame(
@@ -215,9 +255,9 @@ level_50_df <- data.frame(
 )
 
 #MASCHATGPT
-vigor_colors <- c("cold_healthy" = "#785EF0",
-                  "hot_healthy" = "#FFB000",
-                  "hot_damaged" = "#DC267F")
+vigor_colors <- c("cold_healthy" = "#2274A5",
+                  "hot_healthy" = "#D71515",
+                  "hot_damaged" = "#650304")
 
 # Aplicar colores con alpha según z
 dens_df_all <- do.call(rbind, lapply(dens_list, function(d) d$data))
@@ -242,13 +282,13 @@ biplot_all <- ggplot() +
   geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = vigor_id), 
              alpha = 0.85) +
   scale_color_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#785EF0",
-                               "hot_healthy" = "#FFB000",
-                               "hot_damaged" = "#DC267F"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
-                    name = "") + 
+                     values = c("cold_healthy" = "#2274A5",
+                                "hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Non-declining",
+                                "D-Healthy",
+                                "D-Damaged"),
+                     name = "") + 
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df,
@@ -256,60 +296,26 @@ biplot_all <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (28.67 %)") + 
-  ylab("PC2 (17.28 %)") + 
+  xlab("PC1 (26.66 %)") + 
+  ylab("PC2 (16.60 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        plot.tag = element_text(size = 22),
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        plot.tag = element_text(size = 28),
         panel.border = element_rect(color = "black", 
                                     fill = NA, 
                                     linewidth = 0.5)) + 
   geom_text(data = loadings_df,
             aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
-            size = 5, fontface = "bold")
+            size = 7, fontface = "bold")
 
+## 10.7.- Plotting ####
 
-tiff("04_figures/15_01_pca_select_all.tiff", units = "mm", 
+tiff("04_figures/15_02_pca_all_vigor.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 biplot_all 
 dev.off()
-
-biplot_all <- ggplot() +
-  geom_tile(data = dens_df_all, aes(x = x, y = y, fill = fill)) +
-  scale_fill_identity() +  # fill ya tiene color con alpha
-  geom_contour(data = dens_df_all,
-               aes(x = x, y = y, z = z, color = vigor_id),
-               breaks = level_50_df$level_50,
-               size = 0.7,
-               linetype = "dashed") +
-  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = vigor_id), 
-             alpha = 0.85) +
-  scale_color_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                     values = vigor_colors,
-                     labels = c("Non-declining", "D-Healthy", "D-Damaged"),
-                     name = "") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_segment(data = loadings_df,
-               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
-               arrow = arrow(length = unit(0.2, "cm")),
-               color = "black", size = 0.8) +
-  geom_text(data = loadings_df,
-            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
-            size = 5, fontface = "bold") +
-  guides(fill = "none") +
-  xlab("PC1 (28.67 %)") + 
-  ylab("PC2 (17.28 %)") + 
-  labs(tag = "A") +
-  theme_classic() + 
-  theme(axis.text.x = element_text(size = 15),
-        axis.text.y = element_text(size = 15),
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        plot.tag = element_text(size = 22),
-        panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5))

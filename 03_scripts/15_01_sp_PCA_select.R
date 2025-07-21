@@ -173,7 +173,6 @@ dens <- kde2d(x = pca_df$Comp.1,
 dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
 dens_df$z <- as.vector(dens$z)
 
-
 ## 10.5.- Density 50% ####
 
 # To add a dashed contour line marking the space where the 50% of the trees 
@@ -184,18 +183,17 @@ cdf <- cumsum(z_sorted) / sum(z_sorted)
 
 level_50 <- z_sorted[which.min(abs(cdf - 0.5))]
 
-## 10.5.bis: chatgpt
-# Lista de niveles de vigor_id
-vigor_levels <- levels(pca_df$vigor_id)
+# Assigning each density value to each vigor_id factor:
 
-# Función para crear densidad + contorno 50%
-dens_list <- lapply(vigor_levels, function(v) {
-  data_sub <- pca_df %>% filter(vigor_id == v)
+sp_levels <- levels(pca_df$sp_id)
+
+dens_list <- lapply(sp_levels, function(v) {
+  data_sub <- pca_df %>% filter(sp_id == v)
   dens <- kde2d(x = data_sub$Comp.1, y = data_sub$Comp.2, n = 200)
   
   dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
   dens_df$z <- as.vector(dens$z)
-  dens_df$vigor_id <- v
+  dens_df$sp_id <- v
   
   # Calcular nivel 50% para este grupo
   z_sorted <- sort(as.vector(dens$z))
@@ -205,28 +203,26 @@ dens_list <- lapply(vigor_levels, function(v) {
   list(data = dens_df, level_50 = level_50)
 })
 
-# Unir todas las densidades en un solo dataframe
-dens_df_all <- do.call(rbind, lapply(dens_list, function(x) x$data))
 
 # Crear un dataframe con los niveles de contorno 50% por grupo
 level_50_df <- data.frame(
-  vigor_id = vigor_levels,
+  sp_id = sp_levels,
   level_50 = sapply(dens_list, function(x) x$level_50)
 )
 
 #MASCHATGPT
-vigor_colors <- c("cold_healthy" = "#785EF0",
-                  "hot_healthy" = "#FFB000",
-                  "hot_damaged" = "#DC267F")
+sp_colors <- c("Abialba" = "#785EF0",
+               "Pinsylv" = "#FFB000",
+               "Pinpine" = "#990000")
 
 # Aplicar colores con alpha según z
 dens_df_all <- do.call(rbind, lapply(dens_list, function(d) d$data))
 
 # Normalizar z por grupo y aplicar alpha
 dens_df_all <- dens_df_all %>%
-  group_by(vigor_id) %>%
+  group_by(sp_id) %>%
   mutate(z_scaled = (z - min(z)) / (max(z) - min(z)),
-         fill = scales::alpha(vigor_colors[vigor_id], z_scaled * 1)) %>%
+         fill = scales::alpha(sp_colors[sp_id], z_scaled * 1)) %>%
   ungroup()
 
 ## 10.6.- Biplot, all ####
@@ -235,20 +231,20 @@ biplot_all <- ggplot() +
   geom_tile(data = dens_df_all, aes(x = x, y = y, fill = z), alpha = 0.5) +
   scale_fill_gradientn(colours = viridis::viridis(10)) +
   geom_contour(data = dens_df_all,
-               aes(x = x, y = y, z = z, color = vigor_id),
+               aes(x = x, y = y, z = z, color = sp_id),
                breaks = level_50,
                size = 0.7,
                linetype = "dashed") + 
-  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = vigor_id), 
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = sp_id), 
              alpha = 0.85) +
-  scale_color_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#785EF0",
-                               "hot_healthy" = "#FFB000",
-                               "hot_damaged" = "#DC267F"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
-                    name = "") + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
+                     name = "") + 
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df,
@@ -262,54 +258,20 @@ biplot_all <- ggplot() +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        plot.tag = element_text(size = 22),
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        plot.tag = element_text(size = 28),
         panel.border = element_rect(color = "black", 
                                     fill = NA, 
                                     linewidth = 0.5)) + 
   geom_text(data = loadings_df,
             aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
-            size = 5, fontface = "bold")
+            size = 7, fontface = "bold")
 
+## 10.7.- Plotting ####
 
-tiff("04_figures/15_01_pca_select_all.tiff", units = "mm", 
+tiff("04_figures/15_01_pca_select_sp.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
 biplot_all 
 dev.off()
-
-biplot_all <- ggplot() +
-  geom_tile(data = dens_df_all, aes(x = x, y = y, fill = fill)) +
-  scale_fill_identity() +  # fill ya tiene color con alpha
-  geom_contour(data = dens_df_all,
-               aes(x = x, y = y, z = z, color = vigor_id),
-               breaks = level_50_df$level_50,
-               size = 0.7,
-               linetype = "dashed") +
-  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = vigor_id), 
-             alpha = 0.85) +
-  scale_color_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                     values = vigor_colors,
-                     labels = c("Non-declining", "D-Healthy", "D-Damaged"),
-                     name = "") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_segment(data = loadings_df,
-               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
-               arrow = arrow(length = unit(0.2, "cm")),
-               color = "black", size = 0.8) +
-  geom_text(data = loadings_df,
-            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
-            size = 5, fontface = "bold") +
-  guides(fill = "none") +
-  xlab("PC1 (28.67 %)") + 
-  ylab("PC2 (17.28 %)") + 
-  labs(tag = "A") +
-  theme_classic() + 
-  theme(axis.text.x = element_text(size = 15),
-        axis.text.y = element_text(size = 15),
-        axis.title.x = element_text(size = 20),
-        axis.title.y = element_text(size = 20),
-        plot.tag = element_text(size = 22),
-        panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5))

@@ -86,7 +86,7 @@ norm_target <- clean_target %>%
   mutate(defoliation_ST = (mean_def_obs - mean(mean_def_obs, na.rm = T)) / sd(mean_def_obs, na.rm = T),
          height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
          dbh_ST = (dbh - mean(dbh, na.rm = T)) / sd(dbh, na.rm = T),
-         chl_ST = (chl_fw_22 - mean(chl_fw_22, na.rm = T)) / sd(chl_fw_22, na.rm = T),
+         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
          xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
          chl_ab_ST = (chla_chlb_22 - mean(chla_chlb_22, na.rm = T)) / sd(chla_chlb_22, na.rm = T),
          chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
