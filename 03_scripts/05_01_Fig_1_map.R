@@ -86,9 +86,9 @@ distrib_map <- ggplot() +
   geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
   geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
   scale_fill_manual(name = "",
-                    values = c("Abies alba" = "#746fb2",
-                               "Pinus sylvestris" = "#1b9e77",
-                               "Pinus pinea" = "#db5f02"),
+                    values = c("Abies alba" = "#785EF0",
+                               "Pinus sylvestris" = "#FFB000",
+                               "Pinus pinea" = "#990000"),
                     breaks = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea")) +
@@ -126,12 +126,12 @@ focus_map <- ggplot() +
   geom_point(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
              col = "black", shape = 22, size = 5, stroke = 1.35) +
   scale_fill_manual(name = "",
-                    values = c("Abies alba" = "#746fb2",
-                               "Pinus sylvestris" = "#1b9e77",
-                               "Pinus pinea" = "#db5f02",
-                               "Abiesalba" = "#746fb2",
-                               "Pinussylvestris" = "#1b9e77",
-                               "Pinuspinea" = "#db5f02"),
+                    values = c("Abies alba" = "#785EF0",
+                               "Pinus sylvestris" = "#FFB000",
+                               "Pinus pinea" = "#990000",
+                               "Abiesalba" = "#785EF0",
+                               "Pinussylvestris" = "#FFB000",
+                               "Pinuspinea" = "#990000"),
                     breaks = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea")) +
@@ -195,9 +195,9 @@ distrib_world <- ggplot() +
   geom_sf(data = pinpine_world, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
   geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
   scale_fill_manual(name = "",
-                    values = c("Abies alba" = "#746fb2",
-                               "Pinus sylvestris" = "#1b9e77",
-                               "Pinus pinea" = "#db5f02"),
+                    values = c("Abies alba" = "#785EF0",
+                               "Pinus sylvestris" = "#FFB000",
+                               "Pinus pinea" = "#990000"),
                     breaks = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea")) +

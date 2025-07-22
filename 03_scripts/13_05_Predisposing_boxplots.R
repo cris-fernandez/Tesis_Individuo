@@ -275,5 +275,5 @@ rs12_box <- ggplot(clean_target3) +
 
 tiff("04_figures/13_05_Predisposing_boxplots.tiff", units = "mm", width = 300, height = 650,
      res = 400, compression = "lzw")
-tmax_box / prcp_box / age_box / hegyi_box / bai_box / rs12_box 
+tmax_box / prcp_box / hegyi_box / age_box / bai_box / rs12_box 
 dev.off()
