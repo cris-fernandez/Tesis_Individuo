@@ -105,8 +105,7 @@ vars_df <- clean_target %>%
 vars_wilcox <- list()
 
 for (i in 1:(ncol(vars_df)-2)) { # Because vigor_id and tree_number are not numeric
-  vars_wilcox[[i]] <- pairwise.wilcox.test(vars_df[, i+2], vars_df$category,
-                                           p.adjust.method = "bonferroni")
+  vars_wilcox[[i]] <- pairwise.wilcox.test(vars_df[, i+2], vars_df$category)
   print(i)
 }
 
@@ -152,8 +151,8 @@ sig_mean <- vars_df_long %>%
 
 # Now just comparing pairs of hot vs. coldspot per species:
 status_pairs <- vars_df_long %>% 
-  mutate(grupo1 = gsub("_hot_healthy|_hot_damaged", "", Group1),
-         grupo2 = gsub("_hot_healthy|_hot_damaged", "", Group2),
+  mutate(grupo1 = gsub("_cold_healthy|_hot_healthy", "", Group1),
+         grupo2 = gsub("_cold_healthy|_hot_healthy", "", Group2),
          match = ifelse(grupo1 == grupo2, "Yes", "No")) %>% 
   filter(match == "Yes") %>% 
   na.omit()
@@ -164,4 +163,4 @@ status_count <- status_pairs %>%
 
 # 8.- Exporting ####
 
-write.csv(status_pairs, "02_clean_data/12_02_pvals_bonferroni_sp.csv")
+write.csv(status_pairs, "02_clean_data/12_03_pvals_wilcoxon_sp.csv")
