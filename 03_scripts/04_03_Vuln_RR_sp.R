@@ -13,14 +13,14 @@ getwd()
 # 1.- Reading target data ####
 
 clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
-                         header = T, sep = ",") %>% select(-X) %>% 
+                         header = T, sep = ",") %>% dplyr::select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
 
 clean_target <- clean_target %>% 
-  select(-contains("_23"))
+  dplyr::select(-contains("_23"))
 
 # 3.- Additional IDs ####
 
@@ -68,7 +68,7 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 # for the calculation of the response ratio 
 
 rr_target <- clean_target %>% 
-  group_by(spot_status, sp_id) %>% 
+  group_by(spot_status, vigor_id) %>% 
   summarise(mean_height = mean(height, na.rm = T),
             mean_dbh = mean(dbh, na.rm = T),
             mean_sla = mean(sla_22, na.rm = T),
@@ -76,20 +76,15 @@ rr_target <- clean_target %>%
             mean_hegyi = mean(hegyi_index, na.rm = T),
             mean_bai = mean(mean, na.rm = T),
             mean_bai80 = mean(mean_1980, na.rm = T),
-            mean_bai20 = mean(mean_20, na.rm = T),
-            mean_bai15 = mean(mean_15, na.rm = T),
-            mean_bai10 = mean(mean_10, na.rm = T),
-            mean_bai05 = mean(mean_05, na.rm = T),
             mean_rt12 = mean(Rt12, na.rm = T),
             mean_rt17 = mean(Rt17, na.rm = T),
-            mean_rt22 = mean(Rt22, na.rm = T),
             mean_rs12 = mean(Rs12, na.rm = T),
             mean_rs17 = mean(Rs17, na.rm = T))
 
 # The standard deviations per group for the calculation of SE later:
 
 sd_target <- clean_target %>% 
-  group_by(spot_status, sp_id) %>% 
+  group_by(spot_status, vigor_id) %>% 
   summarise(se_height = sd(height, na.rm = T) / sqrt(n()),
             se_dbh = sd(dbh, na.rm = T) / sqrt(n()),
             se_sla = sd(sla_22, na.rm = T) / sqrt(n()),
@@ -97,13 +92,8 @@ sd_target <- clean_target %>%
             se_hegyi = sd(hegyi_index, na.rm = T) / sqrt(n()),
             se_bai = sd(mean, na.rm = T) / sqrt(n()),
             se_bai80 = sd(mean_1980, na.rm = T) / sqrt(n()),
-            se_bai20 = sd(mean_20, na.rm = T) / sqrt(n()),
-            se_bai15 = sd(mean_15, na.rm = T) / sqrt(n()),
-            se_bai10 = sd(mean_10, na.rm = T) / sqrt(n()),
-            se_bai05 = sd(mean_05, na.rm = T) / sqrt(n()),
             se_rt12 = sd(Rt12, na.rm = T) / sqrt(n()),
             se_rt17 = sd(Rt17, na.rm = T) / sqrt(n()),
-            se_rt22 = sd(Rt22, na.rm = T) / sqrt(n()),
             se_rs12 = sd(Rs12, na.rm = T) / sqrt(n()),
             se_rs17 = sd(Rs17, na.rm = T) / sqrt(n()))
 
@@ -182,9 +172,9 @@ rr_df2 <- full_join(rr_df2, rr_psy, by = "var")
 
 # 10.- Plotting ####
 
-varnames <- c("BAI 10 years", "BAI 15 years", "BAI 20 years", "BAI since 1980", 
+varnames <- c("BAI since 1980", 
               "BAI 05 years", "BAI", "Rs 2012", "Rt 2012", "Age", "Rs 2017", 
-              "Hegyi Index", "Height", "Rt 2017", "d.b.h.", "Rt 2022", "SLA") %>% rev()
+              "Hegyi Index", "Height", "Rt 2017", "d.b.h.", "SLA") %>% rev()
 
 rr_plot <- ggplot(rr_df2) + 
   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
@@ -195,9 +185,9 @@ rr_plot <- ggplot(rr_df2) +
   geom_vline(xintercept = 0, linetype = "dashed", 
              color = "gray35", size = .15) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                     values = c("Abialba" = "#746fb2",
-                               "Pinsylv" = "#1b9e77",
-                               "Pinpine" = "#db5f02"),
+                     values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
                      labels = c("A. alba",
                                "P. sylvestris",
                                "P. pinea"),

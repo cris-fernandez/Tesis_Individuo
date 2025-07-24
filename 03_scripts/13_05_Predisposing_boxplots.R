@@ -94,15 +94,13 @@ clean_target3$sp_id <- factor(clean_target3$sp_id, levels = new_levels)
 ## 7.1.- Tmax  ####
 
 tmax_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = Tmax, fill = vigor_id),
+  geom_boxplot(aes(x = sp_id, y = Tmax, fill = spot_status),
                outlier.size = 0.9, outlier.alpha = 0.2) + 
-  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#2274A5",
-                               "hot_healthy" = "#D71515",
-                               "hot_damaged" = "#650304"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
+  scale_fill_manual(breaks = c("coldspot", "hotspot"),
+                    values = c("coldspot" = "#2274A5",
+                               "hotspot" = "#D71515"),
+                    labels = c("Non-declining site",
+                               "Declining site"),
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
@@ -124,15 +122,13 @@ tmax_box <- ggplot(clean_target3) +
 ## 7.2.- Prcp  ####
 
 prcp_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = Prcp, fill = vigor_id),
+  geom_boxplot(aes(x = sp_id, y = Prcp, fill = spot_status),
                outlier.size = 0.9, outlier.alpha = 0.2) + 
-  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#2274A5",
-                               "hot_healthy" = "#D71515",
-                               "hot_damaged" = "#650304"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
+  scale_fill_manual(breaks = c("coldspot", "hotspot"),
+                    values = c("coldspot" = "#2274A5",
+                               "hotspot" = "#D71515"),
+                    labels = c("Non-declining site",
+                               "Declining site"),
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
@@ -257,20 +253,24 @@ rs12_box <- ggplot(clean_target3) +
                                "D-Damaged"),
                     name = "") +
   scale_x_discrete(drop = FALSE, 
-                   expand = expansion(mult = c(0.2, 0.2))) + 
+                   expand = expansion(mult = c(0.2, 0.2)),
+                   labels=c("all" = "All", 
+                            "Abialba" = "A. alba",
+                            "Pinsylv" = "P. sylv.",
+                            "Pinpine" = "P. pinea")) +
   labs(tag = "F") +
   ylab("Rs12") + 
   xlab("") + 
   theme_classic() +
-  theme(legend.position = "botom",
-        legend.key.size = unit(1, "cm"),  
+  theme(legend.position = "bottom",
+        legend.key.size = unit(2, "cm"),  
         axis.title.x = element_blank(),
         axis.text.x = element_text(size = 30),
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
         axis.title.y = element_text(size = 30),
-        legend.text = element_text(size = 12),
+        legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
 tiff("04_figures/13_05_Predisposing_boxplots.tiff", units = "mm", width = 300, height = 650,

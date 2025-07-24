@@ -234,17 +234,60 @@ rr_psy <- rr_df2 %>%
 rr_df3 <- full_join(rr_df2, rr_psy, by = "var") %>% 
   filter()
 
-# 9.- Plotting`####
+# 9.- Plotting 
+# varnames <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
+#                        "BAI since 1980", "BAI", "Hegyi Index", "Chlorophylls content", 
+#                        "Leaf δ15N", "Rs 2012", "Rt 2012", "Age", "SLA", "N content", 
+#                        "Chl / carotenoids", "Carotenoids content", "Leaf C:N", "d.b.h.", 
+#                        "Chl a / Chl b", "Rt 2022", "Rt 2017", "Leaf δ18O",  "Leaf δ13C", 
+#                        "Height", "Rs 2017", "C content", "Wood δ13C 2017", 
+#                        "Wood δ13C 2022") %>% rev()
+# 
+# rr_plot <- ggplot(rr_df3) + 
+#   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
+#              size = 2.5, position = position_dodge(width = 0.3)) +
+#   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
+#                      y = fct_reorder(var, response_ratio), col = sp_id), height = 0, size = 1.1, 
+#                  position = position_dodge(width = 0.3)) + 
+#   geom_vline(xintercept = 0, linetype = "dashed", 
+#              color = "gray35", size = .15) + 
+#   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+#                      values = c("Abialba" = "#746fb2",
+#                                 "Pinsylv" = "#1b9e77",
+#                                 "Pinpine" = "#db5f02"),
+#                      labels = c("A. alba",
+#                                 "P. sylvestris",
+#                                 "P. pinea"),
+#                      name = "") +
+#   scale_y_discrete(labels = varnames) +
+#   xlab("log(Response ratio)") + 
+#   ylab("") + 
+#   theme_classic() + 
+#   theme(panel.grid.major.y = element_line(),
+#         panel.grid.minor.y = element_line(),
+#         axis.text.x = element_text(size = 16),
+#         axis.text.y = element_text(size = 16),
+#         axis.title.x = element_text(size = 16))
+# 
+# tiff("04_figures/14_02_ranked_response_ratios_sp.tiff", units = "mm", 
+#      width = 200, height = 300,
+#      res = 700, compression = "lzw")
+# rr_plot
+# dev.off()
 
-varnames <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
-              "BAI since 1980", "BAI", "Hegyi Index", "Chlorophylls content", 
-              "Leaf δ15N", "Rs 2012", "Rt 2012", "Age", "SLA", "N content", 
-              "Chl / carotenoids", "Carotenoids content", "Leaf C:N", "d.b.h.", 
-              "Chl a / Chl b", "Rt 2022", "Rt 2017", "Leaf δ18O",  "Leaf δ13C", 
-              "Height", "Rs 2017", "C content", "Wood δ13C 2017", 
-              "Wood δ13C 2022") %>% rev()
+# 10.- Plotting predisposing ####
 
-rr_plot <- ggplot(rr_df3) + 
+predisposing_vars <- c("bai80", "bai", "hegyi", "rs12", 
+                        "rt12", "age", "sla", "dbh", 
+                        "rt17", "height", "rs17")
+
+predisposing_df3 <- rr_df3 %>% filter(var %in% predisposing_vars)
+
+predisposing_names <- c("BAI since 1980", "BAI", "Hegyi Index", "Rs 2012", 
+                       "Rt 2012", "Age", "SLA", "d.b.h.", 
+                       "Rt 2017", "Height", "Rs 2017") %>% rev()
+
+predisposing_rr_plot <- ggplot(predisposing_df3) + 
   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
              size = 2.5, position = position_dodge(width = 0.3)) +
   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
@@ -253,14 +296,14 @@ rr_plot <- ggplot(rr_df3) +
   geom_vline(xintercept = 0, linetype = "dashed", 
              color = "gray35", size = .15) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-                     values = c("Abialba" = "#746fb2",
-                                "Pinsylv" = "#1b9e77",
-                                "Pinpine" = "#db5f02"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
                      labels = c("A. alba",
                                 "P. sylvestris",
                                 "P. pinea"),
                      name = "") +
-  scale_y_discrete(labels = varnames) +
+  scale_y_discrete(labels = predisposing_names) +
   xlab("log(Response ratio)") + 
   ylab("") + 
   theme_classic() + 
@@ -270,8 +313,50 @@ rr_plot <- ggplot(rr_df3) +
         axis.text.y = element_text(size = 16),
         axis.title.x = element_text(size = 16))
 
-tiff("04_figures/14_02_ranked_response_ratios_sp.tiff", units = "mm", 
+tiff("04_figures/14_03_ranked_rr_predisposing.tiff", units = "mm", 
      width = 200, height = 300,
      res = 700, compression = "lzw")
-rr_plot
+predisposing_rr_plot
+dev.off()
+
+# 11.- Plotting responses ####
+
+response_df3 <- rr_df3 %>% filter(!var %in% predisposing_vars[!predisposing_vars == "sla"])
+
+response_names <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
+                   "Chlorophylls content", "Leaf δ15N", "SLA", "N content", 
+                   "Chl / carotenoids", "Carotenoids content", "Leaf C:N",
+                   "Chl a / Chl b", "Rt 2022", "Leaf δ18O",  "Leaf δ13C", 
+                   "C content", "Wood δ13C 2017", "Wood δ13C 2022") %>% rev()
+
+response_rr_plot <- ggplot(response_df3) + 
+  geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
+             size = 2.5, position = position_dodge(width = 0.3)) +
+  geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
+                     y = fct_reorder(var, response_ratio), col = sp_id), height = 0, size = 1.1, 
+                 position = position_dodge(width = 0.3)) + 
+  geom_vline(xintercept = 0, linetype = "dashed", 
+             color = "gray35", size = .15) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("A. alba",
+                                "P. sylvestris",
+                                "P. pinea"),
+                     name = "") +
+  scale_y_discrete(labels = response_names) +
+  xlab("log(Response ratio)") + 
+  ylab("") + 
+  theme_classic() + 
+  theme(panel.grid.major.y = element_line(),
+        panel.grid.minor.y = element_line(),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title.x = element_text(size = 16))
+
+tiff("04_figures/14_03_ranked_rr_response.tiff", units = "mm", 
+     width = 200, height = 300,
+     res = 700, compression = "lzw")
+response_rr_plot
 dev.off()

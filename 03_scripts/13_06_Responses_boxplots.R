@@ -278,20 +278,24 @@ bai_box <- ggplot(clean_target3) +
                                "D-Damaged"),
                     name = "") +
   scale_x_discrete(drop = FALSE, 
-                   expand = expansion(mult = c(0.2, 0.2))) + 
+                   expand = expansion(mult = c(0.2, 0.2)),
+                   labels=c("all" = "All", 
+                            "Abialba" = "A. alba",
+                            "Pinsylv" = "P. sylv.",
+                            "Pinpine" = "P. pinea")) + 
   labs(tag = "G") +
   ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() +
-  theme(legend.position = "botom",
-        legend.key.size = unit(1, "cm"),  
+  theme(legend.position = "bottom",
+        legend.key.size = unit(2, "cm"),  
         axis.title.x = element_blank(),
         axis.text.x = element_text(size = 30),
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
         axis.title.y = element_text(size = 30),
-        legend.text = element_text(size = 12),
+        legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
 tiff("04_figures/13_06_Responses_boxplots.tiff", units = "mm", width = 300, height = 700,

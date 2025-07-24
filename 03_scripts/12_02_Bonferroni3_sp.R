@@ -75,7 +75,7 @@ clean_target2 <- clean_target %>%
 clean_target <- rbind(clean_target, clean_target2)
 clean_target$sp_id <- as.factor(clean_target$sp_id)
 clean_target <- clean_target %>%
-  mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
+  mutate(sp_id = fct_relevel(sp_id, "all", "Abialba", "Pinsylv", "Pinpine"),
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
 
 clean_target$category <- paste0(clean_target$sp_id, "_", clean_target$vigor_id)
