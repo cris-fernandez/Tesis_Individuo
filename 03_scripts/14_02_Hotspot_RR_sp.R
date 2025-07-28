@@ -242,52 +242,17 @@ rr_df3 <- full_join(rr_df2, rr_psy, by = "var") %>%
 #                        "Chl a / Chl b", "Rt 2022", "Rt 2017", "Leaf δ18O",  "Leaf δ13C", 
 #                        "Height", "Rs 2017", "C content", "Wood δ13C 2017", 
 #                        "Wood δ13C 2022") %>% rev()
-# 
-# rr_plot <- ggplot(rr_df3) + 
-#   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
-#              size = 2.5, position = position_dodge(width = 0.3)) +
-#   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
-#                      y = fct_reorder(var, response_ratio), col = sp_id), height = 0, size = 1.1, 
-#                  position = position_dodge(width = 0.3)) + 
-#   geom_vline(xintercept = 0, linetype = "dashed", 
-#              color = "gray35", size = .15) + 
-#   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
-#                      values = c("Abialba" = "#746fb2",
-#                                 "Pinsylv" = "#1b9e77",
-#                                 "Pinpine" = "#db5f02"),
-#                      labels = c("A. alba",
-#                                 "P. sylvestris",
-#                                 "P. pinea"),
-#                      name = "") +
-#   scale_y_discrete(labels = varnames) +
-#   xlab("log(Response ratio)") + 
-#   ylab("") + 
-#   theme_classic() + 
-#   theme(panel.grid.major.y = element_line(),
-#         panel.grid.minor.y = element_line(),
-#         axis.text.x = element_text(size = 16),
-#         axis.text.y = element_text(size = 16),
-#         axis.title.x = element_text(size = 16))
-# 
-# tiff("04_figures/14_02_ranked_response_ratios_sp.tiff", units = "mm", 
-#      width = 200, height = 300,
-#      res = 700, compression = "lzw")
-# rr_plot
-# dev.off()
 
-# 10.- Plotting predisposing ####
+# 10.- Plotting morphological responses ####
 
-predisposing_vars <- c("bai80", "bai", "hegyi", "rs12", 
-                        "rt12", "age", "sla", "dbh", 
-                        "rt17", "height", "rs17")
+morfo_vars <- c("height", "dbh", "c", "n", "cn", "sla", "age", "hegyi")
 
-predisposing_df3 <- rr_df3 %>% filter(var %in% predisposing_vars)
+morfo_df3 <- rr_df3 %>% filter(var %in% morfo_vars)
 
-predisposing_names <- c("BAI since 1980", "BAI", "Hegyi Index", "Rs 2012", 
-                       "Rt 2012", "Age", "SLA", "d.b.h.", 
-                       "Rt 2017", "Height", "Rs 2017") %>% rev()
+morfo_names <- c("Hegyi Index", "Age", "SLA", "N content", "Leaf C:N", 
+                 "d.b.h.", "Height", "C content") %>% rev()
 
-predisposing_rr_plot <- ggplot(predisposing_df3) + 
+morfo_rr_plot <- ggplot(morfo_df3) + 
   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
              size = 2.5, position = position_dodge(width = 0.3)) +
   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
@@ -303,33 +268,39 @@ predisposing_rr_plot <- ggplot(predisposing_df3) +
                                 "P. sylvestris",
                                 "P. pinea"),
                      name = "") +
-  scale_y_discrete(labels = predisposing_names) +
+  scale_y_discrete(labels = morfo_names) +
   xlab("log(Response ratio)") + 
   ylab("") + 
+  labs(tag = "A") +
   theme_classic() + 
   theme(panel.grid.major.y = element_line(),
         panel.grid.minor.y = element_line(),
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
-        axis.title.x = element_text(size = 16))
+        axis.title.x = element_text(size = 16),
+        plot.tag = element_text(size = 25),
+        legend.position = "right",
+        legend.key.size = unit(1, "cm"),
+        legend.text = element_text(size = 20))
 
-tiff("04_figures/14_03_ranked_rr_predisposing.tiff", units = "mm", 
-     width = 200, height = 300,
+tiff("04_figures/17_03_ranked_rr_morpho.tiff", units = "mm", 
+     width = 200, height = 200,
      res = 700, compression = "lzw")
-predisposing_rr_plot
+morfo_rr_plot
 dev.off()
 
-# 11.- Plotting responses ####
+# 11.- Plotting physiological responses ####
 
-response_df3 <- rr_df3 %>% filter(!var %in% predisposing_vars[!predisposing_vars == "sla"])
+physio_vars <- c("chl", "xc", "chlab", "chlxc", "d13c", "d15n", "d18o", 
+                "d13c_17", "d13c_22")
 
-response_names <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
-                   "Chlorophylls content", "Leaf δ15N", "SLA", "N content", 
-                   "Chl / carotenoids", "Carotenoids content", "Leaf C:N",
-                   "Chl a / Chl b", "Rt 2022", "Leaf δ18O",  "Leaf δ13C", 
-                   "C content", "Wood δ13C 2017", "Wood δ13C 2022") %>% rev()
+physio_df3 <- rr_df3 %>% filter(var %in% physio_vars)
 
-response_rr_plot <- ggplot(response_df3) + 
+physio_names <- c("Chlorophylls content", "Leaf δ15N", "Chl / carotenoids", 
+                  "Carotenoids content", "Chl a / Chl b", "Leaf δ18O", 
+                  "Leaf δ13C", "Wood δ13C 2017","Wood δ13C 2022") %>% rev()
+
+physio_rr_plot <- ggplot(physio_df3) + 
   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
              size = 2.5, position = position_dodge(width = 0.3)) +
   geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
@@ -345,18 +316,80 @@ response_rr_plot <- ggplot(response_df3) +
                                 "P. sylvestris",
                                 "P. pinea"),
                      name = "") +
-  scale_y_discrete(labels = response_names) +
+  scale_y_discrete(labels = physio_names) +
   xlab("log(Response ratio)") + 
   ylab("") + 
+  labs(tag = "B") +
   theme_classic() + 
   theme(panel.grid.major.y = element_line(),
         panel.grid.minor.y = element_line(),
         axis.text.x = element_text(size = 16),
         axis.text.y = element_text(size = 16),
-        axis.title.x = element_text(size = 16))
+        axis.title.x = element_text(size = 16),
+        plot.tag = element_text(size = 25),
+        legend.position = "right",
+        legend.key.size = unit(1, "cm"),
+        legend.text = element_text(size = 20))
 
-tiff("04_figures/14_03_ranked_rr_response.tiff", units = "mm", 
-     width = 200, height = 300,
+tiff("04_figures/17_03_ranked_rr_physio.tiff", units = "mm", 
+     width = 200, height = 200,
      res = 700, compression = "lzw")
-response_rr_plot
+physio_rr_plot
+dev.off()
+
+# 12.- Plotting whole-plant responses ####
+
+whole_vars <- c("bai", "bai80", "bai20", "bai15", "bai10", "bai05", "rt12", 
+                 "rt17", "rt22", "rs12", "rs17")
+
+whole_df3 <- rr_df3 %>% filter(var %in% whole_vars)
+
+whole_names <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
+                 "BAI since 1980", "BAI", "Rs 2012", "Rt 2012", "Rt 2022", 
+                 "Rt 2017", "Rs 2017") %>% rev()
+
+whole_rr_plot <- ggplot(whole_df3) + 
+  geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
+             size = 2.5, position = position_dodge(width = 0.3)) +
+  geom_errorbarh(aes(xmax = response_ratio + se_rr, xmin = response_ratio - se_rr, 
+                     y = fct_reorder(var, response_ratio), col = sp_id), height = 0, size = 1.1, 
+                 position = position_dodge(width = 0.3)) + 
+  geom_vline(xintercept = 0, linetype = "dashed", 
+             color = "gray35", size = .15) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("A. alba",
+                                "P. sylvestris",
+                                "P. pinea"),
+                     name = "") +
+  scale_y_discrete(labels = whole_names) +
+  xlab("log(Response ratio)") + 
+  ylab("") + 
+  labs(tag = "C") +
+  theme_classic() + 
+  theme(panel.grid.major.y = element_line(),
+        panel.grid.minor.y = element_line(),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16),
+        axis.title.x = element_text(size = 16),
+        plot.tag = element_text(size = 25),
+        legend.position = "right",
+        legend.key.size = unit(1, "cm"),
+        legend.text = element_text(size = 20))
+
+tiff("04_figures/17_03_ranked_rr_whole.tiff", units = "mm", 
+     width = 200, height = 200,
+     res = 700, compression = "lzw")
+whole_rr_plot
+dev.off()
+
+# 13.- All together ####
+
+tiff("04_figures/17_04_ranked_rr_panels.tiff", units = "mm", 
+     width = 700, height = 200,
+     res = 700, compression = "lzw")
+morfo_rr_plot + physio_rr_plot + whole_rr_plot + guide_area() + 
+  plot_layout(guides = 'collect', ncol = 4, widths = c(3, 3, 3, 1))
 dev.off()

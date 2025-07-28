@@ -148,7 +148,7 @@ for (i in 1:(ncol(pp_target)-3)) { # Because vigor_id and tree_number are not nu
 # We need to create vectors with the name of the variable analyzed, which 
 # is each name of the original vuln_ and resp_df
 
-names_vars <- names(all_target)[3:ncol(all_target)] # They should all remain constant
+names_vars <- names(all_target)[4:ncol(all_target)] # They should all remain constant
 
 # Function to convert p-values matrix to dataframe
 convert_pw_wilcox <- function(result_list, var_names, tipo) {
@@ -185,3 +185,11 @@ pp_df_long$significant <- ifelse(pp_df_long$P_value_adjusted < 0.05, 1, 0)
 
 # 8.- Exporting ####
 # write.csv(status_pairs, "02_clean_data/12_02_pvals_bonferroni_sp.csv")
+# 
+# 
+# # Prueba !!
+# 
+# hh <- clean_target %>% filter(vigor_id == "hot_healthy")
+# hd <- clean_target %>% filter(vigor_id == "hot_damaged")
+# 
+# pairwise.wilcox.test(hh, hd)
