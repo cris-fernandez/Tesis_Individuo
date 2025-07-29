@@ -70,11 +70,13 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
+clean_target <- clean_target %>% filter(mean_def_obs < 100)
+
 # 5.- Plotting function ####
 ## 5.1.- Colour scales ####
 
-spot_colors <- c("coldspot" = "#2274A5", "hotspot" = "#D71515")
-spot_labels <- c("Non-declining site", "Declining site")
+spot_colors <- c("cold_healthy" = "#2274A5", "hot_healthy" = "#D71515", hot_damaged = "#650304")
+spot_labels <- c("Non-declining", "D-Healthy", "D-Damaged")
 
 ## 5.2.- Reusable scales ####
 
@@ -92,8 +94,8 @@ spot_scale <- list(
 ## 5.3.- Function ####
 make_scatter_plot <- function(data, yvar, ylab_txt = " ", tag = " ", show_y = FALSE, show_x = FALSE, ylim_vals = NULL) {
   ggplot(data) +
-    geom_point(aes(x = mean_def_obs, y = .data[[yvar]], col = spot_status), alpha = 0.25, size = 1.3) +
-    geom_smooth(aes(x = mean_def_obs, y = .data[[yvar]], col = spot_status, fill = spot_status),
+    geom_point(aes(x = mean_def_obs, y = .data[[yvar]], col = vigor_id), alpha = 0.25, size = 1.3) +
+    geom_smooth(aes(x = mean_def_obs, y = .data[[yvar]], col = vigor_id, fill = vigor_id),
                 method = "lm", se = TRUE, size = 1, alpha = 0.2) +
     labs(tag = tag, y = ylab_txt, x = if (show_x) "Defoliation (%)" else "") +
     (if (!is.null(ylim_vals)) ylim(ylim_vals[1], ylim_vals[2]) else NULL) +
@@ -105,7 +107,6 @@ make_scatter_plot <- function(data, yvar, ylab_txt = " ", tag = " ", show_y = FA
           axis.ticks.x = element_line(colour = "black"),
           axis.line.x  = element_line(colour = "black"))
 }
-
 
 # 6.- Scatterplots ####
 ## 6.1.- Height ####
@@ -124,7 +125,7 @@ h_pp <- h_pp + ggtitle("P. pinea") + theme(plot.title = element_text(size = 30, 
 ## 6.2.- DBH ####
 
 dbh_all <- make_scatter_plot(clean_target, yvar = "dbh", ylab_txt = "d.b.h. (cm)", 
-                           tag = "B", show_y = TRUE)
+                             tag = "B", show_y = TRUE)
 dbh_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "dbh")
 dbh_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "dbh")
 dbh_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "dbh")
@@ -132,7 +133,7 @@ dbh_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "d
 ## 6.3.- C ####
 
 c_all <- make_scatter_plot(clean_target, yvar = "percent_c", ylab_txt = "C content (%)", 
-                             tag = "C", show_y = TRUE)
+                           tag = "C", show_y = TRUE)
 c_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "percent_c")
 c_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "percent_c")
 c_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "percent_c")
@@ -148,7 +149,7 @@ n_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "per
 ## 6.5.- C:N ####
 
 cn_all <- make_scatter_plot(clean_target, yvar = "cn", ylab_txt = "C:N ratio", 
-                           tag = "E", show_y = TRUE)
+                            tag = "E", show_y = TRUE)
 cn_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "cn")
 cn_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "cn")
 cn_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "cn")
@@ -156,7 +157,7 @@ cn_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "cn
 ## 6.6.- SLA  ####
 
 sla_all <- make_scatter_plot(clean_target, yvar = "sla_22", ylab_txt = "SLA", 
-                            tag = "F", show_y = TRUE)
+                             tag = "F", show_y = TRUE)
 sla_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "sla_22")
 sla_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "sla_22")
 sla_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "sla_22")
@@ -222,7 +223,7 @@ hegyi_all_select <- hegyi_all + labs(tag = "E") +
 
 # 8.- Plotting ####
 
-tiff("04_figures/18_01_All_morpho2_scatterplots.tiff", units = "mm", width = 400, height = 700,
+tiff("04_figures/18_01_All_morpho3_scatterplots.tiff", units = "mm", width = 400, height = 700,
      res = 400, compression = "lzw")
 h_all + plot_spacer() + h_aa + h_ps + h_pp + 
   dbh_all + plot_spacer() + dbh_aa + dbh_ps + dbh_pp + 
@@ -236,7 +237,7 @@ h_all + plot_spacer() + h_aa + h_ps + h_pp +
   plot_layout(ncol = 5, widths = c(3, 1, 3, 3, 3), guides = "collect")
 dev.off()
 
-tiff("04_figures/18_01_Select_morpho2_scatterplots.tiff", units = "mm", width = 400, height = 500,
+tiff("04_figures/18_01_Select_morpho3_scatterplots.tiff", units = "mm", width = 400, height = 500,
      res = 400, compression = "lzw")
 h_all + plot_spacer() + h_aa + h_ps + h_pp + 
   n_all_select + plot_spacer() + n_aa + n_ps + n_pp + 

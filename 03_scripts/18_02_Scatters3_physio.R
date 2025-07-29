@@ -70,11 +70,13 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
+clean_target <- clean_target %>% filter(mean_def_obs < 100)
+
 # 5.- Plotting function ####
 ## 5.1.- Colour scales ####
 
-spot_colors <- c("coldspot" = "#2274A5", "hotspot" = "#D71515")
-spot_labels <- c("Non-declining site", "Declining site")
+spot_colors <- c("cold_healthy" = "#2274A5", "hot_healthy" = "#D71515", hot_damaged = "#650304")
+spot_labels <- c("Non-declining", "D-Healthy", "D-Damaged")
 
 ## 5.2.- Reusable scales ####
 
@@ -92,8 +94,8 @@ spot_scale <- list(
 ## 5.3.- Function ####
 make_scatter_plot <- function(data, yvar, ylab_txt = " ", tag = " ", show_y = FALSE, show_x = FALSE, ylim_vals = NULL) {
   ggplot(data) +
-    geom_point(aes(x = mean_def_obs, y = .data[[yvar]], col = spot_status), alpha = 0.25, size = 1.3) +
-    geom_smooth(aes(x = mean_def_obs, y = .data[[yvar]], col = spot_status, fill = spot_status),
+    geom_point(aes(x = mean_def_obs, y = .data[[yvar]], col = vigor_id), alpha = 0.25, size = 1.3) +
+    geom_smooth(aes(x = mean_def_obs, y = .data[[yvar]], col = vigor_id, fill = vigor_id),
                 method = "lm", se = TRUE, size = 1, alpha = 0.2) +
     labs(tag = tag, y = ylab_txt, x = if (show_x) "Defoliation (%)" else "") +
     (if (!is.null(ylim_vals)) ylim(ylim_vals[1], ylim_vals[2]) else NULL) +
@@ -106,81 +108,77 @@ make_scatter_plot <- function(data, yvar, ylab_txt = " ", tag = " ", show_y = FA
           axis.line.x  = element_line(colour = "black"))
 }
 
-
 # 6.- Scatterplots ####
-## 6.1.- Height ####
+## 6.1.- LWC ####
 
-h_all <- make_scatter_plot(clean_target, yvar = "height", ylab_txt = "Height (m)", 
-                           tag = "A", show_y = TRUE)
-h_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "height")
-h_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "height")
-h_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "height")
+wc_all <- make_scatter_plot(clean_target, yvar = "wc_22", ylab_txt = "LWC (%)", 
+                            tag = "A", show_y = TRUE)
+wc_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "wc_22")
+wc_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "wc_22")
+wc_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "wc_22")
 
-h_all <- h_all + ggtitle("All") + theme(plot.title = element_text(size = 30))
-h_aa <- h_aa + ggtitle("A. alba") + theme(plot.title = element_text(size = 30, face = "italic"))
-h_ps <- h_ps + ggtitle("P. sylv.") + theme(plot.title = element_text(size = 30, face = "italic"))
-h_pp <- h_pp + ggtitle("P. pinea") + theme(plot.title = element_text(size = 30, face = "italic"))
+wc_all <- wc_all + ggtitle("All") + theme(plot.title = element_text(size = 30))
+wc_aa <- wc_aa + ggtitle("A. alba") + theme(plot.title = element_text(size = 30, face = "italic"))
+wc_ps <- wc_ps + ggtitle("P. sylv.") + theme(plot.title = element_text(size = 30, face = "italic"))
+wc_pp <- wc_pp + ggtitle("P. pinea") + theme(plot.title = element_text(size = 30, face = "italic"))
 
-## 6.2.- DBH ####
+## 6.2.- Chl. ####
 
-dbh_all <- make_scatter_plot(clean_target, yvar = "dbh", ylab_txt = "d.b.h. (cm)", 
-                           tag = "B", show_y = TRUE)
-dbh_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "dbh")
-dbh_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "dbh")
-dbh_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "dbh")
+chl_all <- make_scatter_plot(clean_target, yvar = "total_chl_fw_22", ylab_txt = expression(paste("Chl. (μg g"^"-1", ")")), 
+                             tag = "B", show_y = TRUE)
+chl_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "total_chl_fw_22")
+chl_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "total_chl_fw_22")
+chl_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "total_chl_fw_22")
 
-## 6.3.- C ####
+## 6.3.- Chl. a/b ####
 
-c_all <- make_scatter_plot(clean_target, yvar = "percent_c", ylab_txt = "C content (%)", 
-                             tag = "C", show_y = TRUE)
-c_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "percent_c")
-c_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "percent_c")
-c_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "percent_c")
+chlab_all <- make_scatter_plot(clean_target, yvar = "chla_chlb_22", ylab_txt = "Chl. a/b", 
+                               tag = "C", show_y = TRUE)
+chlab_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "chla_chlb_22")
+chlab_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "chla_chlb_22")
+chlab_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "chla_chlb_22")
 
-## 6.4.- N ####
+## 6.4.- Carotenoids ####
 
-n_all <- make_scatter_plot(clean_target, yvar = "percent_n", ylab_txt = "N content (%)", 
-                           tag = "D", show_y = TRUE)
-n_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "percent_n")
-n_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "percent_n")
-n_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "percent_n")
+xc_all <- make_scatter_plot(clean_target, yvar = "xc_fw_22", ylab_txt = expression(paste("Caroten. (μg g"^"-1", ")")), 
+                            tag = "D", show_y = TRUE)
+xc_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "xc_fw_22")
+xc_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "xc_fw_22")
+xc_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "xc_fw_22")
 
-## 6.5.- C:N ####
+## 6.5.- Chl. / carotenoids ####
 
-cn_all <- make_scatter_plot(clean_target, yvar = "cn", ylab_txt = "C:N ratio", 
-                           tag = "E", show_y = TRUE)
-cn_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "cn")
-cn_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "cn")
-cn_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "cn")
+chlxc_all <- make_scatter_plot(clean_target, yvar = "chl_xc_22", ylab_txt = "Chl. / car.", 
+                               tag = "E", show_y = TRUE)
+chlxc_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "chl_xc_22")
+chlxc_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "chl_xc_22")
+chlxc_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "chl_xc_22")
 
-## 6.6.- SLA  ####
+## 6.6.- d13C  ####
 
-sla_all <- make_scatter_plot(clean_target, yvar = "sla_22", ylab_txt = "SLA", 
-                            tag = "F", show_y = TRUE)
-sla_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "sla_22")
-sla_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "sla_22")
-sla_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "sla_22")
+d13c_all <- make_scatter_plot(clean_target, yvar = "leaf_d13c", ylab_txt = bquote("δ"~C^13~"(‰)"), 
+                              tag = "F", show_y = TRUE)
+d13c_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "leaf_d13c")
+d13c_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "leaf_d13c")
+d13c_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "leaf_d13c")
 
-## 6.7.- Age ####
+## 6.7.- d15N ####
 
-age_all <- make_scatter_plot(clean_target, yvar = "age", ylab_txt = "Age (years)",
-                             tag = "G", show_y = TRUE)
-age_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "age")
-age_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "age")
-age_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "age")
+d15n_all <- make_scatter_plot(clean_target, yvar = "leaf_d15n", ylab_txt = bquote("δ"~N^15~"(‰)"), 
+                              tag = "F", show_y = TRUE)
+d15n_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "leaf_d15n")
+d15n_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "leaf_d15n")
+d15n_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "leaf_d15n")
 
-## 6.8.- Hegyi Index  ####
+## 6.8.- d18O ####
 
-hegyi_all <- make_scatter_plot(clean_target, yvar = "hegyi_index", ylab_txt = "Hegyi Index", 
-                               tag = "H", show_y = TRUE, show_x = TRUE)
-hegyi_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "hegyi_index",
-                               show_x = TRUE)
-hegyi_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "hegyi_index", 
-                               show_x = TRUE)
-hegyi_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "hegyi_index", 
-                               show_x = TRUE)
+d18o_all <- make_scatter_plot(clean_target, yvar = "leaf_d18o", ylab_txt = bquote("δ"~O^18~"(‰)"), 
+                              tag = "F", show_y = TRUE)
+d18o_aa  <- make_scatter_plot(filter(clean_target, sp_id == "Abialba"),  yvar = "leaf_d18o")
+d18o_ps  <- make_scatter_plot(filter(clean_target, sp_id == "Pinsylv"), yvar = "leaf_d18o")
+d18o_pp  <- make_scatter_plot(filter(clean_target, sp_id == "Pinpine"), yvar = "leaf_d18o")
 
-hegyi_all <- hegyi_all + 
+d18o_all <- d18o_all + 
   theme(legend.position = "bottom",
         legend.direction = "horizontal",
         legend.box = "vertical",
@@ -191,25 +189,17 @@ hegyi_all <- hegyi_all +
         legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
-# 7.- Select morpho ####
-## 7.1.- Height ####
+# 7.- Select physio ####
+## 7.1.- LWC ####
 # No need to change it :)
 
-## 7.2.- N ####
+## 7.2.- Chl. ####
 
-n_all_select <- n_all + labs(tag = "B")
+chl_all_select <- chl_all + labs(tag = "B")
 
-## 7.3.- SLA ####
+## 7.3.- d13C ####
 
-sla_all_select <- sla_all + labs(tag = "C")
-
-## 7.4.- Age ####
-
-age_all_select <- age_all + labs(tag = "D")
-
-## 7.5.- Hegyi Index ####
-
-hegyi_all_select <- hegyi_all + labs(tag = "E") +
+d13c_all_select <- d13c_all + labs(tag = "C") +
   theme(legend.position = "bottom",
         legend.direction = "horizontal",
         legend.box = "vertical",
@@ -222,27 +212,25 @@ hegyi_all_select <- hegyi_all + labs(tag = "E") +
 
 # 8.- Plotting ####
 
-tiff("04_figures/18_01_All_morpho2_scatterplots.tiff", units = "mm", width = 400, height = 700,
+tiff("04_figures/18_02_All_physio3_scatterplots.tiff", units = "mm", width = 400, height = 700,
      res = 400, compression = "lzw")
-h_all + plot_spacer() + h_aa + h_ps + h_pp + 
-  dbh_all + plot_spacer() + dbh_aa + dbh_ps + dbh_pp + 
-  c_all + plot_spacer() + c_aa + c_ps + c_pp + 
-  n_all + plot_spacer() + n_aa + n_ps + n_pp + 
-  cn_all + plot_spacer() + cn_aa + cn_ps + cn_pp + 
-  sla_all + plot_spacer() + sla_aa + sla_ps + sla_pp + 
-  age_all + plot_spacer() + age_aa + age_ps + age_pp + 
-  hegyi_all + plot_spacer() + hegyi_aa + hegyi_ps + hegyi_pp + 
+wc_all + plot_spacer() + wc_aa + wc_ps + wc_pp + 
+  chl_all + plot_spacer() + chl_aa + chl_ps + chl_pp + 
+  chlab_all + plot_spacer() + chlab_aa + chlab_ps + chlab_pp + 
+  xc_all + plot_spacer() + xc_aa + xc_ps + xc_pp + 
+  chlxc_all + plot_spacer() + chlxc_aa + chlxc_ps + chlxc_pp + 
+  d13c_all + plot_spacer() + d13c_aa + d13c_ps + d13c_pp + 
+  d15n_all + plot_spacer() + d15n_aa + d15n_ps + d15n_pp + 
+  d18o_all + plot_spacer() + d18o_aa + d18o_ps + d18o_pp + 
   guide_area() + 
   plot_layout(ncol = 5, widths = c(3, 1, 3, 3, 3), guides = "collect")
 dev.off()
 
-tiff("04_figures/18_01_Select_morpho2_scatterplots.tiff", units = "mm", width = 400, height = 500,
+tiff("04_figures/18_02_Select_physio3_scatterplots.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
-h_all + plot_spacer() + h_aa + h_ps + h_pp + 
-  n_all_select + plot_spacer() + n_aa + n_ps + n_pp + 
-  sla_all_select + plot_spacer() + sla_aa + sla_ps + sla_pp + 
-  age_all_select + plot_spacer() + age_aa + age_ps + age_pp + 
-  hegyi_all_select + plot_spacer() + hegyi_aa + hegyi_ps + hegyi_pp + 
+wc_all + plot_spacer() + wc_aa + wc_ps + wc_pp + 
+  chl_all_select + plot_spacer() + chl_aa + chl_ps + chl_pp + 
+  d13c_all_select + plot_spacer() + d13c_aa + d13c_ps + d13c_pp + 
   guide_area() + 
   plot_layout(ncol = 5, widths = c(3, 1, 3, 3, 3), guides = "collect")
 dev.off()
