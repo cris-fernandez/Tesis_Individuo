@@ -69,7 +69,8 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
-         vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
+         vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"),
+         spot_status = fct_relevel(spot_status, "coldspot", "hotspot"))
 
 
 # 5.- Selecting variables ####
@@ -77,12 +78,9 @@ clean_target <- clean_target %>%
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, dbh, total_chl_fw_22, chla_chlb_22,
-                  chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, leaf_d15n, sla_22, xc_fw_22,
-                  age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
-                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, wc_22,
-                  tree_number, sp_id, spot_status)) %>% 
+  dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, 
+                  sla_22, age, hegyi_index, mean_1980, mean_05, Rs12, wc_22,
+                  tree_number, sp_id, spot_status, vigor_id)) %>% 
   dplyr::select(sort(names(.)))
 
 # 6.- Data normalization ####
@@ -94,33 +92,15 @@ clean_target <- na.omit(clean_target)
 
 norm_target <- clean_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         dbh_ST = (dbh - mean(dbh, na.rm = T)) / sd(dbh, na.rm = T),
          chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
-         chl_ab_ST = (chla_chlb_22 - mean(chla_chlb_22, na.rm = T)) / sd(chla_chlb_22, na.rm = T),
-         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
-         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
-         cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
-         leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
-         # wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
-         # wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
-         bai_ST = (mean_bai - mean(mean_bai, na.rm = T)) / sd(mean_bai, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
-         bai_20_ST = (mean_20 - mean(mean_20, na.rm = T)) / sd(mean_20, na.rm = T),
-         bai_15_ST = (mean_15 - mean(mean_15, na.rm = T)) / sd(mean_15, na.rm = T),
-         bai_10_ST = (mean_10 - mean(mean_10, na.rm = T)) / sd(mean_10, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
-         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
-         Rt17_ST = (Rt17 - mean(Rt17, na.rm = T)) / sd(Rt17, na.rm = T),
-         Rs17_ST = (Rs17 - mean(Rs17, na.rm = T)) / sd(Rs17, na.rm = T),
-         Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T),
          wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
 
 norm_target <- norm_target %>% dplyr::select(contains("_ST")) %>% 
@@ -154,9 +134,9 @@ pca_df$vigor_id <- clean_target$vigor_id
 fviz_pca_var(pca_results, col.var = "black")
 
 
-# 10.- Biplot - manually ####
+# 10.- Biplot - sp ####
 
-## 10.1.- Loadings dataframe
+## 10.1.- Loadings dataframe ####
 
 loadings_df <- as.data.frame(pca_results$loadings[, 1:2]) # They are not merged
 # into pca_df as they have different row numbers
@@ -165,12 +145,8 @@ loadings_df$variable <- rownames(loadings_df) # So we know what variable is whic
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-loadings_df$varnames <- c("Height", "dbh", 
-                          "Chl.", "Carotenoids", "Chl. a/b", "Chl. / xc", 
-                          "C", "N", "C:N", "δ13C", "δ15N", "δ18O", "SLA", 
-                          "Age", "Hegyi", "BAI", "BAI80", "BAI20", "BAI15",
-                          "BAI10", "BAI05", "Rt12", "Rs12", "Rt17", "Rs17",
-                          "Rt22", "LWC")
+loadings_df$varnames <- c("Height", "Chl.", "N", "δ13C", "SLA", "Age", 
+                          "Hegyi", "BAI80", "BAI05", "Rs12", "LWC")
 
 ## 10.2.- Scale factor ####
 
@@ -207,7 +183,7 @@ dens_df$z <- as.vector(dens$z)
 z_sorted <- sort(as.vector(dens$z))
 cdf <- cumsum(z_sorted) / sum(z_sorted)
 
-level_50 <- z_sorted[which.min(abs(cdf - 0.5))]
+level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
 
 # Assigning each density value to each vigor_id factor:
 
@@ -224,7 +200,7 @@ dens_list <- lapply(sp_levels, function(v) {
   # Calcular nivel 50% para este grupo
   z_sorted <- sort(as.vector(dens$z))
   cdf <- cumsum(z_sorted) / sum(z_sorted)
-  level_50 <- z_sorted[which.min(abs(cdf - 0.5))]
+  level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
   
   list(data = dens_df, level_50 = level_50)
 })
@@ -251,7 +227,7 @@ dens_df_all <- dens_df_all %>%
          fill = scales::alpha(sp_colors[sp_id], z_scaled * 1)) %>%
   ungroup()
 
-## 10.6.- Biplot, all ####
+## 10.6.- Biplot, sp ####
 
 biplot_sp <- ggplot() +
   geom_tile(data = dens_df_all, aes(x = x, y = y, fill = z), alpha = 0.5) +
@@ -278,8 +254,8 @@ biplot_sp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (27.59 %)") + 
-  ylab("PC2 (14.43 %)") + 
+  xlab("PC1 (30.74 %)") + 
+  ylab("PC2 (15.06 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -298,10 +274,235 @@ biplot_sp <- ggplot() +
             aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
             size = 6, fontface = "bold")
 
-## 10.7.- Plotting ####
+# 10.- Biplot - status ####
+## 10.1.- Density raster ####
 
-tiff("04_figures/15_02_PCA_All_sp.tiff", units = "mm", 
-     width = 300, height = 300,
-     res = 700, compression = "lzw")
-biplot_sp 
+# Instead of using the argument stat_density_2d, we will create a raster, as 
+# it allows us to better customize the looks and looks better <3
+
+# This is performed with kde2d, which does a Two-Dimensional Kernel Density Estimation
+
+dens <- kde2d(x = pca_df$Comp.1,
+              y = pca_df$Comp.2,
+              n = 200)  # resolution
+
+dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
+dens_df$z <- as.vector(dens$z)
+
+## 10.2.- Density 50% ####
+
+# To add a dashed contour line marking the space where the 50% of the trees 
+# might appear, we just need to calculate the density at the 50th percentile
+
+z_sorted <- sort(as.vector(dens$z))
+cdf <- cumsum(z_sorted) / sum(z_sorted)
+
+level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
+
+# Assigning each density value to each spot_status factor:
+
+status_levels <- levels(pca_df$spot_status)
+
+dens_list <- lapply(status_levels, function(v) {
+  data_sub <- pca_df %>% filter(spot_status == v)
+  dens <- kde2d(x = data_sub$Comp.1, y = data_sub$Comp.2, n = 200)
+  
+  dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
+  dens_df$z <- as.vector(dens$z)
+  dens_df$spot_status <- v
+  
+  # Calcular nivel 50% para este grupo
+  z_sorted <- sort(as.vector(dens$z))
+  cdf <- cumsum(z_sorted) / sum(z_sorted)
+  level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
+  
+  list(data = dens_df, level_50 = level_50)
+})
+
+
+# Crear un dataframe con los niveles de contorno 50% por grupo
+level_50_df <- data.frame(
+  spot_status = status_levels,
+  level_50 = sapply(dens_list, function(x) x$level_50)
+)
+
+#MASCHATGPT
+sp_colors <- c("coldspot" = "#2274A5",
+               "hotspot" = "#D71515")
+
+# Aplicar colores con alpha según z
+dens_df_all <- do.call(rbind, lapply(dens_list, function(d) d$data))
+
+# Normalizar z por grupo y aplicar alpha
+dens_df_all <- dens_df_all %>%
+  group_by(spot_status) %>%
+  mutate(z_scaled = (z - min(z)) / (max(z) - min(z)),
+         fill = scales::alpha(sp_colors[spot_status], z_scaled * 1)) %>%
+  ungroup()
+
+## 10.3.- Biplot, status ####
+
+biplot_status <- ggplot() +
+  geom_tile(data = dens_df_all, aes(x = x, y = y, fill = z), alpha = 0.5) +
+  scale_fill_gradientn(colours = viridis::viridis(10)) +
+  geom_contour(data = dens_df_all,
+               aes(x = x, y = y, z = z, color = spot_status),
+               breaks = level_50,
+               size = 0.7,
+               linetype = "dashed") + 
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = spot_status), 
+             alpha = 0.85) +
+  scale_color_manual(breaks = c("coldspot", "hotspot"),
+                     values = c("coldspot" = "#2274A5",
+                                "hotspot" = "#D71515"),
+                     labels = c("Non-declining site",
+                                "Declining site"),
+                     name = "") + 
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
+               arrow = arrow(length = unit(0.2, "cm")),
+               color = "black", size = 0.8) +
+  guides(fill = "none") +
+  xlab("PC1 (30.74 %)") + 
+  ylab("PC2 (15.06 %)") + 
+  labs(tag = "B") +
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        plot.tag = element_text(size = 28),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.key.size = unit(2, "cm"),
+        legend.text = element_text(size = 25),
+        panel.border = element_rect(color = "black", 
+                                    fill = NA, 
+                                    linewidth = 0.5)) + 
+  geom_text(data = loadings_df,
+            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
+            size = 6, fontface = "bold")
+
+# 11.- Biplot - vigor ####
+## 11.1.- Density raster ####
+
+# Instead of using the argument stat_density_2d, we will create a raster, as 
+# it allows us to better customize the looks and looks better <3
+
+# This is performed with kde2d, which does a Two-Dimensional Kernel Density Estimation
+
+dens <- kde2d(x = pca_df$Comp.1,
+              y = pca_df$Comp.2,
+              n = 200)  # resolution
+
+dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
+dens_df$z <- as.vector(dens$z)
+
+## 11.2.- Density 50% ####
+
+# To add a dashed contour line marking the space where the 50% of the trees 
+# might appear, we just need to calculate the density at the 50th percentile
+
+z_sorted <- sort(as.vector(dens$z))
+cdf <- cumsum(z_sorted) / sum(z_sorted)
+
+level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
+
+# Assigning each density value to each vigor_id factor:
+
+vigor_levels <- levels(pca_df$vigor_id)
+
+dens_list <- lapply(vigor_levels, function(v) {
+  data_sub <- pca_df %>% filter(vigor_id == v)
+  dens <- kde2d(x = data_sub$Comp.1, y = data_sub$Comp.2, n = 200)
+  
+  dens_df <- as.data.frame(expand.grid(x = dens$x, y = dens$y))
+  dens_df$z <- as.vector(dens$z)
+  dens_df$vigor_id <- v
+  
+  # Calcular nivel 50% para este grupo
+  z_sorted <- sort(as.vector(dens$z))
+  cdf <- cumsum(z_sorted) / sum(z_sorted)
+  level_50 <- z_sorted[which.min(abs(cdf - 0.1))]
+  
+  list(data = dens_df, level_50 = level_50)
+})
+
+
+# Crear un dataframe con los niveles de contorno 50% por grupo
+level_50_df <- data.frame(
+  vigor_id = sp_levels,
+  level_50 = sapply(dens_list, function(x) x$level_50)
+)
+
+#MASCHATGPT
+sp_colors <- c("cold_healthy" = "#2274A5",
+               "hot_healthy" = "#D71515",
+               "hot_damaged" = "#650304")
+
+# Aplicar colores con alpha según z
+dens_df_all <- do.call(rbind, lapply(dens_list, function(d) d$data))
+
+# Normalizar z por grupo y aplicar alpha
+dens_df_all <- dens_df_all %>%
+  group_by(vigor_id) %>%
+  mutate(z_scaled = (z - min(z)) / (max(z) - min(z)),
+         fill = scales::alpha(sp_colors[vigor_id], z_scaled * 1)) %>%
+  ungroup()
+
+## 11.3.- Biplot, vigor ####
+
+biplot_vigor <- ggplot() +
+  geom_tile(data = dens_df_all, aes(x = x, y = y, fill = z), alpha = 0.5) +
+  scale_fill_gradientn(colours = viridis::viridis(10)) +
+  geom_contour(data = dens_df_all,
+               aes(x = x, y = y, z = z, color = vigor_id),
+               breaks = level_50,
+               size = 0.7,
+               linetype = "dashed") + 
+  geom_point(data = pca_df, aes(x = Comp.1, y = Comp.2, color = vigor_id), 
+             alpha = 0.85) +
+  scale_color_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
+                     values = c("cold_healthy" = "#2274A5",
+                                "hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Non-declining",
+                                "D-Healthy",
+                                "D-Damaged"),
+                     name = "") + 
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_segment(data = loadings_df,
+               aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
+               arrow = arrow(length = unit(0.2, "cm")),
+               color = "black", size = 0.8) +
+  guides(fill = "none") +
+  xlab("PC1 (30.74 %)") + 
+  ylab("PC2 (15.06 %)") + 
+  labs(tag = "C") +
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 25),
+        axis.title.y = element_text(size = 25),
+        plot.tag = element_text(size = 28),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.key.size = unit(2, "cm"),
+        legend.text = element_text(size = 25),
+        panel.border = element_rect(color = "black", 
+                                    fill = NA, 
+                                    linewidth = 0.5)) + 
+  geom_text(data = loadings_df,
+            aes(x = Comp.1 * 1.1, y = Comp.2 * 1.1, label = varnames),
+            size = 6, fontface = "bold")
+
+# 12.- Plotting ####
+
+tiff("04_figures/20_02_PCA_select.tiff", units = "mm",
+     width = 900, height = 300,
+     res = 600, compression = "lzw")
+biplot_sp + biplot_status + biplot_vigor
 dev.off()

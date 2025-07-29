@@ -75,7 +75,7 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target %>% 
   dplyr::select(c(age, height, hegyi_index, Rs12, mean_1980,
-                  mean_def_obs, wc_22, percent_n, leaf_d13c, 
+                  wc_22, percent_n, leaf_d13c, 
                   mean_05, total_chl_fw_22, 
                   tree_number, sp_id, spot_status, vigor_id)) %>% 
   dplyr::select(sort(names(.))) %>% 
