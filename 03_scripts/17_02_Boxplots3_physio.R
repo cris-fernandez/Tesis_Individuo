@@ -68,7 +68,7 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
-# 6.- Creating "all" sp_id dataframe ####
+# 5.- Creating "all" sp_id dataframe ####
 
 clean_target2 <- clean_target %>% 
   mutate(sp_id = "all")
@@ -83,68 +83,8 @@ original_levels <- levels(clean_target3$sp_id)
 new_levels <- c("all", "", setdiff(original_levels, "all")) # Adding blank space right after "all"
 clean_target3$sp_id <- factor(clean_target3$sp_id, levels = new_levels)
 
-# 7.- Plotting ####
-## 7.1.- SLA  ####
-
-sla_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = sla_22, fill = vigor_id),
-               outlier.size = 0.9, outlier.alpha = 0.2) + 
-  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#2274A5",
-                               "hot_healthy" = "#D71515",
-                               "hot_damaged" = "#650304"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
-                    name = "") +
-  scale_x_discrete(drop = FALSE, 
-                   expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "A") +
-  ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
-  xlab("") + 
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),  
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.line.x = element_blank(),
-        axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
-        legend.text = element_text(size = 12),
-        plot.tag = element_text(size = 25))
-
-## 7.2.- N  ####
-
-n_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = percent_n, fill = vigor_id),
-               outlier.size = 0.9, outlier.alpha = 0.2) + 
-  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
-                    values = c("cold_healthy" = "#2274A5",
-                               "hot_healthy" = "#D71515",
-                               "hot_damaged" = "#650304"),
-                    labels = c("Non-declining",
-                               "D-Healthy",
-                               "D-Damaged"),
-                    name = "") +
-  scale_x_discrete(drop = FALSE, 
-                   expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "B") +
-  ylab(expression(paste("N content (%)"))) +
-  ylim(0.5, 3.3) +
-  theme_classic() +
-  theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),  
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.line.x = element_blank(),
-        axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
-        legend.text = element_text(size = 12),
-        plot.tag = element_text(size = 25))
-
-## 7.3.- LWC  ####
+# 6.- Physio ####
+## 6.1.- LWC ####
 
 wc_box <- ggplot(clean_target3) + 
   geom_boxplot(aes(x = sp_id, y = wc_22, fill = vigor_id),
@@ -159,8 +99,9 @@ wc_box <- ggplot(clean_target3) +
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "C") +
-  ylab("LWC (%)") +
+  labs(tag = "A") +
+  ylab("LWC (%)") + 
+  xlab("") + 
   ylim(40, 70) + 
   theme_classic() +
   theme(legend.position = "none",
@@ -170,11 +111,11 @@ wc_box <- ggplot(clean_target3) +
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 7.4.- Chl.  ####
+## 6.2.- Chl. ####
 
 chl_box <- ggplot(clean_target3) + 
   geom_boxplot(aes(x = sp_id, y = total_chl_fw_22, fill = vigor_id),
@@ -189,7 +130,7 @@ chl_box <- ggplot(clean_target3) +
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "D") +
+  labs(tag = "B") +
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
   xlab("") + 
   theme_classic() +
@@ -200,11 +141,101 @@ chl_box <- ggplot(clean_target3) +
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 7.5.- d13C  ####
+## 6.3.- Chl. a/b ####
+
+chlab_box <- ggplot(clean_target3) + 
+  geom_boxplot(aes(x = sp_id, y = chla_chlb_22, fill = vigor_id),
+               outlier.size = 0.9, outlier.alpha = 0.2) + 
+  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
+                    values = c("cold_healthy" = "#2274A5",
+                               "hot_healthy" = "#D71515",
+                               "hot_damaged" = "#650304"),
+                    labels = c("Non-declining",
+                               "D-Healthy",
+                               "D-Damaged"),
+                    name = "") +
+  scale_x_discrete(drop = FALSE, 
+                   expand = expansion(mult = c(0.2, 0.2))) + 
+  labs(tag = "C") +
+  ylab("Chl. a/b") + 
+  xlab("") + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 6.4.- Carotenoids ####
+
+xc_box <- ggplot(clean_target3) + 
+  geom_boxplot(aes(x = sp_id, y = xc_fw_22, fill = vigor_id),
+               outlier.size = 0.9, outlier.alpha = 0.2) + 
+  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
+                    values = c("cold_healthy" = "#2274A5",
+                               "hot_healthy" = "#D71515",
+                               "hot_damaged" = "#650304"),
+                    labels = c("Non-declining",
+                               "D-Healthy",
+                               "D-Damaged"),
+                    name = "") +
+  scale_x_discrete(drop = FALSE, 
+                   expand = expansion(mult = c(0.2, 0.2))) + 
+  labs(tag = "D") +
+  ylab(expression(paste("Caroten. (μg g"^"-1", ")"))) +
+  xlab("") +
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 6.5.- Chl / xc ####
+
+chlxc_box <- ggplot(clean_target3) + 
+  geom_boxplot(aes(x = sp_id, y = chl_xc_22, fill = vigor_id),
+               outlier.size = 0.9, outlier.alpha = 0.2) + 
+  scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
+                    values = c("cold_healthy" = "#2274A5",
+                               "hot_healthy" = "#D71515",
+                               "hot_damaged" = "#650304"),
+                    labels = c("Non-declining",
+                               "D-Healthy",
+                               "D-Damaged"),
+                    name = "") +
+  scale_x_discrete(drop = FALSE, 
+                   expand = expansion(mult = c(0.2, 0.2))) + 
+  labs(tag = "E") +
+  ylab("Chl. / car.") + 
+  xlab("") + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 6.6.- d13C  ####
 
 d13c_box <- ggplot(clean_target3) + 
   geom_boxplot(aes(x = sp_id, y = leaf_d13c, fill = vigor_id),
@@ -219,8 +250,8 @@ d13c_box <- ggplot(clean_target3) +
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "E") +
-  ylab(bquote("Leaves δ"~C^13~"(‰)")) +
+  labs(tag = "F") +
+  ylab(bquote("δ"~C^13~"(‰)")) +
   xlab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -230,14 +261,14 @@ d13c_box <- ggplot(clean_target3) +
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 7.6.- Defoliation  ####
+## 6.7.- d15N  ####
 
-defo_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = mean_def_obs, fill = vigor_id),
+d15n_box <- ggplot(clean_target3) + 
+  geom_boxplot(aes(x = sp_id, y = leaf_d15n, fill = vigor_id),
                outlier.size = 0.9, outlier.alpha = 0.2) + 
   scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
                     values = c("cold_healthy" = "#2274A5",
@@ -249,8 +280,8 @@ defo_box <- ggplot(clean_target3) +
                     name = "") +
   scale_x_discrete(drop = FALSE, 
                    expand = expansion(mult = c(0.2, 0.2))) + 
-  labs(tag = "F") +
-  ylab("Defoliation (%)") + 
+  labs(tag = "G") +
+  ylab(bquote("δ"~N^15~"(‰)")) +
   xlab("") + 
   theme_classic() +
   theme(legend.position = "none",
@@ -260,14 +291,14 @@ defo_box <- ggplot(clean_target3) +
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 7.7.- BAI05  ####
+## 6.8.- d18O  ####
 
-bai_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = mean_05, fill = vigor_id),
+d18o_box <- ggplot(clean_target3) + 
+  geom_boxplot(aes(x = sp_id, y = leaf_d18o, fill = vigor_id),
                outlier.size = 0.9, outlier.alpha = 0.2) + 
   scale_fill_manual(breaks = c("cold_healthy", "hot_healthy", "hot_damaged"),
                     values = c("cold_healthy" = "#2274A5",
@@ -283,8 +314,8 @@ bai_box <- ggplot(clean_target3) +
                             "Abialba" = "A. alba",
                             "Pinsylv" = "P. sylv.",
                             "Pinpine" = "P. pinea")) + 
-  labs(tag = "G") +
-  ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
+  labs(tag = "H") +
+  ylab(bquote("δ"~O^18~"(‰)")) +
   xlab("") + 
   theme_classic() +
   theme(legend.position = "bottom",
@@ -298,7 +329,47 @@ bai_box <- ggplot(clean_target3) +
         legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
-tiff("04_figures/13_06_Responses_boxplots.tiff", units = "mm", width = 300, height = 700,
+# 7.- Select physio ####
+## 7.1.- LWC ####
+# No need to change it :)
+
+## 7.2.- Chl. ####
+
+chl_box_select <- chl_box + 
+  labs(tag = "B")
+
+## 7.3.- d13C ####
+
+d13c_box_select <- d13c_box + 
+  scale_x_discrete(drop = FALSE, 
+                   expand = expansion(mult = c(0.2, 0.2)),
+                   labels=c("all" = "All", 
+                            "Abialba" = "A. alba",
+                            "Pinsylv" = "P. sylv.",
+                            "Pinpine" = "P. pinea")) + 
+  labs(tag = "C") +
+  ylab(bquote("Leaves δ"~C^13~"(‰)")) +
+  xlab("") + 
+  theme_classic() +
+  theme(legend.position = "bottom",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+# 8.- Plotting ####
+
+tiff("04_figures/17_02_All_physio3_boxplots.tiff", units = "mm", width = 300, height = 700,
      res = 400, compression = "lzw")
-sla_box / n_box / wc_box / chl_box /  d13c_box / defo_box / bai_box
+wc_box / chl_box / chlab_box / xc_box / chlxc_box / d13c_box / d15n_box / d18o_box
+dev.off()
+
+tiff("04_figures/17_02_Select_physio3_boxplots.tiff", units = "mm", width = 300, height = 500,
+     res = 400, compression = "lzw")
+wc_box / chl_box_select / d13c_box_select
 dev.off()

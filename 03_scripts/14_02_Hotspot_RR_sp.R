@@ -283,7 +283,7 @@ morfo_rr_plot <- ggplot(morfo_df3) +
         legend.key.size = unit(1, "cm"),
         legend.text = element_text(size = 20))
 
-tiff("04_figures/17_03_ranked_rr_morpho.tiff", units = "mm", 
+tiff("04_figures/19_03_ranked_rr_morpho.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 morfo_rr_plot
@@ -331,7 +331,7 @@ physio_rr_plot <- ggplot(physio_df3) +
         legend.key.size = unit(1, "cm"),
         legend.text = element_text(size = 20))
 
-tiff("04_figures/17_03_ranked_rr_physio.tiff", units = "mm", 
+tiff("04_figures/19_03_ranked_rr_physio.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 physio_rr_plot
@@ -379,7 +379,7 @@ whole_rr_plot <- ggplot(whole_df3) +
         legend.key.size = unit(1, "cm"),
         legend.text = element_text(size = 20))
 
-tiff("04_figures/17_03_ranked_rr_whole.tiff", units = "mm", 
+tiff("04_figures/19_03_ranked_rr_whole.tiff", units = "mm", 
      width = 200, height = 200,
      res = 700, compression = "lzw")
 whole_rr_plot
@@ -387,7 +387,7 @@ dev.off()
 
 # 13.- All together ####
 
-tiff("04_figures/17_04_ranked_rr_panels.tiff", units = "mm", 
+tiff("04_figures/19_04_ranked_rr_panels.tiff", units = "mm", 
      width = 700, height = 200,
      res = 700, compression = "lzw")
 morfo_rr_plot + physio_rr_plot + whole_rr_plot + guide_area() + 
