@@ -209,8 +209,8 @@ distrib_world <- ggplot() +
   coord_sf(xlim = c(-15, 65), ylim = c(35, 75), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
         legend.text = element_text(face = 'italic', size = 22),
-        # axis.text.x = element_blank(),
-        # axis.text.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
         legend.position = "none",
         panel.border = element_rect(colour = "black", 
                                     fill = NA, 
@@ -228,13 +228,28 @@ distrib_world <- ggplot() +
       line_col = "#565656",
       text_family = "sans"))
 
-distrib_world <- ggdraw() + 
-  draw_plot(distrib_world) + 
-  draw_plot_label(label = "A", x = 0.09, y = 0.92, size = 30)
+# distrib_world <- ggdraw() + 
+#   draw_plot(distrib_world) + 
+#   draw_plot_label(label = "A", x = 0.09, y = 0.92, size = 30)
 
 # 9.- Exporting ####
+# 
+# tiff("04_figures/05_01_fig1_panels.tiff", units = "mm", width = 250, height = 450,
+#      res = 600, compression = "lzw")
+# distrib_world/plot_spacer()/final_map + plot_layout(heights = c(5, 0, 5))
+# dev.off()
 
-tiff("04_figures/05_01_fig1_panels.tiff", units = "mm", width = 250, height = 450,
+# 10.- Corrected after Paloma's review in August 2025 ####
+
+final_map2 <- ggdraw() +
+  draw_plot(focus_map) + 
+  draw_plot(distrib_world, x = 0.09, y = 0.50, 
+            width = 0.4, height = 0.4)
+  # draw_plot_label(label = "B", x = 0.09, y = 0.92, size = 30)
+
+# 11.- Exporting ####
+ 
+tiff("04_figures/05_02_fig1_review.tiff", units = "mm", width = 300, height = 300,
      res = 600, compression = "lzw")
-distrib_world/plot_spacer()/final_map + plot_layout(heights = c(5, 0, 5))
+final_map2
 dev.off()
