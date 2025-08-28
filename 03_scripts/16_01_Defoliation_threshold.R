@@ -93,19 +93,19 @@ density_all <- ggplot(data = clean_target) +
                     name = "") +
   geom_vline(xintercept = all_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
-  geom_text(x = all_quantile, y = 0.05, label = "90%", size = 10) +
+  geom_text(x = all_quantile + 14, y = 0.07, label = "22.5%", size = 10) +
   xlab("") + 
   ylab("Density") + 
   scale_x_continuous(breaks = seq(0, 100, by = 10)) +
   ylim(0, 0.085) + 
   ggtitle("All") + 
   theme_classic() +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
         plot.title = element_text(size = 30),
         axis.text.y = element_text(size = 18),
         axis.text.x = element_text(size = 18),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 25),
         plot.margin = margin(t = 0,  # Top margin
                              r = 0.25,  # Right margin
@@ -125,13 +125,14 @@ density_abialba <- ggplot(data = clean_target[clean_target$sp_id == "Abialba", ]
                     name = "") +
   geom_vline(xintercept = abialba_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
+  geom_text(x = abialba_quantile + 14, y = 0.07, label = "27.5%", size = 10) +
   xlab("") + 
   scale_x_continuous(breaks = seq(0, 100, by = 10)) +
   ylim(0,100) + 
   ylim(0, 0.085) + 
   ggtitle("Abies alba") + 
   theme_classic() +
-  theme(legend.position = "right",
+  theme(legend.position = c(0.8, 1),
         legend.key.size = unit(1, "cm"),
         plot.title = element_text(size = 30, face = "italic"),
         axis.text.y = element_blank(),
@@ -139,7 +140,7 @@ density_abialba <- ggplot(data = clean_target[clean_target$sp_id == "Abialba", ]
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.text.x = element_text(size = 18),
-        axis.title.x = element_text(size = 25),
+        axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 25),
         plot.margin = margin(t = 0,  # Top margin
                              r = 0.25,  # Right margin
@@ -159,19 +160,20 @@ density_pinsylv <- ggplot(data = clean_target[clean_target$sp_id == "Pinsylv", ]
                     name = "") +
   geom_vline(xintercept = pinsylv_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
+  geom_text(x = pinsylv_quantile + 14, y = 0.07, label = "20.0%", size = 10) +
   xlab("Defoliation (%)") + 
   ylab("Density") + 
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 100)) +
   ylim(0, 0.085) + 
   ggtitle("Pinus sylvestris") + 
   theme_classic() +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
         plot.title = element_text(size = 30, face = "italic"),
         axis.text.y = element_text(size = 18),
-        axis.title.y = element_text(size = 25),
+        axis.title.y = element_text(size = 30),
         axis.text.x = element_text(size = 18),
-        axis.title.x = element_text(size = 25),
+        axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 25),
         plot.margin = margin(t = 0,  # Top margin
                              r = 0.25,  # Right margin
@@ -191,13 +193,14 @@ density_pinpine <- ggplot(data = clean_target[clean_target$sp_id == "Pinpine", ]
                     name = "") +
   geom_vline(xintercept = pinpine_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
+  geom_text(x = pinpine_quantile + 14, y = 0.07, label = "27.5%", size = 10) +
   xlab("Defoliation (%)") + 
   ylab("") + 
   scale_x_continuous(breaks = seq(0, 100, by = 10), limits = c(0, 100)) +
   ylim(0, 0.085) + 
   ggtitle("Pinus pinea") + 
   theme_classic() +
-  theme(legend.position = "right",
+  theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),
         plot.title = element_text(size = 30, face = "italic"),
         axis.text.y = element_blank(),
@@ -205,7 +208,7 @@ density_pinpine <- ggplot(data = clean_target[clean_target$sp_id == "Pinpine", ]
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.text.x = element_text(size = 18),
-        axis.title.x = element_text(size = 25),
+        axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 25),
         plot.margin = margin(t = 0,  # Top margin
                              r = 0.25,  # Right margin
@@ -217,8 +220,8 @@ density_pinpine <- ggplot(data = clean_target[clean_target$sp_id == "Pinpine", ]
 
 tiff("04_figures/16_01_Defoliation_spot_status.tiff", units = "mm", width = 500, height = 300,
      res = 400, compression = "lzw")
-density_all + density_abialba + guide_area() + density_pinsylv + density_pinpine + 
-  plot_layout(guides = 'collect', ncol = 3)
+density_all + density_abialba + density_pinsylv + density_pinpine + 
+  plot_layout(axis_titles = "collect", ncol = 2)
 dev.off()
 # TreeInfo <- clean_target
 # FGC <- TreeInfo

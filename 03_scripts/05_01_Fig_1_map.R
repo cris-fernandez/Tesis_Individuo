@@ -99,7 +99,8 @@ distrib_map <- ggplot() +
   theme(legend.position = "bottom") +
   coord_sf(xlim = c(-12, 05), ylim = c(35, 45.5), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
-        legend.text = element_text(face = 'italic', size = 22),
+        legend.text = element_text(face = 'italic', size = 22,
+                                   margin = margin(r = 2, unit = 'cm')),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         legend.position = "none",
@@ -111,17 +112,17 @@ distrib_map <- ggplot() +
                               bar_cols = c("black", "white"),
                               text_family = "sans")
 
-# 7.- Plotting map B ####
+# 7.- Plotting focus map ####
 
 focus_map <- ggplot() +
   geom_sf(data = neighbours, fill = "gray96", col = NA) +
-  geom_sf(data = provinces_sf, fill = "#ffffff", col = "#d5d5d5", linewidth = 0.6) +  
-  geom_sf(data = provinces_ibf, fill = "#d3d3d3", col = "black", linewidth = 0.6) +  
+  geom_sf(data = provinces_sf, fill = "#ffffff", col = "#d5d5d5", linewidth = 0.6) +
+  geom_sf(data = provinces_ibf, fill = "#d3d3d3", col = "black", linewidth = 0.6) +
   geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
   geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
   geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
   geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
-  geom_sf_text(data = provinces_ibf, aes(label = ine.prov.name), size = 4, 
+  geom_sf_text(data = provinces_ibf, aes(label = ine.prov.name), size = 4,
                family = "sans", col = "#565656") +
   geom_point(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
              col = "black", shape = 22, size = 5, stroke = 1.35) +
@@ -136,17 +137,20 @@ focus_map <- ggplot() +
                                "Pinus sylvestris",
                                "Pinus pinea")) +
   theme_minimal() +
-  labs(title = "") + 
-  xlab("") + 
-  ylab("") + 
+  labs(title = "") +
+  xlab("") +
+  ylab("") +
   theme(legend.position = "bottom") +
   coord_sf(xlim = c(-5.5, 1), ylim = c(39.5, 43.5), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
-        legend.text = element_text(face = 'italic', size = 22),
-        panel.border = element_rect(colour = "black", fill = NA, linewidth = 1)) + 
+        legend.text = element_text(face = 'italic', size = 25,
+                                   margin = margin(l = 0.3, r = 2, unit = 'cm')),
+        panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
+        axis.text.x = element_text(size = 16),
+        axis.text.y = element_text(size = 16)) +
   ggspatial::annotation_scale(location = "br",
                               bar_cols = c("black", "white"),
-                              text_family = "sans") + 
+                              text_family = "sans") +
   ggspatial::annotation_north_arrow(
     location = "tr", which_north = "true",
     pad_x = unit(0.9, "mm"), pad_y = unit(0.9, "mm"),
@@ -208,7 +212,8 @@ distrib_world <- ggplot() +
   theme(legend.position = "bottom") +
   coord_sf(xlim = c(-15, 65), ylim = c(35, 75), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
-        legend.text = element_text(face = 'italic', size = 22),
+        legend.text = element_text(face = 'italic', size = 25,
+                                   margin = margin(l = 0.3, r = 2, unit = 'cm')),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         legend.position = "none",
