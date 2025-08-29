@@ -78,20 +78,11 @@ clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
 
-clean_target$category <- paste0(clean_target$sp_id, "_", clean_target$vigor_id)
+clean_target$category <- paste0(clean_target$sp_id, "_", clean_target$spot_status)
 
-# 5.- Wilcoxon test ####
+# 5.- Summarising data ####
 
-# It is necessary to perform a Wilcoxon test to see differences between 
-# groups (species + spot status). Since most of the data might not be normally 
-# distributed, Wilcoxon test is recommended. The Bonferroni correction could 
-# be made afterwards, but 'pairwise.wilcox.test' already has an argument that
-# allows us to choose the correction method, so it can be done straightforward :)
-
-# Variable selection. We will create two dataframes, one with "vulnerability" 
-# variables, and another one with "response" variables
-
-vars_df <- clean_target %>% 
+clean_target <- clean_target %>% 
   rename(mean_bai = mean) %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   dplyr::select(c(category, height, dbh, percent_c, percent_n, cn_ratio, sla_22, age, hegyi_index, 
@@ -99,65 +90,42 @@ vars_df <- clean_target %>%
                   leaf_d13c, leaf_d15n, leaf_d18o, mean_1980, mean_05, 
                   Rt12, Rt17, Rt22, Rs12, Rs17)) # Had to remove wood isotopes bcs not enough variables
 
-vars_wilcox <- list()
 
-for (i in 1:(ncol(vars_df)-1)) { # Because vigor_id and tree_number are not numeric
-  vars_wilcox[[i]] <- pairwise.wilcox.test(vars_df[, i+1], vars_df$category)
-  print(i)
-}
+clean_values <- clean_target %>% 
+  group_by(category) %>% 
+  summarise(across(where(is.numeric),
+                   list(mean = ~mean(.x, na.rm = TRUE),
+                        se = ~sd(.x, na.rm = TRUE) / sqrt(sum(!is.na(.x))),
+                        min = ~quantile(.x, c(0.025), na.rm = T),
+                        max = ~quantile(.x, c(0.975), na.rm = T)),
+                   .names = "{.col}_{.fn}"))
 
-# 6.- Grouping results in a single df ####
+# 6.- Pivot longer ####
+# For easier understanding
 
-# We need to create vectors with the name of the variable analyzed, which 
-# is each name of the original vuln_ and resp_df
+clean_values_long <- clean_values %>%
+  pivot_longer(-category,
+               names_to = c("variable", "stat"),
+               names_pattern = "^(.*)_(mean|se|min|max)$")
 
-names_vars <- names(vars_df)[2:ncol(vars_df)]
+# 7.- Pivot wider ####
 
-# Function to convert p-values matrix to dataframe
-convert_pw_wilcox <- function(result_list, var_names, tipo) {
-  out <- list()
-  
-  for (i in seq_along(result_list)) {
-    pvals <- result_list[[i]]$p.value
-    if (is.null(pvals)) next  # Skip if NA
-    
-    df_long <- as.data.frame(as.table(pvals)) %>%
-      rename(Group1 = Var1, Group2 = Var2, P_value_adjusted = Freq) %>%
-      mutate(Variable = names_vars[i], Tipo = tipo)
-    
-    out[[i]] <- df_long
-  }
-  
-  bind_rows(out)
-}
+clean_values_wide <- clean_values_long %>%
+  pivot_wider(names_from = stat, values_from = value)
 
-vars_df_long <- convert_pw_wilcox(vars_wilcox, names_vars, "var")
+# 8. Creating format "mean ± SE [min, max]" ####
 
-# 7.- Df arrangement ####
-# Column telling whether it is significant or not!
-vars_df_long$significant <- ifelse(vars_df_long$P_value_adjusted < 0.05, 1, 0)
+clean_values_fmt <- clean_values_wide %>%
+  mutate(value_fmt = sprintf("%.2f ± %.2f [%.2f, %.2f]",
+                             mean, se, min, max)) %>%
+  dplyr::select(category, variable, value_fmt)
 
-# Summarising by variable, to get those with higher amount of significant differences
-sig_count <- vars_df_long %>% 
-  group_by(Variable) %>% 
-  summarise(significant_difs = sum(significant, na.rm = T))
+# 9.- Table transposing ####
 
-sig_mean <- vars_df_long %>% 
-  group_by(Variable) %>% 
-  summarise(pval_mean = mean(P_value_adjusted, na.rm = T))
+final_table <- clean_values_fmt %>%
+  pivot_wider(names_from = category, values_from = value_fmt)
 
-# Now just comparing pairs of hot vs. coldspot per species:
-status_pairs <- vars_df_long %>% 
-  mutate(grupo1 = gsub("_hot_healthy|_hot_damaged", "", Group1),
-         grupo2 = gsub("_hot_healthy|_hot_damaged", "", Group2),
-         match = ifelse(grupo1 == grupo2, "Yes", "No")) %>% 
-  filter(match == "Yes") %>% 
-  na.omit()
 
-status_count <- status_pairs %>% 
-  group_by(Variable) %>% 
-  summarise(significant_difs = sum(significant, na.rm = T))
+# 10.- Exporting ####
 
-# 8.- Exporting ####
-
-write.csv(status_pairs, "02_clean_data/32_02_pvals_wilcoxon_vigor.csv")
+write.csv(final_table, "02_clean_data/33_01_vals_status.csv")

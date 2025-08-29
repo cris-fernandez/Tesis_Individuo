@@ -103,7 +103,7 @@ vars_wilcox <- list()
 
 for (i in 1:(ncol(vars_df)-1)) { # Because vigor_id and tree_number are not numeric
   vars_wilcox[[i]] <- pairwise.wilcox.test(vars_df[, i+1], vars_df$category,
-                                           p.adjust.method = "bonferroni",)
+                                           p.adjust.method = "bonferroni")
   print(i)
 }
 
