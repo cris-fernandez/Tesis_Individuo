@@ -80,7 +80,7 @@ clean_target <- clean_target %>%
   dplyr::select(c(mean_def_obs, height, dbh, total_chl_fw_22, xc_fw_22, 
                   chlor_a_22, chlor_b_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, leaf_d15n, wood_d13c_17, wood_d13c_22, sla_22,
+                  leaf_d18o, leaf_d15n, sla_22,
                   age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
                   mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, 
                   tree_number, sp_id, wc_22, spot_status, vigor_id)) %>% 
@@ -97,6 +97,7 @@ rr_target <- clean_target %>%
   group_by(vigor_id, sp_id) %>% 
   summarise(mean_height = mean(height, na.rm = T),
             mean_dbh = mean(dbh, na.rm = T),
+            mean_wc = mean(wc_22, na.rm = T),
             mean_chl = mean(total_chl_fw_22, na.rm = T),
             mean_xc = mean(xc_fw_22, na.rm = T),
             mean_chlab = mean(chla_chlb_22, na.rm = T),
@@ -107,8 +108,6 @@ rr_target <- clean_target %>%
             mean_d13c = mean(leaf_d13c, na.rm = T),
             mean_d15n = mean(leaf_d15n, na.rm = T),
             mean_d18o = mean(leaf_d18o, na.rm = T),
-            mean_d13c_17 = mean(wood_d13c_17, na.rm = T),
-            mean_d13c_22 = mean(wood_d13c_22, na.rm = T),
             mean_sla = mean(sla_22, na.rm = T),
             mean_age = mean(age, na.rm = T),
             mean_hegyi = mean(hegyi_index, na.rm = T),
@@ -132,6 +131,7 @@ sd_target <- clean_target %>%
   group_by(vigor_id, sp_id) %>% 
   summarise(se_height = sd(height, na.rm = T) / sqrt(n()),
             se_dbh = sd(dbh, na.rm = T) / sqrt(n()),
+            se_wc = sd(wc_22, na.rm = T) / sqrt(n()),
             se_chl = sd(total_chl_fw_22, na.rm = T) / sqrt(n()),
             se_xc = sd(xc_fw_22, na.rm = T) / sqrt(n()),
             se_chlab = sd(chla_chlb_22, na.rm = T) / sqrt(n()),
@@ -142,8 +142,6 @@ sd_target <- clean_target %>%
             se_d13c = sd(leaf_d13c, na.rm = T) / sqrt(n()),
             se_d15n = sd(leaf_d15n, na.rm = T) / sqrt(n()),
             se_d18o = sd(leaf_d18o, na.rm = T) / sqrt(n()),
-            se_d13c_17 = sd(wood_d13c_17, na.rm = T) / sqrt(n()),
-            se_d13c_22 = sd(wood_d13c_22, na.rm = T) / sqrt(n()),
             se_sla = sd(sla_22, na.rm = T) / sqrt(n()),
             se_age = sd(age, na.rm = T) / sqrt(n()),
             se_hegyi = sd(hegyi_index, na.rm = T) / sqrt(n()),
@@ -276,11 +274,11 @@ morfo_rr_plot <- ggplot(morfo_df3) +
   theme(panel.grid.major.y = element_line(),
         panel.grid.minor.y = element_line(),
         axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
+        axis.text.y = element_text(size = 20),
         axis.title.x = element_text(size = 16),
         plot.tag = element_text(size = 25),
         legend.position = "right",
-        legend.key.size = unit(1, "cm"),
+        legend.key.size = unit(2, "cm"),
         legend.text = element_text(size = 20))
 
 tiff("04_figures/19_03_ranked_rr_morpho.tiff", units = "mm", 
@@ -292,13 +290,13 @@ dev.off()
 # 11.- Plotting physiological responses ####
 
 physio_vars <- c("chl", "xc", "chlab", "chlxc", "d13c", "d15n", "d18o", 
-                "d13c_17", "d13c_22")
+                "wc")
 
 physio_df3 <- rr_df3 %>% filter(var %in% physio_vars)
 
 physio_names <- c("Chlorophylls content", "Leaf δ15N", "Chl / carotenoids", 
-                  "Carotenoids content", "Chl a / Chl b", "Leaf δ18O", 
-                  "Leaf δ13C", "Wood δ13C 2017","Wood δ13C 2022") %>% rev()
+                  "Carotenoids content", "Chl a / Chl b", "LWC", "Leaf δ18O", 
+                  "Leaf δ13C") %>% rev()
 
 physio_rr_plot <- ggplot(physio_df3) + 
   geom_point(aes(y = fct_reorder(var, psy_rr), x = response_ratio, col = sp_id), 
@@ -324,11 +322,11 @@ physio_rr_plot <- ggplot(physio_df3) +
   theme(panel.grid.major.y = element_line(),
         panel.grid.minor.y = element_line(),
         axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
+        axis.text.y = element_text(size = 20),
         axis.title.x = element_text(size = 16),
         plot.tag = element_text(size = 25),
         legend.position = "right",
-        legend.key.size = unit(1, "cm"),
+        legend.key.size = unit(2, "cm"),
         legend.text = element_text(size = 20))
 
 tiff("04_figures/19_03_ranked_rr_physio.tiff", units = "mm", 
@@ -339,13 +337,13 @@ dev.off()
 
 # 12.- Plotting whole-plant responses ####
 
-whole_vars <- c("bai", "bai80", "bai20", "bai15", "bai10", "bai05", "rt12", 
+whole_vars <- c("bai80", "bai05", "rt12", 
                  "rt17", "rt22", "rs12", "rs17")
 
 whole_df3 <- rr_df3 %>% filter(var %in% whole_vars)
 
-whole_names <- c("BAI 10 years", "BAI 05 years", "BAI 15 years", "BAI 20 years", 
-                 "BAI since 1980", "BAI", "Rs 2012", "Rt 2012", "Rt 2022", 
+whole_names <- c("BAI 10 years", 
+                 "BAI since 1980", "Rs 2012", "Rt 2012", "Rt 2022", 
                  "Rt 2017", "Rs 2017") %>% rev()
 
 whole_rr_plot <- ggplot(whole_df3) + 
@@ -372,11 +370,11 @@ whole_rr_plot <- ggplot(whole_df3) +
   theme(panel.grid.major.y = element_line(),
         panel.grid.minor.y = element_line(),
         axis.text.x = element_text(size = 16),
-        axis.text.y = element_text(size = 16),
+        axis.text.y = element_text(size = 20),
         axis.title.x = element_text(size = 16),
         plot.tag = element_text(size = 25),
         legend.position = "right",
-        legend.key.size = unit(1, "cm"),
+        legend.key.size = unit(2, "cm"),
         legend.text = element_text(size = 20))
 
 tiff("04_figures/19_03_ranked_rr_whole.tiff", units = "mm", 
@@ -388,8 +386,8 @@ dev.off()
 # 13.- All together ####
 
 tiff("04_figures/19_04_ranked_rr_panels.tiff", units = "mm", 
-     width = 700, height = 200,
+     width = 400, height = 400,
      res = 700, compression = "lzw")
 morfo_rr_plot + physio_rr_plot + whole_rr_plot + guide_area() + 
-  plot_layout(guides = 'collect', ncol = 4, widths = c(3, 3, 3, 1))
+  plot_layout(guides = 'collect', ncol = 2)
 dev.off()

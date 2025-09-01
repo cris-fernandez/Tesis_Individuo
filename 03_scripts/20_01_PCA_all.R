@@ -81,8 +81,8 @@ clean_target <- clean_target %>%
   dplyr::select(c(height, dbh, total_chl_fw_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
                   leaf_d18o, leaf_d15n, sla_22, xc_fw_22,
-                  age, hegyi_index, mean_bai, mean_1980, mean_20, mean_15,
-                  mean_10, mean_05, Rt12, Rt17, Rt22, Rs12, Rs17, wc_22,
+                  age, hegyi_index, mean_1980, mean_05, Rt12, Rt17, 
+                  Rt22, Rs12, Rs17, wc_22,
                   tree_number, sp_id, spot_status, vigor_id)) %>% 
   dplyr::select(sort(names(.)))
 
@@ -111,11 +111,11 @@ norm_target <- clean_target %>%
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
-         bai_ST = (mean_bai - mean(mean_bai, na.rm = T)) / sd(mean_bai, na.rm = T),
+         # bai_ST = (mean_bai - mean(mean_bai, na.rm = T)) / sd(mean_bai, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
-         bai_20_ST = (mean_20 - mean(mean_20, na.rm = T)) / sd(mean_20, na.rm = T),
-         bai_15_ST = (mean_15 - mean(mean_15, na.rm = T)) / sd(mean_15, na.rm = T),
-         bai_10_ST = (mean_10 - mean(mean_10, na.rm = T)) / sd(mean_10, na.rm = T),
+         # bai_20_ST = (mean_20 - mean(mean_20, na.rm = T)) / sd(mean_20, na.rm = T),
+         # bai_15_ST = (mean_15 - mean(mean_15, na.rm = T)) / sd(mean_15, na.rm = T),
+         # bai_10_ST = (mean_10 - mean(mean_10, na.rm = T)) / sd(mean_10, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
@@ -139,7 +139,7 @@ correlogram <- cor(norm_target)
 pca_results <- princomp(norm_target)
 summary(pca_results)
 
-# The first two components explain only 39.73% of the data variance!
+# The first two components explain only 36.91% of the data variance!
 
 pca_results$loadings[, 1:2]
 
@@ -169,8 +169,8 @@ loadings_df$variable <- rownames(loadings_df) # So we know what variable is whic
 loadings_df$varnames <- c("Height", "dbh", 
                           "Chl.", "Carotenoids", "Chl. a/b", "Chl. / xc", 
                           "C", "N", "C:N", "δ13C", "δ15N", "δ18O", "SLA", 
-                          "Age", "Hegyi", "BAI", "BAI80", "BAI20", "BAI15",
-                          "BAI10", "BAI05", "Rt12", "Rs12", "Rt17", "Rs17",
+                          "Age", "Hegyi", "BAI80", "BAI05", "Rt12", 
+                          "Rs12", "Rt17", "Rs17",
                           "Rt22", "LWC")
 
 ## 10.2.- Scale factor ####
@@ -279,8 +279,8 @@ biplot_sp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (27.59 %)") + 
-  ylab("PC2 (14.43 %)") + 
+  xlab("PC1 (22.35 %)") + 
+  ylab("PC2 (14.57 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -390,8 +390,8 @@ biplot_status <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (27.59 %)") + 
-  ylab("PC2 (14.43 %)") + 
+  xlab("PC1 (22.35 %)") + 
+  ylab("PC2 (14.57 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -504,8 +504,8 @@ biplot_vigor <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (27.59 %)") + 
-  ylab("PC2 (14.43 %)") + 
+  xlab("PC1 (22.35 %)") + 
+  ylab("PC2 (14.57 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),

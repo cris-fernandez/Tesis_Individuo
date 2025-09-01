@@ -96,8 +96,6 @@ norm_target <- clean_target %>%
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
-         hegyi_index_ST = (hegyi_index - mean(hegyi_index, na.rm = T)) / sd(hegyi_index, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
@@ -145,15 +143,15 @@ loadings_df$variable <- rownames(loadings_df) # So we know what variable is whic
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-loadings_df$varnames <- c("Height", "Chl.", "N", "δ13C", "SLA", "Age", 
-                          "Hegyi", "BAI80", "BAI05", "Rs12", "LWC")
+loadings_df$varnames <- c("Height", "Chl.", "N", "δ13C", "SLA", 
+                          "BAI80", "BAI05", "Rs12", "LWC")
 
 ## 10.2.- Scale factor ####
 
 # Scale factor is just a constant number used to multiply the length of the vectors 
 # thus allowing us to see them more clearly
 
-scale_factor <- 20 
+scale_factor <- 16 
 
 ## 10.3.- Multiplying ####
 
@@ -254,8 +252,8 @@ biplot_sp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (30.74 %)") + 
-  ylab("PC2 (15.06 %)") + 
+  xlab("PC1 (35.01 %)") + 
+  ylab("PC2 (18.37 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -365,8 +363,8 @@ biplot_status <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (30.74 %)") + 
-  ylab("PC2 (15.06 %)") + 
+  xlab("PC1 (35.01 %)") + 
+  ylab("PC2 (18.37 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -479,8 +477,8 @@ biplot_vigor <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (30.74 %)") + 
-  ylab("PC2 (15.06 %)") + 
+  xlab("PC1 (35.01 %)") + 
+  ylab("PC2 (18.37 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
