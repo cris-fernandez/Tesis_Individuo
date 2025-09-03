@@ -307,25 +307,20 @@ hegyi_box <- ggplot(clean_target3) +
 ## 7.1.- Height ####
 # No need to change it :)
 
-## 7.2.- N ####
+## 7.2.- C ####
 
-n_box_select <- n_box + 
+c_box_select <- c_box + 
   labs(tag = "B")
-
-## 7.3.- SLA ####
-
-sla_box_select <- sla_box + 
-  labs(tag = "C")
 
 ## 7.4.- Age ####
 
 age_box_select <- age_box + 
-  labs(tag = "D")
+  labs(tag = "C")
 
 ## 7.5.- Hegyi Index ####
 
 hegyi_box_select <- hegyi_box + 
-  labs(tag = "E") + 
+  labs(tag = "D") + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
@@ -352,6 +347,6 @@ dev.off()
 
 tiff("04_figures/24_02_Select_morpho3.tiff", units = "mm", width = 400, height = 300,
      res = 400, compression = "lzw")
-h_box + n_box_select + sla_box_select + age_box_select + hegyi_box_select + 
-  guide_area() + plot_layout(ncol = 3, guides = "collect")
+h_box + c_box_select + age_box_select + hegyi_box_select + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

@@ -300,44 +300,25 @@ hegyi_box <- ggplot(clean_target3) +
         legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
+
 # 7.- Select morpho ####
 ## 7.1.- Height ####
 # No need to change it :)
 
-## 7.2.- N ####
+## 7.2.- C ####
 
-n_box_select <- n_box + 
+c_box_select <- c_box + 
   labs(tag = "B")
 
-## 7.3.- SLA ####
-
-sla_box_select <- sla_box + 
-  labs(tag = "C")
-
-## 7.4.- Age ####
+## 7.3.- Age ####
 
 age_box_select <- age_box + 
-  labs(tag = "D")
+  labs(tag = "C")
 
-## 7.5.- Hegyi Index ####
+## 7.4.- Hegyi ####
 
 hegyi_box_select <- hegyi_box + 
-  labs(tag = "E") + 
-  scale_x_discrete(labels=c("all" = "All", 
-                            "Abialba" = "Aa",
-                            "Pinsylv" = "Ps",
-                            "Pinpine" = "Pp")) + 
-  theme_classic() +
-  theme(legend.position = "right",
-        legend.key.size = unit(2, "cm"),  
-        axis.title.x = element_blank(),
-        axis.text.x = element_text(size = 30),
-        axis.ticks.x = element_blank(),
-        axis.line.x = element_blank(),
-        axis.text.y = element_text(size = 22),
-        axis.title.y = element_text(size = 30),
-        legend.text = element_text(size = 25),
-        plot.tag = element_text(size = 25))
+  labs(tag = "D")
 
 # 8.- Plotting ####
 
@@ -349,6 +330,6 @@ dev.off()
 
 tiff("04_figures/21_02_Select_morpho2.tiff", units = "mm", width = 400, height = 300,
      res = 400, compression = "lzw")
-h_box + n_box_select + sla_box_select + age_box_select + hegyi_box_select + 
-  guide_area() + plot_layout(ncol = 3, guides = "collect")
+h_box + c_box_select + age_box_select + hegyi_box_select + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

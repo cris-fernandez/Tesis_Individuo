@@ -308,7 +308,22 @@ d18o_box <- ggplot(clean_target3) +
 ## 7.2.- Chl. ####
 
 chl_box_select <- chl_box + 
-  labs(tag = "B")
+  labs(tag = "B") + 
+  scale_x_discrete(labels=c("all" = "All", 
+                            "Abialba" = "Aa",
+                            "Pinsylv" = "Ps",
+                            "Pinpine" = "Pp")) + 
+  theme_classic() +
+  theme(legend.position = "right",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
 
 ## 7.3.- d13C ####
 

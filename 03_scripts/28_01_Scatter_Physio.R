@@ -175,10 +175,38 @@ d18o_dot <- ggplot(clean_target) +
   theme(axis.text.x = element_text(size = 22),
         axis.title.x = element_text(size = 30))
 
+# 7.- Select physio ####
+## 7.1.- LWC ####
+# No need to change it :)
+
+## 7.2.- Chl. ####
+
+chl_dot_select <- chl_dot + 
+  labs(tag = "B") + 
+  spot_scale + 
+  xlab("Defoliation (%)") + 
+  theme(axis.text.x = element_text(size = 22),
+        axis.title.x = element_text(size = 30))
+
+## 7.3.- d13C ####
+
+d13c_dot_select <- d13c_dot + 
+  labs(tag = "C") + 
+  spot_scale + 
+  xlab("Defoliation (%)") + 
+  theme(axis.text.x = element_text(size = 22),
+        axis.title.x = element_text(size = 30))
+
 # 8.- Plotting ####
 
 tiff("04_figures/28_01_Scatter_physio.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 wc_dot + chl_dot + chlab_dot + xc_dot + chlxc_dot + d13c_dot + d15n_dot + d18o_dot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
+dev.off()
+
+tiff("04_figures/28_02_Scatter_physio_select.tiff", units = "mm", width = 300, height = 300,
+     res = 400, compression = "lzw")
+wc_dot + chl_dot_select + d13c_dot_select  + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

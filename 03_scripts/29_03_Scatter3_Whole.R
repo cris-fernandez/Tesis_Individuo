@@ -167,6 +167,28 @@ rs17_dot <- ggplot(clean_target) +
   xlab("Defoliation (%)") + 
   theme(axis.text.x = element_text(size = 22),
         axis.title.x = element_text(size = 30))
+
+# 7.- Select WP ####
+## 7.1.- BAI80 ####
+# No need to change it :)
+
+## 7.2.- BAI05 ####
+
+bai05_dot_select <- bai05_dot + 
+  labs(tag = "B") + 
+  spot_scale + 
+  xlab("Defoliation (%)") + 
+  theme(axis.text.x = element_text(size = 22),
+        axis.title.x = element_text(size = 30))
+
+## 7.3.- Rs12 ####
+
+rs12_dot_select <- rs12_dot + 
+  labs(tag = "C") + 
+  spot_scale + 
+  xlab("Defoliation (%)") + 
+  theme(axis.text.x = element_text(size = 22),
+        axis.title.x = element_text(size = 30))
   
 # 8.- Plotting ####
 
@@ -174,4 +196,10 @@ tiff("04_figures/29_03_Scatter_whole3.tiff", units = "mm", width = 400, height =
      res = 400, compression = "lzw")
 bai80_dot + bai05_dot + rt12_dot + rt17_dot + rt22_dot + rs12_dot + rs17_dot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
+dev.off()
+
+tiff("04_figures/29_04_Scatter_whole3_select.tiff", units = "mm", width = 300, height = 300,
+     res = 400, compression = "lzw")
+bai80_dot + bai05_dot_select + rs12_dot_select  + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

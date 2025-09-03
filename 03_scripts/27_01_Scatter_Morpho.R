@@ -215,10 +215,36 @@ hegyi_dot <- ggplot(clean_target) +
   theme(axis.text.x = element_text(size = 22),
         axis.title.x = element_text(size = 30))
 
+# 7.- Select morpho ####
+## 7.1.- Height ####
+# No need to change it :)
+
+## 7.2.- C ####
+
+c_dot_select <- c_dot + 
+  labs(tag = "B")
+
+## 7.3.- Age ####
+
+age_dot_select <- age_dot + 
+  labs(tag = "C")
+
+## 7.4.- Hegyi ####
+
+hegyi_dot_select <- hegyi_dot + 
+  labs(tag = "D")
+
+
 # 8.- Plotting ####
 
 tiff("04_figures/27_01_Scatter_morpho.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 h_dot + dbh_dot + c_dot + n_dot + cn_dot + sla_dot + age_dot + hegyi_dot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
+dev.off()
+
+tiff("04_figures/27_02_Scatter_morpho_select.tiff", units = "mm", width = 400, height = 300,
+     res = 400, compression = "lzw")
+h_dot + c_dot_select + age_dot_select + hegyi_dot_select + 
+  plot_layout(ncol = 2, guides = "collect")
 dev.off()
