@@ -86,6 +86,26 @@ clean_target3$sp_id <- factor(clean_target3$sp_id, levels = new_levels)
 # Filtering only hotspot observations:
 clean_target3 <- clean_target3 %>% filter(!vigor_id == "cold_healthy") 
 
+# Adding correctness factor for d18O 
+o18_correct <- read.csv("02_clean_data/02_01_iso_corrections.csv", sep = ";")
+
+# Taking only oct - apr data
+
+o18_correct <- o18_correct %>% dplyr::select(-c(MAY, JUN, JUL, AUG, SEP)) %>% 
+  pivot_longer(cols = JAN:DEC,
+               names_to = "month",
+               values_to = "o18_correct") %>% 
+  rename(plot_id = PLOT) %>% 
+  group_by(plot_id) %>% 
+  summarise(mean_o18_correct = mean(o18_correct, na.rm = TRUE))
+
+# Join
+
+clean_target3 <- left_join(clean_target3, o18_correct, by = "plot_id")
+clean_target3 <- clean_target3 %>% 
+  # mutate(corrected_d18o = 1000 * ((leaf_d18o / mean_o18_correct) - 1))
+  mutate(corrected_d18o = leaf_d18o / mean_o18_correct)
+
 # 6.- Physio ####
 ## 6.1.- LWC ####
 
@@ -277,7 +297,7 @@ d15n_box <- ggplot(clean_target3) +
 ## 6.8.- d18O  ####
 
 d18o_box <- ggplot(clean_target3) + 
-  geom_boxplot(aes(x = sp_id, y = leaf_d18o, fill = vigor_id),
+  geom_boxplot(aes(x = sp_id, y = corrected_d18o, fill = vigor_id),
                outlier.size = 0.9, outlier.alpha = 0.2) + 
   scale_fill_manual(breaks = c("hot_healthy", "hot_damaged"),
                     values = c("hot_healthy" = "#D71515",

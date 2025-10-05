@@ -241,9 +241,9 @@ biplot_sp <- ggplot() +
                      values = c("Abialba" = "#785EF0",
                                 "Pinsylv" = "#FFB000",
                                 "Pinpine" = "#990000"),
-                     labels = c("Abies alba",
-                                "Pinus sylvestris",
-                                "Pinus pinea"),
+                     labels = c(expression(italic("Abies alba")),
+                                expression(italic("Pinus sylvestris")),
+                                expression(italic("Pinus pinea"))),
                      name = "") + 
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
@@ -251,7 +251,8 @@ biplot_sp <- ggplot() +
                aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
-  guides(fill = "none") +
+  guides(fill = "none", 
+         color = guide_legend(nrow = 2)) +
   xlab("PC1 (35.01 %)") + 
   ylab("PC2 (18.37 %)") + 
   labs(tag = "A") +
@@ -476,7 +477,8 @@ biplot_vigor <- ggplot() +
                aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
-  guides(fill = "none") +
+  guides(fill = "none", 
+         color = guide_legend(nrow = 2)) +
   xlab("PC1 (35.01 %)") + 
   ylab("PC2 (18.37 %)") + 
   labs(tag = "C") +
@@ -500,7 +502,13 @@ biplot_vigor <- ggplot() +
 # 12.- Plotting ####
 
 tiff("04_figures/20_02_PCA_select.tiff", units = "mm",
-     width = 900, height = 300,
-     res = 600, compression = "lzw")
+     width = 720, height = 300,
+     res = 1200, compression = "lzw")
+biplot_sp + biplot_status + biplot_vigor
+dev.off()
+
+png("04_figures/20_02_PCA_select.png", units = "mm",
+    width = 720, height = 300,
+    res = 1200)
 biplot_sp + biplot_status + biplot_vigor
 dev.off()
