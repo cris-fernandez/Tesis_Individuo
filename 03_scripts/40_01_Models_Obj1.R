@@ -72,14 +72,72 @@ clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
 clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
-
-# MODEL TESTING
+# Transforming spot status into a factor so it can be modellised:
 
 clean_target$spot_status <- as.factor(clean_target$spot_status)
 
-model_H <- lmer(height ~ spot_status + (1|plot_id),
-                  data = clean_target)
+# 6.- Model list ####
 
-summary(model_H)
-anova(model_H)
+model_list <- list()
+var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
+              "cn", "sla_22", "age", 
+              "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
+              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", "leaf_d18o",
+              "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
 
+for (i in 1:length(var_list)) {
+  model_formula <- as.formula(paste(var_list[i], 
+                                    "~ spot_status + (1|plot_id)"))
+  
+  model_list[[i]] <- lmer(model_formula, data = clean_target)
+  print(i)
+}
+
+# 7.- Model coefficients table ####
+
+model_df <- data.frame(matrix(ncol = 11, nrow = length(var_list)))
+colnames(model_df) <- c("variable", "estimate_cold", "estimate_hot", 
+                        "std_error_cold", "std_error_hot", "df_cold", "df_hot",
+                        "t_val_cold", "t_val_hot", "p_val_cold", "p_val_hot")
+for (i in 1:length(var_list)) {
+
+model_df$variable[[i]] <- var_list[[i]]
+model_df$estimate_cold[i] <- 
+  summary(model_list[[i]])$coefficients["(Intercept)", "Estimate"]
+model_df$estimate_hot[i] <-
+  summary(model_list[[i]])$coefficients["spot_statushotspot", "Estimate"]
+model_df$std_error_cold[i] <-
+  summary(model_list[[i]])$coefficients["(Intercept)", "Std. Error"]
+model_df$std_error_hot[i] <-
+  summary(model_list[[i]])$coefficients["spot_statushotspot", "Std. Error"]
+model_df$df_cold[i] <- 
+  summary(model_list[[i]])$coefficients["(Intercept)", "df"]
+model_df$df_hot[i] <-
+  summary(model_list[[i]])$coefficients["spot_statushotspot", "df"]
+model_df$t_val_cold[i] <- 
+  summary(model_list[[i]])$coefficients["(Intercept)", "t value"]
+model_df$t_val_hot[i] <- 
+  summary(model_list[[i]])$coefficients["spot_statushotspot", "t value"]
+model_df$p_val_cold[i] <- 
+  summary(model_list[[i]])$coefficients["(Intercept)", "Pr(>|t|)"]
+model_df$p_val_hot[i] <- 
+  summary(model_list[[i]])$coefficients["spot_statushotspot", "Pr(>|t|)"]
+print(i)
+}
+
+# 5.- Morphological variables ####
+
+# model_h <- lmer(height ~ spot_status + (1|plot_id),
+#                 data = clean_target)
+# 
+# model_sla <- lmer(percent_n ~ spot_status + (1|plot_id),
+#                 data = clean_target)
+# 
+#  summary(model_list[[1]])$coefficients
+# 
+# # AIC(mixed_lmer_12, mixed_lmer_12_p)
+# summary(model_all)
+# car::Anova(model_all, 3) # III because I have an interaction
+# anova(model_all)
+# plot_model(model_all, type = "pred", terms = c("SPEI_ST", "tree_category"))
+# # anova(model_sla)
