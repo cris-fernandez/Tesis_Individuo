@@ -12,4 +12,20 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 setwd('..')
 getwd()
 
-# 1.- Reading target data ####
+# 1.- Reading model outputs ####
+
+model_df <- read.csv("02_clean_data/40_01_models_2way.csv") %>% 
+  dplyr::select(-X)
+
+model_df_long <- model_df %>% 
+  pivot_longer(cols = -variable,
+               names_to = c(".value", "status"),  # .value: parte compartida del nombre
+               names_pattern = "(.*)_(cold|hot)")
+
+# 2.- Plotting height ####
+
+model_df2 <- model_df_long %>% filter(variable == "height")
+height_plot <- ggplot(model_df2) +
+  geom_point(aes(x = status, y = estimate), size = 4) +
+  geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper)) +
+  theme_classic()
