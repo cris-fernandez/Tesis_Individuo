@@ -72,14 +72,33 @@ clean_target <- clean_target %>%
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"),
          spot_status = fct_relevel(spot_status, "coldspot", "hotspot"))
 
+# 5.- Plots and trees number ####
 
-# 5.- Selecting variables ####
+## 5.1.- Plot number ####
+
+numbers_plot <- clean_target %>% 
+  dplyr::select(c(plot_id, site)) %>% 
+  unique() %>% 
+  count(site)
+
+## 5.2.- Target number ####
+
+numbers_target <- clean_target %>% 
+  dplyr::select(c(plot_id, tree_id, site)) %>% 
+  unique() %>% 
+  count(site)
+
+# 6.- Traits means ####
+
+## 6.1.- Selecting variables ####
 
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
   dplyr::select(c(site, height, percent_n, sla_22, hegyi_index, total_chl_fw_22,
                   age, wc_22, leaf_d13c, leaf_d18o, xc_fw_22))
+
+## 6.2.- Summarising ####
 
 means_target <- clean_target %>% 
   group_by(site) %>% 
