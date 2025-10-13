@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "lme4", "lmerTest") #list of packages
+        "viridis", "lme4", "lmerTest", "emmeans") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -124,6 +124,37 @@ model_df$p_val_hot[i] <-
   summary(model_list[[i]])$coefficients["spot_statushotspot", "Pr(>|t|)"]
 print(i)
 }
+
+# 8.- Calculating CI 95% ####
+
+ci_list <- list()
+
+for (i in 1:length(var_list)) {
+  ci_list[[i]] <- summary(emmeans(model_list[[i]], ~ spot_status))
+  print(i)
+}
+
+# 9.- Adding confidence intervals to the table ####
+
+for (i in 1:length(var_list)) {
+  model_df$ci_lower_cold[i] <- ci_list[[i]][1, "lower.CL"]
+  model_df$ci_upper_cold[i] <- ci_list[[i]][1, "upper.CL"]
+  model_df$ci_lower_hot[i] <- ci_list[[i]][2, "lower.CL"]
+  model_df$ci_upper_hot[i] <- ci_list[[i]][2, "upper.CL"]
+  print(i)
+}
+
+# 10.- Estimate ####
+
+# In model outputs, the estimate for the second category is expressed as the difference 
+# regarding the previous category
+
+model_df <- model_df %>% 
+  mutate(estimate_hot = estimate_cold + estimate_hot)
+
+# 11.- Saving df ####
+
+write.csv(model_df, "02_clean_data/40_01_models_2way.csv")
 
 # 5.- Morphological variables ####
 

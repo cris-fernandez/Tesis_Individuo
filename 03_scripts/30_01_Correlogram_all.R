@@ -2,7 +2,7 @@ rm(list=ls()) #Clearing Gl environment
 
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
-        "FactoMineR", "factoextra") #list of packages
+        "FactoMineR", "factoextra", "ggtext") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -99,14 +99,49 @@ correlogram <- ggcorrplot(correlogram,
                           lab = TRUE,
                           method = "circle", 
                           p.mat = p_matrix, 
-                          insig = "blank")
+                          insig = "blank",
+                          hc.order = FALSE)
 
-# 7.- Plotting ####
+# 7.- Assigning color per variable type ####
+
+var_types <- tibble(var_name = colnames(clean_target2),
+                    var_type = 
+                      case_when(var_name %in% 
+                                  c("Height", "d.b.h.", "C content", "N content", 
+                                    "Leaf C:N", "SLA", "Age", "Hegyi Index") ~ "Morpho",
+                                var_name %in%
+                                  c("LWC", "Chl. content", "Chl. a / b", "Car. content", 
+                                    "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", 
+                                    "Leaf δ18C") ~ "Physio",
+                                var_name %in% 
+                                  c("BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", 
+                                    "Rt 2022", "Rs 2012", "Rs 2017", 
+                                    "Defoliation") ~ "Whole"))
+
+var_palette <- c("Morpho" = "#440154FF",
+                 "Physio" = "#39568CFF",
+                 "Whole" = "#1F968BFF")
+
+coloured_labs <- var_types %>%
+  mutate(label_col = paste0("<span style='color:", var_palette[var_type], "'>", var_name, "</span>")) %>%
+  pull(label_col)
+
+coloured_labs_y <- coloured_labs[1:23]
+coloured_labs_x <- coloured_labs[2:24]
+
+# Adding it to the graph: 
+correlogram2 <- correlogram +
+  scale_x_discrete(labels = coloured_labs_x) + 
+  scale_y_discrete(labels = coloured_labs_y) + 
+  theme(axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1, size = 12),
+        axis.text.y = ggtext::element_markdown(size = 12))
+
+# 8.- Plotting ####
 
 tiff("04_figures/30_01_correlogram.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
-correlogram
+correlogram2
 dev.off()
 
 # How many significant correlations? 
