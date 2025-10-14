@@ -80,7 +80,7 @@ clean_target <- clean_target %>%
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, total_chl_fw_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, leaf_d15n, sla_22, xc_fw_22,
+                  leaf_d18o_corrected, leaf_d15n, sla_22, xc_fw_22,
                   age, hegyi_index, mean_1980, mean_05, Rt12, Rt17, 
                   Rt22, Rs12, Rs17, wc_22,
                   tree_number, sp_id, spot_status, vigor_id)) %>% 
@@ -110,7 +110,7 @@ norm_aa_target <- aa_target %>%
          cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          # wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
          # wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
@@ -145,7 +145,7 @@ norm_ps_target <- ps_target %>%
          cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          # wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
          # wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
@@ -180,7 +180,7 @@ norm_pp_target <- pp_target %>%
          cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         leaf_d18o_ST = (leaf_d18o - mean(leaf_d18o, na.rm = T)) / sd(leaf_d18o, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          # wood_d13c_17_ST = (wood_d13c_17 - mean(wood_d13c_17, na.rm = T)) / sd(wood_d13c_17, na.rm = T),
          # wood_d13c_22_ST = (wood_d13c_22 - mean(wood_d13c_22, na.rm = T)) / sd(wood_d13c_22, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
@@ -457,8 +457,8 @@ biplot_aa <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (20.81 %)") + 
+  ylab("PC2 (13.45 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -504,8 +504,8 @@ biplot_ps <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (28.07 %)") + 
+  ylab("PC2 (10.06 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -551,8 +551,8 @@ biplot_pp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (20.15 %)") + 
+  ylab("PC2 (14.25 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),

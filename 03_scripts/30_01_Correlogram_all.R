@@ -70,13 +70,13 @@ clean_target <- clean_target %>%
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, percent_c, percent_n, cn_ratio, sla_22, age, hegyi_index, 
                   wc_22, total_chl_fw_22, chla_chlb_22, xc_fw_22, chl_xc_22, 
-                  leaf_d13c, leaf_d15n, leaf_d18o, mean_1980, mean_05, 
+                  leaf_d13c, leaf_d15n, leaf_d18o_corrected, mean_1980, mean_05, 
                   Rt12, Rt17, Rt22, Rs12, Rs17, mean_def_obs))
 
 colnames(clean_target) <- c("Height", "d.b.h.", "C content", "N content", 
                             "Leaf C:N", "SLA", "Age", "Hegyi Index",  "LWC", 
                             "Chl. content", "Chl. a / b", "Car. content", 
-                            "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", "Leaf δ18C", 
+                            "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", "Leaf δ18O", 
                             "BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", "Rt 2022",
                             "Rs 2012", "Rs 2017", "Defoliation")
 
@@ -112,7 +112,7 @@ var_types <- tibble(var_name = colnames(clean_target2),
                                 var_name %in%
                                   c("LWC", "Chl. content", "Chl. a / b", "Car. content", 
                                     "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", 
-                                    "Leaf δ18C") ~ "Physio",
+                                    "Leaf δ18O") ~ "Physio",
                                 var_name %in% 
                                   c("BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", 
                                     "Rt 2022", "Rs 2012", "Rs 2017", 

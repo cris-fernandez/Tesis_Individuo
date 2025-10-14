@@ -70,13 +70,13 @@ clean_target <- clean_target %>%
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, percent_c, percent_n, cn_ratio, sla_22, age, hegyi_index, 
                   wc_22, total_chl_fw_22, chla_chlb_22, xc_fw_22, chl_xc_22, 
-                  leaf_d13c, leaf_d15n, leaf_d18o, mean_1980, mean_05, 
+                  leaf_d13c, leaf_d15n, leaf_d18o_corrected, mean_1980, mean_05, 
                   Rt12, Rt17, Rt22, Rs12, Rs17, mean_def_obs, spot_status))
 
 colnames(clean_target) <- c("Height", "d.b.h.", "C content", "N content", 
                             "Leaf C:N", "SLA", "Age", "Hegyi Index",  "LWC", 
                             "Chl. content", "Chl. a / b", "Car. content", 
-                            "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", "Leaf δ18C", 
+                            "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", "Leaf δ18O", 
                             "BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", "Rt 2022",
                             "Rs 2012", "Rs 2017", "Defoliation", "spot_status")
 
@@ -108,28 +108,70 @@ correlogram_cold <- ggcorrplot(correlogram_cold,
                           lab = TRUE,
                           method = "circle", 
                           p.mat = cold_matrix, 
-                          insig = "blank")
+                          insig = "blank",
+                          hc.order = FALSE)
 
 correlogram_hot <- ggcorrplot(correlogram_hot, 
                                type = "lower",
                                lab = TRUE,
                                method = "circle", 
                                p.mat = hot_matrix, 
-                               insig = "blank")
+                               insig = "blank",
+                              hc.order = FALSE)
+
+# 7.- Assigning color per variable type ####
+
+var_types <- tibble(var_name = colnames(clean_target),
+                    var_type = 
+                      case_when(var_name %in% 
+                                  c("Height", "d.b.h.", "C content", "N content", 
+                                    "Leaf C:N", "SLA", "Age", "Hegyi Index") ~ "Morpho",
+                                var_name %in%
+                                  c("LWC", "Chl. content", "Chl. a / b", "Car. content", 
+                                    "Chl. / Car.", "Leaf δ13C", "Leaf δ15N", 
+                                    "Leaf δ18O") ~ "Physio",
+                                var_name %in% 
+                                  c("BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", 
+                                    "Rt 2022", "Rs 2012", "Rs 2017", 
+                                    "Defoliation") ~ "Whole"))
+
+var_palette <- c("Morpho" = "#440154FF",
+                 "Physio" = "#39568CFF",
+                 "Whole" = "#1F968BFF")
+
+coloured_labs <- var_types %>%
+  mutate(label_col = paste0("<span style='color:", var_palette[var_type], "'>", var_name, "</span>")) %>%
+  pull(label_col)
+
+coloured_labs_y <- coloured_labs[1:23]
+coloured_labs_x <- coloured_labs[2:24]
+
+# Adding it to the graph: 
+correlogram_cold2 <- correlogram_cold +
+  scale_x_discrete(labels = coloured_labs_x) + 
+  scale_y_discrete(labels = coloured_labs_y) + 
+  theme(axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1, size = 12),
+        axis.text.y = ggtext::element_markdown(size = 12))
+
+correlogram_hot2 <- correlogram_hot +
+  scale_x_discrete(labels = coloured_labs_x) + 
+  scale_y_discrete(labels = coloured_labs_y) + 
+  theme(axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1, size = 12),
+        axis.text.y = ggtext::element_markdown(size = 12))
 
 
-# 7.- Plotting ####
+# 8.- Plotting ####
 
 tiff("04_figures/30_02_correlogram_cold.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
-correlogram_cold
+correlogram_cold2
 dev.off()
 
 tiff("04_figures/30_03_correlogram_hot.tiff", units = "mm", 
      width = 300, height = 300,
      res = 700, compression = "lzw")
-correlogram_hot
+correlogram_hot2
 dev.off()
 
 # 8.- How many correlations are significant? ####

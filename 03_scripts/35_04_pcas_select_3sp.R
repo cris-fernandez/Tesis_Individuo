@@ -80,7 +80,7 @@ clean_target <- clean_target %>%
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, total_chl_fw_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
-                  leaf_d18o, leaf_d15n, sla_22, xc_fw_22,
+                  leaf_d18o_corrected, leaf_d15n, sla_22, xc_fw_22,
                   age, hegyi_index, mean_1980, mean_05, Rt12, Rt17, 
                   Rt22, Rs12, Rs17, wc_22,
                   tree_number, sp_id, spot_status, vigor_id)) %>% 
@@ -396,8 +396,8 @@ biplot_aa <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (27.58 %)") + 
+  ylab("PC2 (18.69 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -443,8 +443,8 @@ biplot_ps <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (43.01 %)") + 
+  ylab("PC2 (14.84 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -490,8 +490,8 @@ biplot_pp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (20.82 %)") + 
-  ylab("PC2 (18.20 %)") + 
+  xlab("PC1 (23.08 %)") + 
+  ylab("PC2 (20.44 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),

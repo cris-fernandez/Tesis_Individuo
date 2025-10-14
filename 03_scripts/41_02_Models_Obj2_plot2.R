@@ -14,13 +14,13 @@ getwd()
 
 # 1.- Reading model outputs ####
 
-model_df <- read.csv("02_clean_data/40_01_models_2way.csv") %>% 
+model_df <- read.csv("02_clean_data/40_02_models_3way.csv") %>% 
   dplyr::select(-X)
 
 model_df_long <- model_df %>% 
   pivot_longer(cols = -variable,
                names_to = c(".value", "status"),  # .value: parte compartida del nombre
-               names_pattern = "(.*)_(cold|hot)")
+               names_pattern = "(.*)_(healthy|damaged)")
 
 model_df_long$status <- as.factor(model_df_long$status)
 
@@ -32,12 +32,12 @@ h_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                    values = c("cold" = "#2274A5",
-                               "hot" = "#D71515"),
-                    labels = c("Non-declining site",
-                               "Declining site"),
-                    name = "") + 
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
   labs(tag = "A") +
   ylab("Height (m)") + 
   xlab("") + 
@@ -61,11 +61,11 @@ dbh_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "B") +
   ylab("d.b.h. (cm)") + 
@@ -90,11 +90,11 @@ c_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "C") +
   ylab("C content (%)") + 
@@ -119,11 +119,11 @@ n_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "D") +
   ylab("N content (%)") + 
@@ -148,11 +148,11 @@ cn_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "E") +
   ylab("C:N ratio") + 
@@ -177,11 +177,11 @@ sla_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "F") +
   ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
@@ -206,11 +206,11 @@ age_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   scale_x_discrete(labels = c("cold" = "Healthy", 
                               "hot" = "Declining")) + 
@@ -237,11 +237,11 @@ hegyi_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   scale_x_discrete(labels = c("cold" = "Healthy", 
                               "hot" = "Declining")) + 
@@ -270,11 +270,11 @@ wc_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "A") +
   ylab("LWC (%)") + 
@@ -299,11 +299,11 @@ chl_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "B") +
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
@@ -328,11 +328,11 @@ chlab_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "C") +
   ylab("Chl. a/b") + 
@@ -357,11 +357,11 @@ xc_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "D") +
   ylab(expression(paste("Caroten. (μg g"^"-1", ")"))) +
@@ -386,11 +386,11 @@ chlxc_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "E") +
   ylab("Chl. / car.") + 
@@ -415,11 +415,11 @@ d13c_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "F") +
   ylab(bquote("δ"~C^13~"(‰)")) +
@@ -444,11 +444,11 @@ d15n_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   scale_x_discrete(labels = c("cold" = "Healthy", 
                               "hot" = "Declining")) + 
@@ -475,11 +475,11 @@ d18o_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   scale_x_discrete(labels = c("cold" = "Healthy", 
                               "hot" = "Declining")) + 
@@ -508,11 +508,11 @@ bai80_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "A") +
   ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
@@ -537,11 +537,11 @@ bai05_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "B") +
   ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
@@ -566,11 +566,11 @@ rt12_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "C") +
   ylab("Rt 2012") + 
@@ -595,11 +595,11 @@ rt17_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "D") +
   ylab("Rt 2017") + 
@@ -624,11 +624,11 @@ rt22_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "E") +
   ylab("Rt 2022") + 
@@ -653,11 +653,11 @@ rs12_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   labs(tag = "F") +
   ylab("Rs 2012") + 
@@ -682,11 +682,11 @@ rs17_plot <- ggplot(model_df2) +
   geom_point(aes(x = status, y = estimate, col = status), size = 3) +
   geom_linerange(aes(x = status, ymin = ci_lower, ymax = ci_upper, 
                      col = status), size = 1.5) +
-  scale_color_manual(breaks = c("cold", "hot"),
-                     values = c("cold" = "#2274A5",
-                                "hot" = "#D71515"),
-                     labels = c("Non-declining site",
-                                "Declining site"),
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
                      name = "") + 
   scale_x_discrete(labels = c("cold" = "Healthy", 
                               "hot" = "Declining")) + 
@@ -707,19 +707,19 @@ rs17_plot <- ggplot(model_df2) +
 
 # 8.- Plotting ####
 
-tiff("04_figures/41_01_Model2_all_morpho2.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/42_01_Model3_all_morpho3.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 h_plot + dbh_plot + c_plot + n_plot + cn_plot + sla_plot + age_plot + hegyi_plot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
 dev.off()
 
-tiff("04_figures/41_02_Model2_all_physio2.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/42_02_Model3_all_physio3.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 wc_plot + chl_plot + chlab_plot + xc_plot + chlxc_plot + d13c_plot + d15n_plot + d18o_plot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
 dev.off()
 
-tiff("04_figures/41_03_Model2_all_whole2.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/42_03_Model3_all_whole3.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 bai80_plot + bai05_plot + rt12_plot + rt17_plot + rt22_plot + rs12_plot + rs17_plot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
