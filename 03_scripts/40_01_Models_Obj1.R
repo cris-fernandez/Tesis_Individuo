@@ -82,7 +82,7 @@ model_list <- list()
 var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
               "cn", "sla_22", "age", 
               "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
-              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", "leaf_d18o",
+              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", "leaf_d18o_corrected",
               "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
 
 for (i in 1:length(var_list)) {
@@ -155,20 +155,3 @@ model_df <- model_df %>%
 # 11.- Saving df ####
 
 write.csv(model_df, "02_clean_data/40_01_models_2way.csv")
-
-# 5.- Morphological variables ####
-
-# model_h <- lmer(height ~ spot_status + (1|plot_id),
-#                 data = clean_target)
-# 
-# model_sla <- lmer(percent_n ~ spot_status + (1|plot_id),
-#                 data = clean_target)
-# 
-#  summary(model_list[[1]])$coefficients
-# 
-# # AIC(mixed_lmer_12, mixed_lmer_12_p)
-# summary(model_all)
-# car::Anova(model_all, 3) # III because I have an interaction
-# anova(model_all)
-# plot_model(model_all, type = "pred", terms = c("SPEI_ST", "tree_category"))
-# # anova(model_sla)
