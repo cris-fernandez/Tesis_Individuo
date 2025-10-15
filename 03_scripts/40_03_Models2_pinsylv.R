@@ -72,10 +72,14 @@ clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
 clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
-# Filtering only hotspot observations ####
+# Transforming spot status into a factor so it can be modellised:
 
-clean_target <- clean_target %>% filter(!vigor_id == "cold_healthy") %>% 
-  mutate(vigor_id = droplevels(vigor_id))
+clean_target$spot_status <- as.factor(clean_target$spot_status)
+
+# Filtering by species: 
+
+clean_target <- clean_target %>% 
+  filter(sp_id == "Pinsylv")
 
 # 6.- Model list ####
 
@@ -88,43 +92,41 @@ var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
 
 for (i in 1:length(var_list)) {
   model_formula <- as.formula(paste(var_list[i], 
-                                    "~ vigor_id + (1|plot_id)"))
+                                    "~ spot_status + (1|plot_id)"))
   
   model_list[[i]] <- lmer(model_formula, data = clean_target)
   print(i)
 }
 
-summary(model_list[[1]])$coefficients
-
 # 7.- Model coefficients table ####
 
 model_df <- data.frame(matrix(ncol = 11, nrow = length(var_list)))
-colnames(model_df) <- c("variable", "estimate_healthy", "estimate_damaged", 
-                        "std_error_healthy", "std_error_damaged", "df_healthy", "df_damaged",
-                        "t_val_healthy", "t_val_damaged", "p_val_healthy", "p_val_damaged")
+colnames(model_df) <- c("variable", "estimate_cold", "estimate_hot", 
+                        "std_error_cold", "std_error_hot", "df_cold", "df_hot",
+                        "t_val_cold", "t_val_hot", "p_val_cold", "p_val_hot")
 for (i in 1:length(var_list)) {
   
   model_df$variable[[i]] <- var_list[[i]]
-  model_df$estimate_healthy[i] <- 
+  model_df$estimate_cold[i] <- 
     summary(model_list[[i]])$coefficients["(Intercept)", "Estimate"]
-  model_df$estimate_damaged[i] <-
-    summary(model_list[[i]])$coefficients["vigor_idhot_damaged", "Estimate"]
-  model_df$std_error_healthy[i] <-
+  model_df$estimate_hot[i] <-
+    summary(model_list[[i]])$coefficients["spot_statushotspot", "Estimate"]
+  model_df$std_error_cold[i] <-
     summary(model_list[[i]])$coefficients["(Intercept)", "Std. Error"]
-  model_df$std_error_damaged[i] <-
-    summary(model_list[[i]])$coefficients["vigor_idhot_damaged", "Std. Error"]
-  model_df$df_healthy[i] <- 
+  model_df$std_error_hot[i] <-
+    summary(model_list[[i]])$coefficients["spot_statushotspot", "Std. Error"]
+  model_df$df_cold[i] <- 
     summary(model_list[[i]])$coefficients["(Intercept)", "df"]
-  model_df$df_damaged[i] <-
-    summary(model_list[[i]])$coefficients["vigor_idhot_damaged", "df"]
-  model_df$t_val_healthy[i] <- 
+  model_df$df_hot[i] <-
+    summary(model_list[[i]])$coefficients["spot_statushotspot", "df"]
+  model_df$t_val_cold[i] <- 
     summary(model_list[[i]])$coefficients["(Intercept)", "t value"]
-  model_df$t_val_damaged[i] <- 
-    summary(model_list[[i]])$coefficients["vigor_idhot_damaged", "t value"]
-  model_df$p_val_healthy[i] <- 
+  model_df$t_val_hot[i] <- 
+    summary(model_list[[i]])$coefficients["spot_statushotspot", "t value"]
+  model_df$p_val_cold[i] <- 
     summary(model_list[[i]])$coefficients["(Intercept)", "Pr(>|t|)"]
-  model_df$p_val_damaged[i] <- 
-    summary(model_list[[i]])$coefficients["vigor_idhot_damaged", "Pr(>|t|)"]
+  model_df$p_val_hot[i] <- 
+    summary(model_list[[i]])$coefficients["spot_statushotspot", "Pr(>|t|)"]
   print(i)
 }
 
@@ -133,17 +135,17 @@ for (i in 1:length(var_list)) {
 ci_list <- list()
 
 for (i in 1:length(var_list)) {
-  ci_list[[i]] <- summary(emmeans(model_list[[i]], ~ vigor_id))
+  ci_list[[i]] <- summary(emmeans(model_list[[i]], ~ spot_status))
   print(i)
 }
 
 # 9.- Adding confidence intervals to the table ####
 
 for (i in 1:length(var_list)) {
-  model_df$ci_lower_healthy[i] <- ci_list[[i]][1, "lower.CL"]
-  model_df$ci_upper_healthy[i] <- ci_list[[i]][1, "upper.CL"]
-  model_df$ci_lower_damaged[i] <- ci_list[[i]][2, "lower.CL"]
-  model_df$ci_upper_damaged[i] <- ci_list[[i]][2, "upper.CL"]
+  model_df$ci_lower_cold[i] <- ci_list[[i]][1, "lower.CL"]
+  model_df$ci_upper_cold[i] <- ci_list[[i]][1, "upper.CL"]
+  model_df$ci_lower_hot[i] <- ci_list[[i]][2, "lower.CL"]
+  model_df$ci_upper_hot[i] <- ci_list[[i]][2, "upper.CL"]
   print(i)
 }
 
@@ -153,8 +155,8 @@ for (i in 1:length(var_list)) {
 # regarding the previous category
 
 model_df <- model_df %>% 
-  mutate(estimate_damaged = estimate_healthy + estimate_damaged)
+  mutate(estimate_hot = estimate_cold + estimate_hot)
 
 # 11.- Saving df ####
 
-write.csv(model_df, "02_clean_data/40_02_models_3way.csv")
+write.csv(model_df, "02_clean_data/40_03_models_2way_ps.csv")
