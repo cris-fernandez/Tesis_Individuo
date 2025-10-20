@@ -76,7 +76,7 @@ clean_target <- clean_target %>%
 # 5.- Selecting variables ####
 
 clean_target <- clean_target %>% 
-  mutate(cn_ratio = percent_c / percent_n) %>% 
+  mutate(cn_ratio = percent_c / percent_c) %>% 
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, total_chl_fw_22, chla_chlb_22,
                   chl_xc_22, percent_c, percent_n, cn_ratio, leaf_d13c, 
@@ -100,11 +100,10 @@ pp_target <- clean_target %>% filter(sp_id == "Pinpine")
 
 norm_aa_target <- aa_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
+         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
+         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
          wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
@@ -115,11 +114,10 @@ norm_aa_target <- norm_aa_target %>% dplyr::select(contains("_ST")) %>%
 
 norm_ps_target <- ps_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
+         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
+         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
          wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
@@ -130,11 +128,10 @@ norm_ps_target <- norm_ps_target %>% dplyr::select(c(contains("_ST"))) %>%
 
 norm_pp_target <- pp_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
+         chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
+         percent_c_ST = (percent_c - mean(percent_c, na.rm = T)) / sd(percent_c, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
          Rs12_ST = (Rs12 - mean(Rs12, na.rm = T)) / sd(Rs12, na.rm = T),
          wc_ST = (wc_22 - mean(wc_22, na.rm = T)) / sd(wc_22, na.rm = T))
@@ -195,8 +192,8 @@ loadings_df_pp$variable <- rownames(loadings_df_pp)
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-varnames <- c("Height", "Chl.", "N", "δ13C", "SLA", 
-              "BAI80", "BAI05", "Rs12", "LWC")
+varnames <- c("Height", "Chl. / xc", "C", "δ13C", "SLA", 
+              "BAI05", "Rs12", "LWC")
 
 loadings_df_aa$varnames <- varnames
 loadings_df_ps$varnames <- varnames
@@ -396,8 +393,8 @@ biplot_aa <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (27.58 %)") + 
-  ylab("PC2 (18.69 %)") + 
+  xlab("PC1 (28.03 %)") + 
+  ylab("PC2 (23.56 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -443,8 +440,8 @@ biplot_ps <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (43.01 %)") + 
-  ylab("PC2 (14.84 %)") + 
+  xlab("PC1 (39.88 %)") + 
+  ylab("PC2 (15.34 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -490,8 +487,8 @@ biplot_pp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (23.08 %)") + 
-  ylab("PC2 (20.44 %)") + 
+  xlab("PC1 (24.06 %)") + 
+  ylab("PC2 (19.87 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -513,7 +510,8 @@ biplot_pp <- ggplot() +
 # 13.- Saving ####
 
 tiff("04_figures/35_04_PCA_Select_3sp.tiff", units = "mm",
-     width = 900, height = 300,
+     width = 600, height = 600,
      res = 600, compression = "lzw")
-biplot_aa + biplot_ps + biplot_pp
+biplot_aa + biplot_ps + biplot_pp + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

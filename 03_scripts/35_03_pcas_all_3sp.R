@@ -574,7 +574,8 @@ biplot_pp <- ggplot() +
 # 13.- Saving ####
 
 tiff("04_figures/35_03_PCA_All_3sp.tiff", units = "mm",
-     width = 900, height = 300,
+     width = 600, height = 600,
      res = 600, compression = "lzw")
-biplot_aa + biplot_ps + biplot_pp
+biplot_aa + biplot_ps + biplot_pp + 
+  guide_area() + plot_layout(ncol = 2, guides = "collect")
 dev.off()

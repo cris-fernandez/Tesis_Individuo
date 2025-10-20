@@ -516,7 +516,8 @@ biplot_vigor <- ggplot() +
 # 12.- Plotting ####
 
 tiff("04_figures/35_02_PCA_select.tiff", units = "mm",
-     width = 900, height = 300,
+     width = 600, height = 600,
      res = 600, compression = "lzw")
-biplot_sp_cold + biplot_sp_hot + biplot_vigor
+biplot_sp_cold + biplot_sp_hot + biplot_vigor + 
+  guide_area + plot_layout(ncol = 2, guides = "collect")
 dev.off()
