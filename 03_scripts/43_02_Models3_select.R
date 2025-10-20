@@ -1,0 +1,460 @@
+rm(list=ls()) #Clearing Gl environment
+
+pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
+        "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
+        "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
+        "viridis", "lme4", "lmerTest", "emmeans") #list of packages
+new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
+if(length(new_pck)) install.packages(new_pck) #install new packages
+lapply(pck, library, character.only=T) #load all packages
+
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+setwd('..')
+getwd()
+
+# 1.- Reading model outputs ####
+
+model_all <- read.csv("02_clean_data/40_05_models_3way.csv") %>% 
+  dplyr::select(-X)
+
+model_all_long <- model_all %>% 
+  pivot_longer(cols = -variable,
+               names_to = c(".value", "status"),  # .value: parte compartida del nombre
+               names_pattern = "(.*)_(healthy|damaged)")
+
+model_all_long$status <- as.factor(model_all_long$status)
+model_all_long$sp_id <- "all"
+
+model_aa <- read.csv("02_clean_data/40_06_models_3way_aa.csv") %>% 
+  dplyr::select(-X)
+
+model_aa_long <- model_aa %>% 
+  pivot_longer(cols = -variable,
+               names_to = c(".value", "status"),  # .value: parte compartida del nombre
+               names_pattern = "(.*)_(healthy|damaged)")
+
+model_aa_long$status <- as.factor(model_aa_long$status)
+model_aa_long$sp_id <- "Abialba"
+
+model_ps <- read.csv("02_clean_data/40_07_models_3way_ps.csv") %>% 
+  dplyr::select(-X)
+
+model_ps_long <- model_ps %>% 
+  pivot_longer(cols = -variable,
+               names_to = c(".value", "status"),  # .value: parte compartida del nombre
+               names_pattern = "(.*)_(healthy|damaged)")
+
+model_ps_long$status <- as.factor(model_ps_long$status)
+model_ps_long$sp_id <- "Pinsylv"
+
+model_pp <- read.csv("02_clean_data/40_08_models_3way_pp.csv") %>% 
+  dplyr::select(-X)
+
+model_pp_long <- model_pp %>% 
+  pivot_longer(cols = -variable,
+               names_to = c(".value", "status"),  # .value: parte compartida del nombre
+               names_pattern = "(.*)_(healthy|damaged)")
+
+model_pp_long$status <- as.factor(model_pp_long$status)
+model_pp_long$sp_id <- "Pinpine"
+
+model_df_long <- do.call("rbind", list(model_all_long, model_aa_long, 
+                                       model_ps_long, model_pp_long))
+
+model_df_long$sp_id <- factor(model_df_long$sp_id, 
+                              levels = c("all", "Abialba", "Pinsylv", "Pinpine"))
+
+# So that p-value is always that of hotspot:
+
+model_df_long <- model_df_long %>%
+  group_by(variable, sp_id) %>%
+  mutate(p_val = ifelse(status == "healthy",
+                        p_val[status == "damaged"][1],  # asigna el valor de hot
+                        p_val)) %>%
+  ungroup()
+
+model_df_long <- model_df_long %>% 
+  mutate(significant = ifelse(p_val < 0.05, "yes", "no"))
+
+# 2.-Morphological variables ####
+## 2.1.- Height ####
+
+model_df2 <- model_df_long %>% filter(variable == "height")
+h_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  labs(tag = "A") +
+  ylab("Height (m)") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 2.2.- d.b.h. ####
+
+model_df2 <- model_df_long %>% filter(variable == "dbh")
+
+dbh_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "B") +
+  ylab("d.b.h. (cm)") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 2.3.- Age ####
+
+model_df2 <- model_df_long %>% filter(variable == "age")
+
+age_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  scale_x_discrete(labels=c("all" = "All", 
+                            "Abialba" = "Aa",
+                            "Pinsylv" = "Ps",
+                            "Pinpine" = "Pp")) + 
+  labs(tag = "C") +
+  ylab("Age (years)") + 
+  xlab("") + 
+  theme_classic() +
+  theme(legend.position = "none",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+# 3.- Physiological variables ####
+## 3.1.- Chl. ####
+
+model_df2 <- model_df_long %>% filter(variable == "total_chl_fw_22")
+
+chl_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "D") +
+  ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 3.2.- Carotenoids ####
+
+model_df2 <- model_df_long %>% filter(variable == "xc_fw_22")
+
+xc_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "E") +
+  ylab(expression(paste("Caroten. (μg g"^"-1", ")"))) +
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 3.5.- Chl. / xc ####
+
+model_df2 <- model_df_long %>% filter(variable == "chl_xc_22")
+
+chlxc_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "E") +
+  ylab("Chl. / car.") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+# 4.- Whole-tree variables ####
+
+## 4.2.- BAI05 ####
+
+model_df2 <- model_df_long %>% filter(variable == "mean_05")
+
+bai05_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "F") +
+  ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 4.3.- Rt12 ####
+
+model_df2 <- model_df_long %>% filter(variable == "Rt12")
+
+rt12_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "C") +
+  ylab("Rt 2012") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 4.4.- Rt17 ####
+
+model_df2 <- model_df_long %>% filter(variable == "Rt17")
+
+rt17_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "D") +
+  ylab("Rt 2017") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(1, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 12),
+        plot.tag = element_text(size = 25))
+
+## 4.5.- Rt22 ####
+
+model_df2 <- model_df_long %>% filter(variable == "Rt22")
+
+rt22_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  labs(tag = "E") +
+  ylab("Rt 2022") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+## 4.6.- Rs12 ####
+
+model_df2 <- model_df_long %>% filter(variable == "Rs12")
+
+rs12_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  scale_x_discrete(labels=c("all" = "All", 
+                            "Abialba" = "Aa",
+                            "Pinsylv" = "Ps",
+                            "Pinpine" = "Pp")) + 
+  labs(tag = "F") +
+  ylab("Rs 2012") + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "right",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+## 4.7.- Rs17 ####
+
+model_df2 <- model_df_long %>% filter(variable == "Rs17")
+
+rs17_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("healthy", "damaged"),
+                     values = c("healthy" = "#D71515",
+                                "damaged" = "#650304"),
+                     labels = c("Healthy trees",
+                                "Damaged trees"),
+                     name = "") + 
+  scale_shape_manual(values = c("yes" = 20, "no" = 1)) +  
+  scale_x_discrete(labels=c("all" = "All", 
+                            "Abialba" = "Aa",
+                            "Pinsylv" = "Ps",
+                            "Pinpine" = "Pp")) + 
+  labs(tag = "G") +
+  ylab("Rs 2017") + 
+  xlab("") + 
+  theme_classic() +
+  theme(legend.position = "right",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+# 8.- Plotting ####
+
+tiff("04_figures/43_02_Model3_select.tiff", units = "mm", width = 400, height = 400,
+     res = 400, compression = "lzw")
+h_plot + dbh_plot + age_plot + chl_plot + xc_plot + plot_spacer() + bai05_plot + rs12_plot + 
+  guide_area() + plot_layout(ncol = 3, guides = "collect")
+dev.off()
