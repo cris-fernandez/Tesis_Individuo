@@ -95,8 +95,9 @@ var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
 
 # 6.- Creating empty dataframe
 
-AIC_df <- data.frame(matrix(NA, nrow = length(var_list), ncol = 2))
-colnames(AIC_df) <- c("variable", "delta_aic")
+AIC_df <- data.frame(matrix(NA, nrow = length(var_list), ncol = 8))
+colnames(AIC_df) <- c("variable", "delta_aic", "estimate_healthy", "estimate_damaged",
+                      "ci_upper_damaged", "ci_upper_healthy", "ci_lower_healthy", "ci_lower_damaged")
 
 # 7.- Models and delta AIC ####
 
@@ -109,11 +110,30 @@ for (i in 1:length(var_list)) {
   model_var <- lmer(model_formula, data = clean_target, REML = F)
   model_null <- lmer(null_formula, data = clean_target, REML = F)
   
-  AIC_df[i, 1] <- var_list[i]
-  AIC_df[i, 2] <- AIC(model_null, model_var)[1,2] - AIC(model_null, model_var)[2,2]
+  AIC_df$variable[i] <- var_list[i]
+  AIC_df$delta_aic[i] <- AIC(model_null, model_var)[1,2] - AIC(model_null, model_var)[2,2]
+  AIC_df$estimate_healthy[i] <- summary(model_var)$coefficients[1, 1]
+  AIC_df$estimate_damaged[i] <- summary(model_var)$coefficients[2, 1]
   print(i)
 }
 
-# 8.- Exporting ####
+# 8.- CI 95% ####
+
+for (i in 1:length(var_list)) {
+  model_formula <- as.formula(paste(var_list[i], 
+                                    "~ vigor_id + (1|site)"))
+  
+  model_var <- lmer(model_formula, data = clean_target)
+  
+  ci <- summary(emmeans(model_var, ~ vigor_id))
+  AIC_df$ci_upper_healthy[i] <- ci$upper.CL[1]
+  AIC_df$ci_upper_damaged[i] <- ci$upper.CL[2]
+  AIC_df$ci_lower_healthy[i] <- ci$lower.CL[1]
+  AIC_df$ci_lower_damaged[i] <- ci$lower.CL[2]
+  
+  print(i)
+}
+
+# 9.- Exporting ####
 
 write.csv(AIC_df, "02_clean_data/46_08_Models_discrete3_AIC_pp.csv")

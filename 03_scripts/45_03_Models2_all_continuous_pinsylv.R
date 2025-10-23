@@ -102,32 +102,16 @@ summary(model_list[[1]])
 # 7.- Model coefficients table ####
 
 model_df <- data.frame(matrix(ncol = 11, nrow = length(var_list)))
-colnames(model_df) <- c("variable", "estimate_cold", "estimate_hot", 
-                        "std_error_cold", "std_error_hot", "df_cold", "df_hot",
-                        "t_val_cold", "t_val_hot", "p_val_cold", "p_val_hot")
+colnames(model_df) <- c("variable", "std", "df",
+                        "t_val", "p_val")
+
 for (i in 1:length(var_list)) {
   
   model_df$variable[[i]] <- var_list[[i]]
-  model_df$estimate_cold[i] <- 
-    summary(model_list[[i]])$coefficients["(Intercept)", "Estimate"]
-  model_df$estimate_hot[i] <-
-    summary(model_list[[i]])$coefficients["mean_def_obs", "Estimate"]
-  model_df$std_error_cold[i] <-
-    summary(model_list[[i]])$coefficients["(Intercept)", "Std. Error"]
-  model_df$std_error_hot[i] <-
-    summary(model_list[[i]])$coefficients["mean_def_obs", "Std. Error"]
-  model_df$df_cold[i] <- 
-    summary(model_list[[i]])$coefficients["(Intercept)", "df"]
-  model_df$df_hot[i] <-
-    summary(model_list[[i]])$coefficients["mean_def_obs", "df"]
-  model_df$t_val_cold[i] <- 
-    summary(model_list[[i]])$coefficients["(Intercept)", "t value"]
-  model_df$t_val_hot[i] <- 
-    summary(model_list[[i]])$coefficients["mean_def_obs", "t value"]
-  model_df$p_val_cold[i] <- 
-    summary(model_list[[i]])$coefficients["(Intercept)", "Pr(>|t|)"]
-  model_df$p_val_hot[i] <- 
-    summary(model_list[[i]])$coefficients["mean_def_obs", "Pr(>|t|)"]
+  model_df$std[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "Std. Error"]
+  model_df$df[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "df"]
+  model_df$t_val[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "t value"]
+  model_df$p_val[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "Pr(>|t|)"]
   print(i)
 }
 
@@ -143,21 +127,11 @@ for (i in 1:length(var_list)) {
 # 9.- Adding confidence intervals to the table ####
 
 for (i in 1:length(var_list)) {
-  model_df$ci_lower_cold[i] <- ci_list[[i]][1, "lower.CL"]
-  model_df$ci_upper_cold[i] <- ci_list[[i]][1, "upper.CL"]
-  model_df$ci_lower_hot[i] <- ci_list[[i]][2, "lower.CL"]
-  model_df$ci_upper_hot[i] <- ci_list[[i]][2, "upper.CL"]
+  model_df$ci_lower[i] <- ci_list[[i]][1, "lower.CL"]
+  model_df$ci_upper[i] <- ci_list[[i]][1, "upper.CL"]
   print(i)
 }
 
-# 10.- Estimate ####
-
-# In model outputs, the estimate for the second category is expressed as the difference 
-# regarding the previous category
-
-model_df <- model_df %>% 
-  mutate(estimate_hot = estimate_cold + estimate_hot)
-
-# 11.- Saving df ####
+# 10.- Saving df ####
 
 write.csv(model_df, "02_clean_data/45_03_models_2way_continuous_ps.csv")

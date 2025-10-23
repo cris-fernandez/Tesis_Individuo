@@ -81,8 +81,8 @@ summary(all_count)
 
 model_df2 <- model_df_long %>% filter(variable == "height")
 h_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                     values = c("cold" = "#2274A5",
@@ -91,7 +91,7 @@ h_plot <- ggplot(model_df2) +
                                "Declining site"),
                     name = "") + 
   labs(tag = "A") +
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   ylab("Height (m)") + 
   xlab("") + 
   theme_classic() + 
@@ -111,8 +111,8 @@ h_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "dbh")
 
 dbh_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -120,7 +120,7 @@ dbh_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "B") +
   ylab("d.b.h. (cm)") + 
   xlab("") + 
@@ -141,8 +141,8 @@ dbh_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "percent_c")
 
 c_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -150,7 +150,7 @@ c_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "C") +
   ylab("C content (%)") + 
   xlab("") + 
@@ -171,8 +171,8 @@ c_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "percent_n")
 
 n_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -180,7 +180,7 @@ n_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "D") +
   ylab("N content (%)") + 
   xlab("") + 
@@ -201,8 +201,8 @@ n_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "cn")
 
 cn_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -210,7 +210,7 @@ cn_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "E") +
   ylab("C:N ratio") + 
   xlab("") + 
@@ -231,8 +231,8 @@ cn_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "sla_22")
 
 sla_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -240,7 +240,7 @@ sla_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "F") +
   ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
   xlab("") + 
@@ -261,8 +261,8 @@ sla_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "age")
 
 age_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -270,7 +270,7 @@ age_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
@@ -295,8 +295,8 @@ age_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "hegyi_index")
 
 hegyi_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -304,7 +304,7 @@ hegyi_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
@@ -331,8 +331,8 @@ hegyi_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "wc_22")
 
 wc_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -340,7 +340,7 @@ wc_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "A") +
   ylab("LWC (%)") + 
   xlab("") + 
@@ -361,8 +361,8 @@ wc_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "total_chl_fw_22")
 
 chl_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -370,7 +370,7 @@ chl_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "B") +
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
   xlab("") + 
@@ -391,8 +391,8 @@ chl_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "chla_chlb_22")
 
 chlab_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -400,7 +400,7 @@ chlab_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "C") +
   ylab("Chl. a/b") + 
   xlab("") + 
@@ -421,8 +421,8 @@ chlab_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "xc_fw_22")
 
 xc_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -430,7 +430,7 @@ xc_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "D") +
   ylab(expression(paste("Caroten. (μg g"^"-1", ")"))) +
   xlab("") + 
@@ -451,8 +451,8 @@ xc_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "chl_xc_22")
 
 chlxc_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -460,7 +460,7 @@ chlxc_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "E") +
   ylab("Chl. / car.") + 
   xlab("") + 
@@ -481,8 +481,8 @@ chlxc_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "leaf_d13c")
 
 d13c_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -490,7 +490,7 @@ d13c_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "F") +
   ylab(bquote("δ"~C^13~"(‰)")) +
   xlab("") + 
@@ -511,8 +511,8 @@ d13c_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "leaf_d15n")
 
 d15n_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -520,7 +520,7 @@ d15n_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
@@ -545,8 +545,8 @@ d15n_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "leaf_d18o_corrected")
 
 d18o_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -554,7 +554,7 @@ d18o_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
@@ -581,8 +581,8 @@ d18o_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "mean_1980")
 
 bai80_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -590,7 +590,7 @@ bai80_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "A") +
   ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
   xlab("") + 
@@ -611,8 +611,8 @@ bai80_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "mean_05")
 
 bai05_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -620,7 +620,7 @@ bai05_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "B") +
   ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
   xlab("") + 
@@ -641,8 +641,8 @@ bai05_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "Rt12")
 
 rt12_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -650,7 +650,7 @@ rt12_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "C") +
   ylab("Rt 2012") + 
   xlab("") + 
@@ -671,8 +671,8 @@ rt12_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "Rt17")
 
 rt17_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -680,7 +680,7 @@ rt17_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "D") +
   ylab("Rt 2017") + 
   xlab("") + 
@@ -701,8 +701,8 @@ rt17_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "Rt22")
 
 rt22_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -710,7 +710,7 @@ rt22_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "E") +
   ylab("Rt 2022") + 
   xlab("") + 
@@ -731,8 +731,8 @@ rt22_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "Rs12")
 
 rs12_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -740,7 +740,7 @@ rs12_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   labs(tag = "F") +
   ylab("Rs 2012") + 
   xlab("") + 
@@ -761,8 +761,8 @@ rs12_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "Rs17")
 
 rs17_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -770,7 +770,7 @@ rs17_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",

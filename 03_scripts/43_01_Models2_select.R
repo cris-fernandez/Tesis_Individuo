@@ -73,12 +73,13 @@ model_df_long <- model_df_long %>%
   mutate(significant = ifelse(p_val < 0.05, "yes", "no"))
 
 # 2.-Morphological variables ####
-## 2.1.- Height ####
+## 2.1.- N ####
 
-model_df2 <- model_df_long %>% filter(variable == "height")
-h_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+model_df2 <- model_df_long %>% filter(variable == "percent_n")
+
+n_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -86,9 +87,9 @@ h_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "A") +
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
-  ylab("Height (m)") + 
+  ylab("N content (%)") + 
   xlab("") + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -102,13 +103,13 @@ h_plot <- ggplot(model_df2) +
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 2.2.- C ####
+## 2.2.- Age ####
 
-model_df2 <- model_df_long %>% filter(variable == "percent_c")
+model_df2 <- model_df_long %>% filter(variable == "age")
 
-c_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+age_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -116,9 +117,9 @@ c_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "B") +
-  ylab("C content (%)") + 
+  ylab("Age (years)") + 
   xlab("") + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -132,13 +133,13 @@ c_plot <- ggplot(model_df2) +
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 2.3.- SLA ####
+## 2.3.- Hegyi Index ####
 
-model_df2 <- model_df_long %>% filter(variable == "sla_22")
+model_df2 <- model_df_long %>% filter(variable == "hegyi_index")
 
-sla_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+hegyi_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -146,11 +147,11 @@ sla_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "C") +
-  ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
+  ylab("Hegyi Index") + 
   xlab("") + 
-  theme_classic() + 
+  theme_classic() +
   theme(legend.position = "none",
         legend.key.size = unit(1, "cm"),  
         axis.title.x = element_blank(),
@@ -161,7 +162,6 @@ sla_plot <- ggplot(model_df2) +
         axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
-
 
 # 3.- Physiological variables ####
 ## 3.1.- LWC ####
@@ -169,8 +169,8 @@ sla_plot <- ggplot(model_df2) +
 model_df2 <- model_df_long %>% filter(variable == "wc_22")
 
 wc_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -178,7 +178,7 @@ wc_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "D") +
   ylab("LWC (%)") + 
   xlab("") + 
@@ -194,13 +194,13 @@ wc_plot <- ggplot(model_df2) +
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 3.2.- Chl. / xc ####
+## 3.2.- Chl. ####
 
-model_df2 <- model_df_long %>% filter(variable == "chl_xc_22")
+model_df2 <- model_df_long %>% filter(variable == "total_chl_fw_22")
 
-chlxc_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+chl_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -208,9 +208,9 @@ chlxc_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "E") +
-  ylab("Chl. / car.") + 
+  ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
   xlab("") + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -224,13 +224,13 @@ chlxc_plot <- ggplot(model_df2) +
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
-## 3.6.- d13C ####
+## 3.3.- Carotenoids ####
 
-model_df2 <- model_df_long %>% filter(variable == "leaf_d13c")
+model_df2 <- model_df_long %>% filter(variable == "xc_fw_22")
 
-d13c_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+xc_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -238,9 +238,9 @@ d13c_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   labs(tag = "F") +
-  ylab(bquote("δ"~C^13~"(‰)")) +
+  ylab(expression(paste("Caroten. (μg g"^"-1", ")"))) +
   xlab("") + 
   theme_classic() + 
   theme(legend.position = "none",
@@ -254,15 +254,13 @@ d13c_plot <- ggplot(model_df2) +
         legend.text = element_text(size = 12),
         plot.tag = element_text(size = 25))
 
+## 3.4.- d15N ####
 
-# 4.- Whole-tree variables ####
-## 4.1.- BAI05 ####
+model_df2 <- model_df_long %>% filter(variable == "leaf_d15n")
 
-model_df2 <- model_df_long %>% filter(variable == "mean_05")
-
-bai05_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+d15n_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -270,33 +268,34 @@ bai05_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
                             "Pinpine" = "Pp")) + 
   labs(tag = "G") +
-  ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
+  ylab(bquote("δ"~N^15~"(‰)")) +
   xlab("") + 
-  theme_classic() + 
+  theme_classic() +
   theme(legend.position = "none",
-        legend.key.size = unit(1, "cm"),  
+        legend.key.size = unit(2, "cm"),  
         axis.title.x = element_blank(),
         axis.text.x = element_text(size = 30),
         axis.ticks.x = element_blank(),
         axis.line.x = element_blank(),
         axis.text.y = element_text(size = 22),
         axis.title.y = element_text(size = 30),
-        legend.text = element_text(size = 12),
+        legend.text = element_text(size = 25),
         plot.tag = element_text(size = 25))
 
-## 4.2.- Rs12 ####
+# 4.- Whole-tree variables ####
+## 4.1.- BAI 1980 ####
 
-model_df2 <- model_df_long %>% filter(variable == "Rs12")
+model_df2 <- model_df_long %>% filter(variable == "mean_1980")
 
-rs12_plot <- ggplot(model_df2) +
-  geom_point(aes(x = sp_id, y = estimate, col = status, shape = significant), position = position_dodge(width = 0.5), size = 4.5) +
-  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, 
+bai80_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
                      col = status), position = position_dodge(width = 0.5), size = 1.5) +
   scale_color_manual(breaks = c("cold", "hot"),
                      values = c("cold" = "#2274A5",
@@ -304,13 +303,47 @@ rs12_plot <- ggplot(model_df2) +
                      labels = c("Non-declining site",
                                 "Declining site"),
                      name = "") + 
-  scale_shape_manual(values = c("yes" = 20, "no" = 1)) + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
   scale_x_discrete(labels=c("all" = "All", 
                             "Abialba" = "Aa",
                             "Pinsylv" = "Ps",
                             "Pinpine" = "Pp")) + 
   labs(tag = "H") +
-  ylab("Rs 2012") + 
+  ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
+  xlab("") + 
+  theme_classic() + 
+  theme(legend.position = "none",
+        legend.key.size = unit(2, "cm"),  
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 30),
+        axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.text.y = element_text(size = 22),
+        axis.title.y = element_text(size = 30),
+        legend.text = element_text(size = 25),
+        plot.tag = element_text(size = 25))
+
+## 4.2.- BAI05 ####
+
+model_df2 <- model_df_long %>% filter(variable == "mean_05")
+
+bai05_plot <- ggplot(model_df2) +
+  geom_point(aes(x = sp_id, y = estimate, col = status, alpha = significant), position = position_dodge(width = 0.5), size = 4.5) +
+  geom_linerange(aes(x = sp_id, ymin = ci_lower, ymax = ci_upper, alpha = significant, 
+                     col = status), position = position_dodge(width = 0.5), size = 1.5) +
+  scale_color_manual(breaks = c("cold", "hot"),
+                     values = c("cold" = "#2274A5",
+                                "hot" = "#D71515"),
+                     labels = c("Non-declining site",
+                                "Declining site"),
+                     name = "") + 
+  scale_alpha_manual(values = c("yes" = 1, "no" = 0.1)) + 
+  scale_x_discrete(labels=c("all" = "All", 
+                            "Abialba" = "Aa",
+                            "Pinsylv" = "Ps",
+                            "Pinpine" = "Pp")) + 
+  labs(tag = "I") +
+  ylab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() + 
   theme(legend.position = "right",
@@ -326,8 +359,10 @@ rs12_plot <- ggplot(model_df2) +
 
 # 5.- Plotting ####
 
-tiff("04_figures/43_01_Model2_select.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/43_01_Model2_select.tiff", units = "mm", width = 530, height = 400,
      res = 400, compression = "lzw")
-h_plot + c_plot + sla_plot + wc_plot + chlxc_plot + d13c_plot + bai05_plot + 
-  rs12_plot + guide_area() + plot_layout(ncol = 3, guides = "collect")
+n_plot + age_plot + hegyi_plot + plot_spacer() + 
+  wc_plot + chl_plot + xc_plot + d15n_plot + 
+  bai80_plot + bai80_plot + guide_area() + plot_spacer() + 
+  plot_layout(ncol = 4, guides = "collect")
 dev.off()

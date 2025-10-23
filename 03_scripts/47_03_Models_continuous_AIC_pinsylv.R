@@ -97,9 +97,9 @@ colnames(AIC_df) <- c("variable", "delta_aic")
 
 for (i in 1:length(var_list)) {
   model_formula <- as.formula(paste(var_list[i], 
-                                    "~ mean_def_obs + (1|site)"))
+                                    "~ mean_def_obs + (1|site/plot_id)"))
   null_formula <- as.formula(paste(var_list[i], 
-                                   "~ 1 + (1|site)"))
+                                   "~ 1 + (1|site/plot_id)"))
   
   model_var <- lmer(model_formula, data = clean_target, REML = F)
   model_null <- lmer(null_formula, data = clean_target, REML = F)

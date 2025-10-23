@@ -88,7 +88,7 @@ var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
 
 for (i in 1:length(var_list)) {
   model_formula <- as.formula(paste(var_list[i], 
-                                    "~ vigor_id + (1|plot_id)"))
+                                    "~ vigor_id + (1|site)"))
   
   model_list[[i]] <- lmer(model_formula, data = clean_target)
   print(i)

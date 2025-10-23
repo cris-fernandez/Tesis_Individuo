@@ -74,49 +74,110 @@ clean_target <- clean_target %>%
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"),
          spot_status = fct_relevel(spot_status, "coldspot", "hotspot"))
 
-# 5.-Morphological variables ####
-## 5.1.- Height ####
+# 5.- N per category ####
 
-h_plot <- ggplot() + geom_histogram(aes(clean_target$height))
+clean_target %>% count(sp_id)
+clean_target %>% count(vigor_id)
 
-## 2.2.- d.b.h. ####
+# 6.- Variables distribution ####
 
-dbh_plot <- ggplot() + geom_histogram(aes(clean_target$dbh))
+aa_target <- clean_target %>% filter(sp_id == "Abialba")
+ps_target <- clean_target %>% filter(sp_id == "Pinsylv")
+pp_target <- clean_target %>% filter(sp_id == "Pinpine")
 
-## 2.3.- C ####
+plot_theme <- list(ylab(""),
+                   theme_classic(), 
+                   theme(axis.text.x = element_text(size = 20),
+                           axis.title.x = element_text(size = 20),
+                           legend.text = element_text(size = 20)))
 
-c_plot <- ggplot() + geom_histogram(aes(clean_target$percent_c))
+## 6.1.- Morphological variables ####
+### 6.1.1.- Height ####
 
-## 2.4.- N ####
+h_aa <- ggplot(aa_target) + geom_histogram(aes(height), fill = "#785EF0") +
+  xlab("Height (m)") + plot_theme
+h_ps <- ggplot(ps_target) + geom_histogram(aes(height), fill = "#FFB000") +
+  xlab("Height (m)") + plot_theme
+h_pp <- ggplot(pp_target) + geom_histogram(aes(height), fill = "#990000") +
+  xlab("Height (m)") + plot_theme
 
-n_plot <- ggplot() + geom_histogram(aes(clean_target$percent_n))
+### 6.1.2.- d.b.h. ####
 
-## 2.5.- C:N ####
+dbh_aa <- ggplot(aa_target) + geom_histogram(aes(dbh), fill = "#785EF0") +
+  xlab("d.b.h. (cm)") + plot_theme
+dbh_ps <- ggplot(ps_target) + geom_histogram(aes(dbh), fill = "#FFB000") +
+  xlab("d.b.h. (cm)") + plot_theme
+dbh_pp <- ggplot(pp_target) + geom_histogram(aes(dbh), fill = "#990000") +
+  xlab("d.b.h. (cm)") + plot_theme
 
-cn_plot <- ggplot() + geom_histogram(aes(clean_target$cn))
+### 6.1.3.- C ####
 
-## 2.6.- SLA ####
+c_aa <- ggplot(aa_target) + geom_histogram(aes(percent_c), fill = "#785EF0") +
+  xlab("C content (%)") + plot_theme
+c_ps <- ggplot(ps_target) + geom_histogram(aes(percent_c), fill = "#FFB000") +
+  xlab("C content (%)") + plot_theme
+c_pp <- ggplot(pp_target) + geom_histogram(aes(percent_c), fill = "#990000") +
+  xlab("C content (%)") + plot_theme
 
-sla_plot <- ggplot() + geom_histogram(aes(clean_target$sla_22))
+### 6.1.4.- N ####
 
-## 2.7.- Age ####
+n_aa <- ggplot(aa_target) + geom_histogram(aes(percent_n), fill = "#785EF0") +
+  xlab("N content (%)") + plot_theme
+n_ps <- ggplot(ps_target) + geom_histogram(aes(percent_n), fill = "#FFB000") +
+  xlab("N content (%)") + plot_theme
+n_pp <- ggplot(pp_target) + geom_histogram(aes(percent_n), fill = "#990000") +
+  xlab("N content (%)") + plot_theme
 
-age_plot <- ggplot() + geom_histogram(aes(clean_target$age))
+### 6.1.5.- C:N ####
 
-## 2.8.- Hegyi Index ####
+cn_aa <- ggplot(aa_target) + geom_histogram(aes(cn), fill = "#785EF0") +
+  xlab("C:N ratio") + plot_theme
+cn_ps <- ggplot(ps_target) + geom_histogram(aes(cn), fill = "#FFB000") +
+  xlab("C:N ratio") + plot_theme
+cn_pp <- ggplot(pp_target) + geom_histogram(aes(cn), fill = "#990000") +
+  xlab("C:N ratio") + plot_theme
 
-hegyi_plot <- ggplot() + geom_histogram(aes(clean_target$hegyi_index))
+### 6.1.6.- SLA ####
 
-# 3.- Physiological variables ####
+sla_aa <- ggplot(aa_target) + geom_histogram(aes(sla_22), fill = "#785EF0") +
+  xlab("SLA") + plot_theme
+sla_ps <- ggplot(ps_target) + geom_histogram(aes(sla_22), fill = "#FFB000") +
+  xlab("SLA") + plot_theme
+sla_pp <- ggplot(pp_target) + geom_histogram(aes(sla_22), fill = "#990000") +
+  xlab("SLA") + plot_theme
 
-## 3.1.- LWC ####
+### 6.1.7.- Age ####
 
-wc_plot <- ggplot() + geom_histogram(aes(clean_target$wc_22))
+age_aa <- ggplot(aa_target) + geom_histogram(aes(age), fill = "#785EF0") +
+  xlab("Age (years)") + plot_theme
+age_ps <- ggplot(ps_target) + geom_histogram(aes(age), fill = "#FFB000") +
+  xlab("Age (years)") + plot_theme
+age_pp <- ggplot(pp_target) + geom_histogram(aes(age), fill = "#990000") +
+  xlab("Age (years)") + plot_theme
 
-## 3.2.- Chl. ####
+### 6.1.8.- Hegyi Index ####
 
-chl_plot <- ggplot() + geom_histogram(aes(clean_target$total_chl_fw_22))
+hegyi_aa <- ggplot(aa_target) + geom_histogram(aes(hegyi_index), fill = "#785EF0") +
+  xlab("Hegyi Index") + plot_theme
+hegyi_ps <- ggplot(ps_target) + geom_histogram(aes(hegyi_index), fill = "#FFB000") +
+  xlab("Hegyi Index") + plot_theme
+hegyi_pp <- ggplot(pp_target) + geom_histogram(aes(hegyi_index), fill = "#990000") +
+  xlab("Hegyi Index") + plot_theme
 
+## 7.1.- Physiological variables ####
+### 7.1.1.- LWC ####
+
+wc_aa <- ggplot(aa_target) + geom_histogram(aes(wc_22), fill = "#785EF0") +
+  xlab("LWC (%)") + plot_theme
+wc_ps <- ggplot(ps_target) + geom_histogram(aes(wc_22), fill = "#FFB000") +
+  xlab("LWC (%)") + plot_theme
+wc_pp <- ggplot(pp_target) + geom_histogram(aes(wc_22), fill = "#990000") +
+  xlab("LWC (%)") + plot_theme
+
+### 7.1.2.- Chl. ####
+
+chl_aa <- ggplot(aa_target) + geom_histogram(aes(total_chl_fw_22), fill = "#785EF0") +
+  xlab("LWC (%)") + plot_theme
 ## 3.3.- Chl. a/b ####
 
 chlab_plot <- ggplot() + geom_histogram(aes(clean_target$chla_chlb_22))
@@ -179,13 +240,13 @@ h_plot + dbh_plot + c_plot + n_plot + cn_plot + sla_plot + age_plot + hegyi_plot
   guide_area() + plot_layout(ncol = 3, guides = "collect")
 dev.off()
 
-tiff("04_figures/44_02_Distribs_physio.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/44_01_Distribs_physio.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 wc_plot + chl_plot + chlab_plot + xc_plot + chlxc_plot + d13c_plot + d15n_plot + d18o_plot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
 dev.off()
 
-tiff("04_figures/44_03_Distribs_whole2.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/44_01_Distribs_whole2.tiff", units = "mm", width = 400, height = 400,
      res = 400, compression = "lzw")
 bai80_plot + bai05_plot + rt12_plot + rt17_plot + rt22_plot + rs12_plot + rs17_plot + 
   guide_area() + plot_layout(ncol = 3, guides = "collect")
