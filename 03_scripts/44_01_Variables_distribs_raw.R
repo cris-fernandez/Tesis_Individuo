@@ -164,8 +164,8 @@ hegyi_ps <- ggplot(ps_target) + geom_histogram(aes(hegyi_index), fill = "#FFB000
 hegyi_pp <- ggplot(pp_target) + geom_histogram(aes(hegyi_index), fill = "#990000") +
   xlab("Hegyi Index") + plot_theme
 
-## 7.1.- Physiological variables ####
-### 7.1.1.- LWC ####
+## 6.2.- Physiological variables ####
+### 6.2.1.- LWC ####
 
 wc_aa <- ggplot(aa_target) + geom_histogram(aes(wc_22), fill = "#785EF0") +
   xlab("LWC (%)") + plot_theme
@@ -174,81 +174,165 @@ wc_ps <- ggplot(ps_target) + geom_histogram(aes(wc_22), fill = "#FFB000") +
 wc_pp <- ggplot(pp_target) + geom_histogram(aes(wc_22), fill = "#990000") +
   xlab("LWC (%)") + plot_theme
 
-### 7.1.2.- Chl. ####
+### 6.2.2.- Chl. ####
 
 chl_aa <- ggplot(aa_target) + geom_histogram(aes(total_chl_fw_22), fill = "#785EF0") +
-  xlab("LWC (%)") + plot_theme
-## 3.3.- Chl. a/b ####
+  xlab(expression(paste("Chl. (μg g"^"-1", ")"))) + plot_theme
+chl_ps <- ggplot(ps_target) + geom_histogram(aes(total_chl_fw_22), fill = "#FFB000") +
+  xlab(expression(paste("Chl. (μg g"^"-1", ")"))) + plot_theme
+chl_pp <- ggplot(pp_target) + geom_histogram(aes(total_chl_fw_22), fill = "#990000") +
+  xlab(expression(paste("Chl. (μg g"^"-1", ")"))) + plot_theme
 
-chlab_plot <- ggplot() + geom_histogram(aes(clean_target$chla_chlb_22))
+### 6.2.3.- Chl. a/b ####
 
-## 3.4.- Carotenoids ####
+chlab_aa <- ggplot(aa_target) + geom_histogram(aes(chla_chlb_22), fill = "#785EF0") +
+  xlab("Chl. a/b") + plot_theme
+chlab_ps <- ggplot(ps_target) + geom_histogram(aes(chla_chlb_22), fill = "#FFB000") +
+  xlab("Chl. a/b") + plot_theme
+chlab_pp <- ggplot(pp_target) + geom_histogram(aes(chla_chlb_22), fill = "#990000") +
+  xlab("Chl. a/b") + plot_theme
 
-xc_plot <- ggplot() + geom_histogram(aes(clean_target$xc_fw_22))
+### 6.2.4.- Chl. a/b ####
 
-## 3.5.- Chl. / xc ####
+xc_aa <- ggplot(aa_target) + geom_histogram(aes(xc_fw_22), fill = "#785EF0") +
+  xlab(expression(paste("Caroten. (μg g"^"-1", ")"))) + plot_theme
+xc_ps <- ggplot(ps_target) + geom_histogram(aes(xc_fw_22), fill = "#FFB000") +
+  xlab(expression(paste("Caroten. (μg g"^"-1", ")"))) + plot_theme
+xc_pp <- ggplot(pp_target) + geom_histogram(aes(xc_fw_22), fill = "#990000") +
+  xlab(expression(paste("Caroten. (μg g"^"-1", ")"))) + plot_theme
 
-chlxc_plot <- ggplot() + geom_histogram(aes(clean_target$chl_xc_22))
+### 6.2.5.- Chl. / xc ####
 
-## 3.6.- d13C ####
+chlxc_aa <- ggplot(aa_target) + geom_histogram(aes(chl_xc_22), fill = "#785EF0") +
+  xlab("Chl. / car.") + plot_theme
+chlxc_ps <- ggplot(ps_target) + geom_histogram(aes(chl_xc_22), fill = "#FFB000") +
+  xlab("Chl. / car.") + plot_theme
+chlxc_pp <- ggplot(pp_target) + geom_histogram(aes(chl_xc_22), fill = "#990000") +
+  xlab("Chl. / car.") + plot_theme
 
-d13c_plot <- ggplot() + geom_histogram(aes(clean_target$leaf_d13c))
+### 6.2.6.- d13C ####
 
-## 3.7.- d15N ####
+d13c_aa <- ggplot(aa_target) + geom_histogram(aes(leaf_d13c), fill = "#785EF0") +
+  xlab(bquote("δ"~C^13~"(‰)")) + plot_theme
+d13c_ps <- ggplot(ps_target) + geom_histogram(aes(leaf_d13c), fill = "#FFB000") +
+  xlab(bquote("δ"~C^13~"(‰)")) + plot_theme
+d13c_pp <- ggplot(pp_target) + geom_histogram(aes(leaf_d13c), fill = "#990000") +
+  xlab(bquote("δ"~C^13~"(‰)")) + plot_theme
 
-d15n_plot <- ggplot() + geom_histogram(aes(clean_target$leaf_d15n))
+### 6.2.7.- d15N ####
 
-## 3.8.- d18O ####
+d15n_aa <- ggplot(aa_target) + geom_histogram(aes(leaf_d15n), fill = "#785EF0") +
+  xlab(bquote("δ"~N^15~"(‰)")) + plot_theme
+d15n_ps <- ggplot(ps_target) + geom_histogram(aes(leaf_d15n), fill = "#FFB000") +
+  xlab(bquote("δ"~N^15~"(‰)")) + plot_theme
+d15n_pp <- ggplot(pp_target) + geom_histogram(aes(leaf_d15n), fill = "#990000") +
+  xlab(bquote("δ"~N^15~"(‰)")) + plot_theme
 
-d18o_plot <- ggplot() + geom_histogram(aes(clean_target$leaf_d18o_corrected))
+### 6.2.8.- d18O ####
 
-# 4.- Whole-tree variables ####
+d18o_aa <- ggplot(aa_target) + geom_histogram(aes(leaf_d18o_corrected), fill = "#785EF0") +
+  xlab(bquote("δ"~O^18~"(‰)")) + plot_theme
+d18o_ps <- ggplot(ps_target) + geom_histogram(aes(leaf_d18o_corrected), fill = "#FFB000") +
+  xlab(bquote("δ"~O^18~"(‰)")) + plot_theme
+d18o_pp <- ggplot(pp_target) + geom_histogram(aes(leaf_d18o_corrected), fill = "#990000") +
+  xlab(bquote("δ"~O^18~"(‰)")) + plot_theme
 
-## 4.1.- BAI 1980 ####
+## 6.3.- Whole-tree variables ####
 
-bai80_plot <- ggplot() + geom_histogram(aes(clean_target$mean_1980))
+### 6.3.1.- BAI 1980 ####
 
-## 4.2.- BAI05 ####
+bai80_aa <- ggplot(aa_target) + geom_histogram(aes(mean_1980), fill = "#785EF0") +
+  xlab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + plot_theme
+bai80_ps <- ggplot(ps_target) + geom_histogram(aes(mean_1980), fill = "#FFB000") +
+  xlab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + plot_theme
+bai80_pp <- ggplot(pp_target) + geom_histogram(aes(mean_1980), fill = "#990000") +
+  xlab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + plot_theme
 
-bai05_plot <- ggplot() + geom_histogram(aes(clean_target$mean_05))
+### 6.3.2.- BAI05 ####
 
-## 4.3.- Rt12 ####
+bai05_aa <- ggplot(aa_target) + geom_histogram(aes(mean_05), fill = "#785EF0") +
+  xlab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + plot_theme
+bai05_ps <- ggplot(ps_target) + geom_histogram(aes(mean_05), fill = "#FFB000") +
+  xlab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + plot_theme
+bai05_pp <- ggplot(pp_target) + geom_histogram(aes(mean_05), fill = "#990000") +
+  xlab(expression(paste("BAI05 (mm² year"^"-1", ")"))) + plot_theme
 
-rt12_plot <- ggplot() + geom_histogram(aes(clean_target$Rt12))
+### 6.3.3.- Rt12 ####
 
-## 4.4.- Rt17 ####
+rt12_aa <- ggplot(aa_target) + geom_histogram(aes(Rt12), fill = "#785EF0") +
+  xlab("Rt 12") + plot_theme
+rt12_ps <- ggplot(ps_target) + geom_histogram(aes(Rt12), fill = "#FFB000") +
+  xlab("Rt 12") + plot_theme
+rt12_pp <- ggplot(pp_target) + geom_histogram(aes(Rt12), fill = "#990000") +
+  xlab("Rt 12") + plot_theme
 
-rt17_plot <- ggplot() + geom_histogram(aes(clean_target$Rt17))
+### 6.3.4.- Rt17 ####
 
-## 4.5.- Rt22 ####
+rt17_aa <- ggplot(aa_target) + geom_histogram(aes(Rt17), fill = "#785EF0") +
+  xlab("Rt 17") + plot_theme
+rt17_ps <- ggplot(ps_target) + geom_histogram(aes(Rt17), fill = "#FFB000") +
+  xlab("Rt 17") + plot_theme
+rt17_pp <- ggplot(pp_target) + geom_histogram(aes(Rt17), fill = "#990000") +
+  xlab("Rt 17") + plot_theme
 
-rt22_plot <- ggplot() + geom_histogram(aes(clean_target$Rt22))
+### 6.3.5.- Rt22 ####
 
-## 4.6.- Rs12 ####
+rt22_aa <- ggplot(aa_target) + geom_histogram(aes(Rt22), fill = "#785EF0") +
+  xlab("Rt 22") + plot_theme
+rt22_ps <- ggplot(ps_target) + geom_histogram(aes(Rt22), fill = "#FFB000") +
+  xlab("Rt 22") + plot_theme
+rt22_pp <- ggplot(pp_target) + geom_histogram(aes(Rt22), fill = "#990000") +
+  xlab("Rt 22") + plot_theme
 
-rs12_plot <- ggplot() + geom_histogram(aes(clean_target$Rs12))
+### 6.3.6.- Rs12 ####
 
-## 4.7.- Rs17 ####
+rs12_aa <- ggplot(aa_target) + geom_histogram(aes(Rs12), fill = "#785EF0") +
+  xlab("Rs 12") + plot_theme
+rs12_ps <- ggplot(ps_target) + geom_histogram(aes(Rs12), fill = "#FFB000") +
+  xlab("Rs 12") + plot_theme
+rs12_pp <- ggplot(pp_target) + geom_histogram(aes(Rs12), fill = "#990000") +
+  xlab("Rs 12") + plot_theme
 
-rs17_plot <- ggplot() + geom_histogram(aes(clean_target$Rs17))
+### 6.3.7.- Rs17 ####
+
+rs17_aa <- ggplot(aa_target) + geom_histogram(aes(Rs17), fill = "#785EF0") +
+  xlab("Rs 17") + plot_theme
+rs17_ps <- ggplot(ps_target) + geom_histogram(aes(Rs17), fill = "#FFB000") +
+  xlab("Rs 17") + plot_theme
+rs17_pp <- ggplot(pp_target) + geom_histogram(aes(Rs17), fill = "#990000") +
+  xlab("Rs 17") + plot_theme
+
+### 6.3.8.- Defoliation ####
+
+defo_aa <- ggplot(aa_target) + geom_histogram(aes(mean_def_obs), fill = "#785EF0") +
+  xlab("Defoliation (%)") + plot_theme
+defo_ps <- ggplot(ps_target) + geom_histogram(aes(mean_def_obs), fill = "#FFB000") +
+  xlab("Defoliation (%)") + plot_theme
+defo_pp <- ggplot(pp_target) + geom_histogram(aes(mean_def_obs), fill = "#990000") +
+  xlab("Defoliation (%)") + plot_theme
 
 # 8.- Plotting ####
 
-tiff("04_figures/44_01_Distribs_morpho.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/44_01_Distribs_raw_aa.tiff", units = "mm", width = 1200, height = 600,
      res = 400, compression = "lzw")
-h_plot + dbh_plot + c_plot + n_plot + cn_plot + sla_plot + age_plot + hegyi_plot + 
-  guide_area() + plot_layout(ncol = 3, guides = "collect")
+h_aa + dbh_aa + c_aa + n_aa + cn_aa + sla_aa + age_aa + hegyi_aa + 
+wc_aa + chl_aa + chlab_aa + xc_aa + chlxc_aa + d13c_aa + d15n_aa + d18o_aa + 
+bai80_aa + bai05_aa + rt12_aa + rt17_aa + rt22_aa + rs12_aa + rs17_aa + defo_aa +
+  plot_layout(ncol = 8)
 dev.off()
 
-tiff("04_figures/44_01_Distribs_physio.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/44_01_Distribs_raw_ps.tiff", units = "mm", width = 1200, height = 600,
      res = 400, compression = "lzw")
-wc_plot + chl_plot + chlab_plot + xc_plot + chlxc_plot + d13c_plot + d15n_plot + d18o_plot + 
-  guide_area() + plot_layout(ncol = 3, guides = "collect")
+h_ps + dbh_ps + c_ps + n_ps + cn_ps + sla_ps + age_ps + hegyi_ps + 
+  wc_ps + chl_ps + chlab_ps + xc_ps + chlxc_ps + d13c_ps + d15n_ps + d18o_ps + 
+  bai80_ps + bai05_ps + rt12_ps + rt17_ps + rt22_ps + rs12_ps + rs17_ps + defo_ps +
+  plot_layout(ncol = 8)
 dev.off()
 
-tiff("04_figures/44_01_Distribs_whole2.tiff", units = "mm", width = 400, height = 400,
+tiff("04_figures/44_01_Distribs_raw_pp.tiff", units = "mm", width = 1200, height = 600,
      res = 400, compression = "lzw")
-bai80_plot + bai05_plot + rt12_plot + rt17_plot + rt22_plot + rs12_plot + rs17_plot + 
-  guide_area() + plot_layout(ncol = 3, guides = "collect")
+h_pp + dbh_pp + c_pp + n_pp + cn_pp + sla_pp + age_pp + hegyi_pp + 
+  wc_pp + chl_pp + chlab_pp + xc_pp + chlxc_pp + d13c_pp + d15n_pp + d18o_pp + 
+  bai80_pp + bai05_pp + rt12_pp + rt17_pp + rt22_pp + rs12_pp + rs17_pp + defo_pp + 
+  plot_layout(ncol = 8)
 dev.off()
-
