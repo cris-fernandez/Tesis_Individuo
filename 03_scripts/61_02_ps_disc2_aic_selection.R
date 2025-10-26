@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "lme4", "lmerTest", "emmeans") #list of packages
+        "viridis", "lme4", "lmerTest", "emmeans", "mgcv", "broom.mixed", "xlsx") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -72,59 +72,74 @@ clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
 clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
+clean_target$site <- as.factor(clean_target$site)
+
 # Transforming spot status into a factor so it can be modellised:
 
 clean_target$spot_status <- as.factor(clean_target$spot_status)
 
-# 5.- Selecting variables ####
+# Filtering by species: 
+
+clean_target <- clean_target %>% 
+  filter(sp_id == "Pinsylv") %>% 
+  mutate(d13c_centered = 1 + (leaf_d13c - min(leaf_d13c, na.rm = TRUE)) / 
+           (max(leaf_d13c, na.rm = TRUE) - min(leaf_d13c, na.rm = TRUE)),
+         d15n_centered = 1 + (leaf_d15n - min(leaf_d15n, na.rm = TRUE)) / 
+           (max(leaf_d15n, na.rm = TRUE) - min(leaf_d15n, na.rm = TRUE)),
+         d18o_centered = 1 + (leaf_d18o_corrected - min(leaf_d18o_corrected, na.rm = TRUE)) / 
+           (max(leaf_d18o_corrected, na.rm = TRUE) - min(leaf_d18o_corrected, na.rm = TRUE)))
+
+# 5.- Variable selection ####
 
 var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
               "cn", "sla_22", "age", 
               "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
-              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", "leaf_d18o_corrected",
+              "chla_chlb_22", "chl_xc_22", "d13c_centered", "d15n_centered", 
+              "d18o_centered",
               "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
 
-# 6.- Creating empty dataframe
+# 8.- GAMM list ####
 
-AIC_df <- data.frame(matrix(NA, nrow = length(var_list), ncol = 8))
-colnames(AIC_df) <- c("variable", "delta_aic", "estimate_cold", "estimate_hot",
-                      "ci_upper_hot", "ci_upper_cold", "ci_lower_cold", "ci_lower_hot")
-
-# 7.- Models and delta AIC ####
-
-for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], 
-                                    "~ spot_status + (1|site)"))
-  null_formula <- as.formula(paste(var_list[i], 
-                                   "~ 1 + (1|site)"))
-  
-  model_var <- lmer(model_formula, data = clean_target, REML = F)
-  model_null <- lmer(null_formula, data = clean_target, REML = F)
-  
-  AIC_df$variable[i] <- var_list[i]
-  AIC_df$delta_aic[i] <- AIC(model_null, model_var)[1,2] - AIC(model_null, model_var)[2,2]
-  AIC_df$estimate_cold[i] <- summary(model_var)$coefficients[1, 1]
-  AIC_df$estimate_hot[i] <- summary(model_var)$coefficients[2, 1]
-  print(i)
-}
-
-# 8.- CI 95% ####
+gamm_df <- data.frame()
+null_df <- data.frame()
+model_list <- list()
+null_list <- list()
 
 for (i in 1:length(var_list)) {
   model_formula <- as.formula(paste(var_list[i], 
-                                    "~ spot_status + (1|site)"))
+                                    '~ spot_status + s(site, bs = "re")'))
+  clean_target2 <- clean_target %>% filter(!is.na(var_list[i]))
+  model_list[[i]] <- mgcv::gam(model_formula, data = clean_target2, 
+                               method= "ML")
+  coefs_model <- broom.mixed::tidy(model_list[[i]], effects = "fixed") %>% 
+    mutate(variable = var_list[i],
+           r2 = summary(model_list[[i]])$r.sq) # Why just one R2?
+  gamm_df <- bind_rows(gamm_df, coefs_model)
   
-  model_var <- lmer(model_formula, data = clean_target)
-  
-  ci <- summary(emmeans(model_var, ~ spot_status))
-  AIC_df$ci_upper_cold[i] <- ci$upper.CL[1]
-  AIC_df$ci_upper_hot[i] <- ci$upper.CL[2]
-  AIC_df$ci_lower_cold[i] <- ci$lower.CL[1]
-  AIC_df$ci_lower_hot[i] <- ci$lower.CL[2]
+  null_formula <- as.formula(paste(var_list[i], '~ 1 + s(site, bs = "re")'))
+  null_list[[i]] <- mgcv::gam(null_formula, data = clean_target2, 
+                              method= "ML")
+  coefs_null <- broom.mixed::tidy(null_list[[i]], effects = "fixed") %>% 
+    mutate(variable = var_list[i],
+           r2 = summary(model_list[[i]])$r.sq) # Why just one R2?
+  null_df <- bind_rows(null_df, coefs_null)
   
   print(i)
 }
 
-# 9.- Exporting ####
+# 9.- AICs ####
 
-write.csv(AIC_df, "02_clean_data/46_01_Models_discrete2_AIC.csv")
+aic_df <- data.frame(matrix(ncol = 2, nrow = length(var_list)))
+
+for (i in 1:length(var_list)) {
+  aic_df[i, 1] <- AIC(model_list[[i]], null_list[[i]])[1,2] # Model list
+  aic_df[i, 2] <- AIC(model_list[[i]], null_list[[i]])[2,2] # Null list
+  print(i)
+}
+
+colnames(aic_df) <- c("full_model", "null_model")
+aic_df$variable <- var_list
+aic_df$delta_aic <- aic_df$full_model - aic_df$null_model
+
+write.csv(aic_df, "02_clean_data/61_02_ps_disc2_aics.csv")
+write.xlsx(aic_df, "02_clean_data/61_02_ps_disc2_aics.xlsx")

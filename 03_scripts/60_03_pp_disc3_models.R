@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "lme4", "lmerTest", "emmeans") #list of packages
+        "viridis", "lme4", "lmerTest", "emmeans", "mgcv", "broom.mixed", "xlsx") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -72,61 +72,111 @@ clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
 clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
+clean_target$site <- as.factor(clean_target$site)
+
 # Transforming spot status into a factor so it can be modellised:
 
 clean_target$spot_status <- as.factor(clean_target$spot_status)
 
-# 6.- Model list ####
+# Filtering by species: 
 
-model_list <- list()
+clean_target <- clean_target %>% 
+  filter(sp_id == "Pinpine") %>% 
+  filter(spot_status == "hotspot") %>% 
+  mutate(d13c_centered = 1 + (leaf_d13c - min(leaf_d13c, na.rm = TRUE)) / 
+           (max(leaf_d13c, na.rm = TRUE) - min(leaf_d13c, na.rm = TRUE)),
+         d15n_centered = 1 + (leaf_d15n - min(leaf_d15n, na.rm = TRUE)) / 
+           (max(leaf_d15n, na.rm = TRUE) - min(leaf_d15n, na.rm = TRUE)),
+         d18o_centered = 1 + (leaf_d18o_corrected - min(leaf_d18o_corrected, na.rm = TRUE)) / 
+           (max(leaf_d18o_corrected, na.rm = TRUE) - min(leaf_d18o_corrected, na.rm = TRUE)))
+
+# 6.- Lmer list ####
+
 var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
               "cn", "sla_22", "age", 
               "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
-              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", "leaf_d18o_corrected",
+              "chla_chlb_22", "chl_xc_22", "d13c_centered", "d15n_centered", 
+              "d18o_centered",
               "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
+
+lmer_df <- data.frame()
+model_list_lmer <- list()
 
 for (i in 1:length(var_list)) {
   model_formula <- as.formula(paste(var_list[i], 
-                                    "~ mean_def_obs + (1|plot_id)"))
+                                    "~ vigor_id + (1|site)"))
   
-  model_list[[i]] <- lmer(model_formula, data = clean_target)
-  print(i)
-}
-
-summary(model_list[[1]])
-# 7.- Model coefficients table ####
-
-model_df <- data.frame(matrix(ncol = 11, nrow = length(var_list)))
-colnames(model_df) <- c("variable", "std", "df",
-                        "t_val", "p_val")
-
-for (i in 1:length(var_list)) {
+  clean_target2 <- clean_target %>% filter(!is.na(var_list[i]))
+  model_list_lmer[[i]] <- lmer(model_formula, data = clean_target2, REML = F)
+  r2 <- r.squaredGLMM(model_list_lmer[[i]])
+  coefs <- broom.mixed::tidy(model_list_lmer[[i]], effects = "fixed")%>% 
+    mutate(variable = var_list[1],
+           r2m = r2[1],
+           r2c = r2[2],
+           n_obs = nobs(model_list_lmer[[i]]))
   
-  model_df$variable[[i]] <- var_list[[i]]
-  model_df$std[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "Std. Error"]
-  model_df$df[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "df"]
-  model_df$t_val[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "t value"]
-  model_df$p_val[i] <- summary(model_list[[i]])$coefficients["mean_def_obs", "Pr(>|t|)"]
+  lmer_df <- bind_rows(lmer_df, coefs)
   print(i)
 }
 
-# 8.- Calculating CI 95% ####
+# 7.- GAMMA list ####
 
-ci_list <- list()
+gamma_df <- data.frame()
+model_list_gamma <- list()
 
 for (i in 1:length(var_list)) {
-  ci_list[[i]] <- summary(emmeans(model_list[[i]], ~ mean_def_obs))
+  model_formula <- as.formula(paste(var_list[i], 
+                                    "~ vigor_id + (1|site)"))
+  
+  clean_target2 <- clean_target %>% filter(!is.na(var_list[i]))
+  model_list_gamma[[i]] <- glmmTMB::glmmTMB(model_formula, data = clean_target2,
+                                            family = Gamma(link = "log"), REML = F)
+  r2 <- r.squaredGLMM(model_list_gamma[[i]])
+  coefs <- broom.mixed::tidy(model_list_gamma[[i]], effects = "fixed") %>% 
+    mutate(variable = var_list[1],
+           r2m = r2[1],
+           r2c = r2[2],
+           n_obs = nobs(model_list_gamma[[i]]))
+  
+  gamma_df <- bind_rows(gamma_df, coefs)
   print(i)
 }
 
-# 9.- Adding confidence intervals to the table ####
+# 8.- GAMM list ####
+
+gamm_df <- data.frame()
+model_list_gamm <- list()
 
 for (i in 1:length(var_list)) {
-  model_df$ci_lower[i] <- ci_list[[i]][1, "lower.CL"]
-  model_df$ci_upper[i] <- ci_list[[i]][1, "upper.CL"]
+  model_formula <- as.formula(paste(var_list[i], 
+                                    '~ vigor_id + s(site, bs = "re")'))
+  
+  clean_target2 <- clean_target %>% filter(!is.na(var_list[i]))
+  model_list_gamm[[i]] <- mgcv::gam(model_formula, data = clean_target, 
+                                    method= "ML")
+  coefs <- broom.mixed::tidy(model_list_gamm[[i]], effects = "fixed") %>% 
+    mutate(variable = var_list[1],
+           r2 = summary(model_list_gamm[[i]])$r.sq) # Why just one R2?
+  gamm_df <- bind_rows(gamm_df, coefs)
   print(i)
 }
 
-# 10.- Saving df ####
+# 9.- AICs ####
 
-write.csv(model_df, "02_clean_data/45_01_models_2way_continuous.csv")
+aic_df <- data.frame()
+
+for (i in 1:length(var_list)) {
+  AICs <- AIC(model_list_lmer[[i]],
+              model_list_gamma[[i]],
+              model_list_gamm[[i]]) %>% 
+    dplyr::select(AIC)
+  AICs$model <- c("lmer", "gamma", "gamm")
+  AICs$variable <- var_list[i]
+  
+  aic_df <- bind_rows(aic_df, AICs)
+  print(i)
+}
+
+aic_df <- pivot_wider(aic_df, names_from = "model", values_from = "AIC")
+
+write.xlsx(aic_df, "02_clean_data/60_03_pp_disc3_aics.xlsx")
