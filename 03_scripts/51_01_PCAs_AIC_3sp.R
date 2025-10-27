@@ -99,8 +99,7 @@ pp_target <- clean_target %>% filter(sp_id == "Pinpine")
 # 7.- Normalization ####
 
 norm_aa_target <- aa_target %>%
-  mutate(leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
-         Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
+  mutate(Rt12_ST = (Rt12 - mean(Rt12, na.rm = T)) / sd(Rt12, na.rm = T),
          Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
 
 vigor_aa <- norm_aa_target$vigor_id
@@ -114,7 +113,6 @@ norm_ps_target <- ps_target %>%
          chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          cn_ratio_ST = (cn_ratio - mean(cn_ratio, na.rm = T)) / sd(cn_ratio, na.rm = T),
-         leaf_d15n_ST = (leaf_d15n - mean(leaf_d15n, na.rm = T)) / sd(leaf_d15n, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T),
          bai_05_ST = (mean_05 - mean(mean_05, na.rm = T)) / sd(mean_05, na.rm = T),
@@ -131,6 +129,7 @@ norm_pp_target <- pp_target %>%
   mutate(chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
          chl_xc_ST = (chl_xc_22 - mean(chl_xc_22, na.rm = T)) / sd(chl_xc_22, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          age_ST = (age - mean(age, na.rm = T)) / sd(age, na.rm = T),
          Rt22_ST = (Rt22 - mean(Rt22, na.rm = T)) / sd(Rt22, na.rm = T))
 
@@ -187,13 +186,13 @@ loadings_df_pp$variable <- rownames(loadings_df_pp)
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-varnames_aa <- c("δ15N", "Rt12", "Rt22")
+varnames_aa <- c("Rt12", "Rt22")
 
 varnames_ps <- c("Chl.", "Carotenoids", "Chl. a/b", "Chl. / xc", 
-                 "N", "C:N", "δ15N", "Age", 
+                 "N", "C:N", "Age", 
                  "BAI80", "BAI05", "Rs12", "Rt17", "Rs17", "LWC")
 
-varnames_pp <- c("Chl.", "Chl. / xc", "δ13C", "Age", "Rt22")
+varnames_pp <- c("Chl.", "Chl. / xc", "δ13C", "δ18O","Age", "Rt22")
 
 loadings_df_aa$varnames <- varnames_aa
 loadings_df_ps$varnames <- varnames_ps
@@ -393,8 +392,8 @@ biplot_aa <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (45.42 %)") + 
-  ylab("PC2 (31.21 %)") + 
+  xlab("PC1 (59.16 %)") + 
+  ylab("PC2 (40.83 %)") + 
   labs(tag = "A") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -440,8 +439,8 @@ biplot_ps <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (31.27 %)") + 
-  ylab("PC2 (12.94 %)") + 
+  xlab("PC1 (32.43 %)") + 
+  ylab("PC2 (13.45 %)") + 
   labs(tag = "B") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -487,8 +486,8 @@ biplot_pp <- ggplot() +
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
   guides(fill = "none") +
-  xlab("PC1 (32.45 %)") + 
-  ylab("PC2 (21.74 %)") + 
+  xlab("PC1 (37.45 %)") + 
+  ylab("PC2 (22.15 %)") + 
   labs(tag = "C") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
