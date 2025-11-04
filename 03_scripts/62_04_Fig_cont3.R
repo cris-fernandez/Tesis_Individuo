@@ -85,7 +85,8 @@ clean_target %>% count(vigor_id)
 
 aa_target <- clean_target %>% filter(sp_id == "Abialba")
 ps_target <- clean_target %>% filter(sp_id == "Pinsylv")
-pp_target <- clean_target %>% filter(sp_id == "Pinpine")
+pp_target <- clean_target %>% filter(sp_id == "Pinpine") %>% 
+  filter(mean_def_obs < 60)
 
 plot_theme <- list(xlab(""),
                    theme_classic(), 
@@ -322,16 +323,9 @@ rs17_pp <- ggplot(pp_target) + geom_point(aes(mean_def_obs, Rs17), colour = "#99
 
 # 8.- Plotting ####
 
-tiff("04_figures/62_04_Fig_cont3.tiff", units = "mm", width = 2000, height = 400,
+tiff("04_figures/62_04_Fig_cont3.tiff", units = "mm", width = 1200, height = 400,
      res = 400, compression = "lzw")
-plot_spacer() + age_aa + 
-  plot_spacer() + plot_spacer() + plot_spacer() + plot_spacer() + plot_spacer() + 
-  plot_spacer() + plot_spacer() + plot_spacer() + rt22_aa + plot_spacer() + plot_spacer() + 
-  n_ps + age_ps + 
-  wc_ps + chl_ps + chlxc_ps + plot_spacer() + plot_spacer() + 
-  bai80_ps + bai05_ps + rt17_ps + plot_spacer() + rs12_ps + plot_spacer() + 
-  plot_spacer() + plot_spacer() + 
-  plot_spacer() + chl_pp + chlxc_pp + d13c_pp + d18o_pp + 
-  plot_spacer() + plot_spacer() + plot_spacer() + rt22_pp + plot_spacer() + rs17_pp + 
-  plot_layout(ncol = 13)
+age_aa + rt22_aa + chl_pp + chlxc_pp + d13c_pp + d18o_pp + rt22_pp + rs17_pp + 
+  n_ps + age_ps + wc_ps + chl_ps + chlxc_ps + bai80_ps + bai05_ps + 
+  rt17_ps + rs17_ps + plot_layout(ncol = 6)
 dev.off()
