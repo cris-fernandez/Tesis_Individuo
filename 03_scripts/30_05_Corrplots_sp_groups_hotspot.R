@@ -66,12 +66,14 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 # 5.- Selecting variables ####
 
 clean_target <- clean_target %>% 
+  filter(spot_status == "hotspot") %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, dbh, percent_c, percent_n, cn_ratio, sla_22, age, hegyi_index, 
                   wc_22, total_chl_fw_22, chla_chlb_22, chlor_a_fw_22, chlor_b_fw_22,
                   xc_fw_22, chl_xc_22, leaf_d13c, leaf_d15n, leaf_d18o_corrected, mean_1980, mean_05, 
                   Rt12, Rt17, Rt22, Rs12, Rs17, mean_def_obs, sp_id))
+
 
 colnames(clean_target) <- c("Height", "d.b.h.", "C content", "N content", 
                             "Leaf C:N", "SLA", "Age", "Hegyi Index",  "LWC", 
@@ -142,13 +144,13 @@ aa_wue_plot <- corrplot::corrplot.mixed(aa_wue, upper = "ellipse")
 
 aa_growth <- aa_target %>% 
   dplyr::select(c("BAI 1980", "BAI 05", "Rt 2012", "Rt 2017", "Rt 2022",
-                "Rs 2012", "Rs 2017")) %>% 
+                  "Rs 2012", "Rs 2017")) %>% 
   cor()
 aa_growth_plot <- corrplot::corrplot.mixed(aa_growth, upper = "ellipse")
 
 #### 6.1.8.- Plotting ####
 
-tiff("04_figures/30_04_grouped_correlograms_aa.tiff", 
+tiff("04_figures/30_05_grouped_correlograms_aa_hotspot.tiff", 
      units = "mm", width = 200, height = 400,
      res = 700, compression = "lzw")
 
@@ -219,7 +221,7 @@ ps_growth_plot <- corrplot::corrplot.mixed(ps_growth, upper = "ellipse")
 
 ### 6.2.8.- Plotting ####
 
-tiff("04_figures/30_04_grouped_correlograms_ps.tiff", 
+tiff("04_figures/30_05_grouped_correlograms_ps_hotspot.tiff", 
      units = "mm", width = 200, height = 400,
      res = 700, compression = "lzw")
 
@@ -290,7 +292,7 @@ pp_growth_plot <- corrplot::corrplot.mixed(pp_growth, upper = "ellipse")
 
 ### 6.3.8.- Plotting ####
 
-tiff("04_figures/30_04_grouped_correlograms_pp.tiff", 
+tiff("04_figures/30_05_grouped_correlograms_pp_hotspot.tiff", 
      units = "mm", width = 200, height = 400,
      res = 700, compression = "lzw")
 
