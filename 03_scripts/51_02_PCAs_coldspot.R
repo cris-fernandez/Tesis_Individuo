@@ -71,7 +71,8 @@ clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"),
          spot_status = fct_relevel(spot_status, "coldspot", "hotspot")) %>% 
-  filter(mean_def_obs < 100)
+  filter(mean_def_obs < 100) %>% 
+  filter(spot_status == "coldspot")
 
 
 # 5.- Selecting variables ####
@@ -333,7 +334,7 @@ biplot_pp <- ggplot() +
 
 # 13.- Saving ####
 
-tiff("04_figures/51_01_PCA_All_3sp.tiff", units = "mm",
+tiff("04_figures/51_02_PCA_All_3sp_coldspot.tiff", units = "mm",
      width = 600, height = 600,
      res = 600, compression = "lzw")
 biplot_aa + biplot_ps + biplot_pp + 
