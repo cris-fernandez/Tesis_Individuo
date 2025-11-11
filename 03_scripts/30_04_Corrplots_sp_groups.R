@@ -184,7 +184,7 @@ ps_leaf_morpho_plot <- corrplot::corrplot.mixed(ps_leaf_morpho, upper = "ellipse
 ### 6.2.3.- Leaf nutrients ####
 
 ps_leaf_nutr <- ps_target %>% 
-  dplyr::select(c("N content", "Leaf C:N", "Leaf δ15N")) %>% 
+  dplyr::select(c("N content", "Leaf δ15N")) %>% 
   cor()
 ps_leaf_nutr_plot <- corrplot::corrplot.mixed(ps_leaf_nutr, upper = "ellipse")
 
@@ -255,7 +255,7 @@ pp_leaf_morpho_plot <- corrplot::corrplot.mixed(pp_leaf_morpho, upper = "ellipse
 ### 6.3.3.- Leaf nutrients ####
 
 pp_leaf_nutr <- pp_target %>% 
-  dplyr::select(c("N content", "Leaf C:N", "Leaf δ15N")) %>% 
+  dplyr::select(c("N content", "Leaf δ15N")) %>% 
   cor()
 pp_leaf_nutr_plot <- corrplot::corrplot.mixed(pp_leaf_nutr, upper = "ellipse")
 
