@@ -229,12 +229,16 @@ pca_df_pp$mean_def_obs <- pp_target$mean_def_obs
 
 # 12.- Plotting ####
 
+# First I need to know the maximum level of defoliation to add a common scale:
+max(clean_target$mean_def_obs, na.rm = TRUE) # So 80%
+
 ## 12.1.- Abies alba ####
 
 biplot_aa <- ggplot() +
   geom_point(data = pca_df_aa, aes(x = Comp.1, y = Comp.2, color = mean_def_obs), 
              size = 4, alpha = 0.95) +
-  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)") +
+  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)",
+                        limits = c(0, 80)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_aa,
@@ -268,7 +272,8 @@ biplot_aa <- ggplot() +
 biplot_ps <- ggplot() +
   geom_point(data = pca_df_ps, aes(x = Comp.1, y = Comp.2, color = mean_def_obs), 
              size = 4, alpha = 0.95) +
-  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)") +
+  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)",
+                        limits = c(0, 80)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_ps,
@@ -302,7 +307,8 @@ biplot_ps <- ggplot() +
 biplot_pp <- ggplot() +
   geom_point(data = pca_df_pp, aes(x = Comp.1, y = Comp.2, color = mean_def_obs), 
              size = 4, alpha = 0.95) +
-  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)") +
+  scale_color_viridis_c(option = "mako", direction = -1, name = "Defoliation (%)",
+                        limits = c(0, 80)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_pp,
@@ -336,6 +342,6 @@ biplot_pp <- ggplot() +
 tiff("04_figures/51_01_PCA_All_3sp.tiff", units = "mm",
      width = 600, height = 600,
      res = 600, compression = "lzw")
-biplot_aa + biplot_ps + biplot_pp + 
-  plot_layout(ncol = 2)
+biplot_aa + biplot_ps + biplot_pp + guide_area() + 
+  plot_layout(ncol = 2, guides = "collect")
 dev.off()
