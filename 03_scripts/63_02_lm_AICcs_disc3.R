@@ -63,8 +63,10 @@ clean_target$sp_id <- ifelse(clean_target$tree_number == "missing_1" |
                              "Pinsylv", clean_target$sp_id)
 
 clean_target <- clean_target %>% 
+  filter(spot_status == "hotspot") %>% 
   mutate(sp_id = factor(sp_id),
-         vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
+         vigor_id = fct_relevel(vigor_id, "hot_healthy", "hot_damaged")) %>% 
+  droplevels()
 
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
@@ -106,7 +108,7 @@ model_list_aa <- list()
 null_list_aa <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
+  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
   aa_target2 <- aa_target %>% filter(!is.na(var_list[i]))
   model_list_aa[[i]] <- lm(model_formula, data = aa_target2)
   coefs_model <- broom.mixed::tidy(model_list_aa[[i]]) %>% 
@@ -131,7 +133,7 @@ model_list_ps <- list()
 null_list_ps <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
+  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
   ps_target2 <- ps_target %>% filter(!is.na(var_list[i]))
   model_list_ps[[i]] <- lm(model_formula, data = ps_target2)
   coefs_model <- broom.mixed::tidy(model_list_ps[[i]]) %>% 
@@ -155,7 +157,7 @@ model_list_pp <- list()
 null_list_pp <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
+  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
   pp_target2 <- pp_target %>% filter(!is.na(var_list[i]))
   model_list_pp[[i]] <- lm(model_formula, data = pp_target2)
   coefs_model <- broom.mixed::tidy(model_list_pp[[i]]) %>% 
@@ -210,9 +212,9 @@ ps_ci_df <- data.frame()
 pp_ci_df <- data.frame()
 
 for (i in 1:length(var_list)) {
-  aa_ci <- summary(emmeans(model_list_aa[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
-  ps_ci <- summary(emmeans(model_list_ps[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
-  pp_ci <- summary(emmeans(model_list_pp[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
+  aa_ci <- summary(emmeans(model_list_aa[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
+  ps_ci <- summary(emmeans(model_list_ps[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
+  pp_ci <- summary(emmeans(model_list_pp[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
   
   aa_ci_df <- rbind(aa_ci_df, aa_ci)
   ps_ci_df <- rbind(ps_ci_df, ps_ci)
@@ -244,4 +246,4 @@ ci_df <- rbind(aa_ci_df, ps_ci_df, pp_ci_df)
 
 # 10.- Export ####
 
-write.csv(ci_df, "02_clean_data/63_01_AICc_discrete2.csv")
+write.csv(ci_df, "02_clean_data/63_02_AICc_discrete3.csv")

@@ -14,12 +14,12 @@ getwd()
 
 # 1.- Reading data ####
 
-ci_df <- read.csv("02_clean_data/63_01_AICc_discrete2.csv", 
-                         header = T, sep = ",") %>% dplyr::select(-X)
+ci_df <- read.csv("02_clean_data/63_02_AICc_discrete3.csv", 
+                  header = T, sep = ",") %>% dplyr::select(-X)
 
 # 2.- Variable tidying ####
 
-ci_df$spot_status <- factor(ci_df$spot_status, levels = c("coldspot", "hotspot"))
+ci_df$vigor_id <- factor(ci_df$vigor_id, levels = c("hot_healthy", "hot_damaged"))
 ci_df$sp_id <- factor(ci_df$sp_id, levels = c("Abialba", "Pinsylv", "Pinpine"))
 
 # 3.- Plotting ####
@@ -27,18 +27,18 @@ ci_df$sp_id <- factor(ci_df$sp_id, levels = c("Abialba", "Pinsylv", "Pinpine"))
 h_df <- ci_df %>% filter(variable == "height")
 
 fig_h <- ggplot(h_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -61,18 +61,18 @@ fig_h <- ggplot(h_df) +
 sla_df <- ci_df %>% filter(variable == "sla_22")
 
 fig_sla <- ggplot(sla_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -95,18 +95,18 @@ fig_sla <- ggplot(sla_df) +
 n_df <- ci_df %>% filter(variable == "percent_n")
 
 fig_n <- ggplot(n_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -129,18 +129,18 @@ fig_n <- ggplot(n_df) +
 chl_df <- ci_df %>% filter(variable == "total_chl_fw_22")
 
 fig_chl <- ggplot(chl_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -163,18 +163,18 @@ fig_chl <- ggplot(chl_df) +
 xc_df <- ci_df %>% filter(variable == "xc_fw_22")
 
 fig_xc <- ggplot(xc_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -197,18 +197,18 @@ fig_xc <- ggplot(xc_df) +
 d13c_df <- ci_df %>% filter(variable == "leaf_d13c")
 
 fig_d13c <- ggplot(d13c_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -231,18 +231,18 @@ fig_d13c <- ggplot(d13c_df) +
 bai80_df <- ci_df %>% filter(variable == "mean_1980")
 
 fig_bai80 <- ggplot(bai80_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
+  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
                  alpha = significant), size = 3, 
              position = position_dodge(width = 0.3)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = spot_status, alpha = significant),
+                    colour = vigor_id, alpha = significant),
                 linewidth = 1.5, width = 0,
                 position = position_dodge(width = 0.3)) +
-  scale_color_manual(breaks = c("coldspot", "hotspot"),
-                     values = c("coldspot" = "#2274A5",
-                                "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
+                     values = c("hot_healthy" = "#D71515",
+                                "hot_damaged" = "#650304"),
+                     labels = c("Healthy",
+                                "Damaged"),
                      name = "") + 
   scale_x_discrete(labels = c("Abialba" = "Aa",
                               "Pinsylv" = "Ps",
@@ -262,7 +262,7 @@ fig_bai80 <- ggplot(bai80_df) +
 
 # 4.- Plotting ####
 
-tiff("04_figures/63_03_Fig1_d2.tiff", units = "mm", width = 320, height = 800,
+tiff("04_figures/63_04_Fig1_d3.tiff", units = "mm", width = 320, height = 800,
      res = 400, compression = "lzw")
 fig_h / fig_sla / fig_n / fig_chl / fig_xc / fig_d13c / fig_bai80 / guide_area() +
   plot_layout(guides = "collect") & guides(alpha = "none")
