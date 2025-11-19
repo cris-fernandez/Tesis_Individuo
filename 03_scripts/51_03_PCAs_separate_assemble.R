@@ -14,7 +14,7 @@ getwd()
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
 
@@ -604,7 +604,7 @@ biplot_ps_hot <- ggplot() +
                         limits = c(0, 80)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-  geom_segment(data = loadings_df_ps_all,
+  geom_segment(data = loadings_df_ps_hot,
                aes(x = 0, y = 0, xend = Comp.1, yend = Comp.2),
                arrow = arrow(length = unit(0.2, "cm")),
                color = "black", size = 0.8) +
