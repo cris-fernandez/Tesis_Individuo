@@ -195,7 +195,7 @@ fig_d13c <- ggplot(d13c_df) +
                 linewidth = 2, width = 0,
                 position = position_dodge(width = 0.3)) +
   scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
+                     values = c("hot_healthy" = "#F06A6A",
                                 "hot_damaged" = "#650304"),
                      labels = c("Healthy",
                                 "Damaged"),
