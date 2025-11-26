@@ -36,7 +36,8 @@ ci_df_3$sp_id <- factor(ci_df_3$sp_id, levels = c("Abialba", "Pinsylv", "Pinpine
 # 3.- Clean target data tidying ####
 
 clean_target <- clean_target %>% 
-  dplyr::select(-contains("_23"))
+  dplyr::select(-contains("_23")) %>% 
+  filter(mean_def_obs < 100)
 
 # Adding T290 defoliation info:
 clean_target <- clean_target %>% 
@@ -95,6 +96,7 @@ fig_2_h <- ggplot(h_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -132,6 +134,7 @@ fig_2_sla <- ggplot(sla_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -169,6 +172,7 @@ fig_2_n <- ggplot(n_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -206,6 +210,7 @@ fig_2_chl <- ggplot(chl_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -243,6 +248,7 @@ fig_2_xc <- ggplot(xc_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -280,6 +286,7 @@ fig_2_d13c <- ggplot(d13c_df) +
                                        shape = pair_id)), 
              position = position_jitterdodge(dodge.width = 0.5, jitter.width = 0.05), size = 1.5, alpha = 0.15) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
@@ -310,6 +317,7 @@ fig_2_bai80 <- ggplot(bai80_df) +
                  alpha = significant), size = 4.5, 
              position = position_dodge(width = 0.5)) + 
   scale_x_discrete(expand = c(0.1, 0.1)) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
   geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
                     colour = spot_status, alpha = significant),
                 linewidth = 2, width = 0,
@@ -343,33 +351,37 @@ fig_2_bai80 <- ggplot(bai80_df) +
         legend.direction = "horizontal")
 
 # 5.- Plotting defoliation ####
-# 5.1.- Height ####
-h_df <- ci_df_3 %>% filter(variable == "height")
 
-fig_3_h <- ggplot(h_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  geom_point(data = clean_target, (aes(x = sp_id, y = height, colour = vigor_id)), 
-             position = position_dodge(width = 0.5)) + 
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+hot_target <- clean_target %>% filter(!vigor_id == "cold_healthy") %>% 
+  droplevels()
+
+# 5.1.- Height ####
+
+fig_3_h <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = height, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = height, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = height, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
   xlab("") + 
   ylab("") +  
-  ylim(10, 35) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -378,32 +390,33 @@ fig_3_h <- ggplot(h_df) +
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
-# 4.2.- SLA ####
+# 5.2.- SLA ####
 
-sla_df <- ci_df_3 %>% filter(variable == "sla_22")
-
-fig_3_sla <- ggplot(sla_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+fig_3_sla <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = sla_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = sla_22, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = sla_22, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
   xlab("") + 
-  ylab("") +
-  ylim(39, 61) + 
+  ylab("") +  
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -412,32 +425,33 @@ fig_3_sla <- ggplot(sla_df) +
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
-# 4.3.- N ####
+# 5.3.- N ####
 
-n_df <- ci_df_3 %>% filter(variable == "percent_n")
-
-fig_3_n <- ggplot(n_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+fig_3_n <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = percent_n, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = percent_n, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = percent_n, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
   xlab("") + 
-  ylab("") + 
-  ylim(0.8, 2) +
+  ylab("") +  
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -446,32 +460,33 @@ fig_3_n <- ggplot(n_df) +
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
-# 4.4.- Chl. ####
+# 5.4.- Chl. ####
 
-chl_df <- ci_df_3 %>% filter(variable == "total_chl_fw_22")
-
-fig_3_chl <- ggplot(chl_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+fig_3_chl <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
   xlab("") + 
-  ylab("") + 
-  ylim(500, 1700) + 
+  ylab("") +  
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -480,32 +495,33 @@ fig_3_chl <- ggplot(chl_df) +
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
-# 4.5.- Car. ####
+# 5.5.- Car. ####
 
-xc_df <- ci_df_3 %>% filter(variable == "xc_fw_22")
-
-fig_3_xc <- ggplot(xc_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+fig_3_xc <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
   xlab("") + 
-  ylab("") +
-  ylim(20, 60) + 
+  ylab("") +  
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
@@ -514,80 +530,77 @@ fig_3_xc <- ggplot(xc_df) +
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
-# 4.6.- d13C ####
+# 5.6.- d13C ####
 
-d13c_df <- ci_df_3 %>% filter(variable == "leaf_d13c")
-
-fig_3_d13c <- ggplot(d13c_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
-                     name = "") +  
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
-  xlab("") + 
-  ylab("") + 
-  ylim(-30, -23.5) + 
-  theme_classic() + 
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        axis.text.y = element_text(size = 20),
-        axis.title.y = element_text(size = 30),
-        legend.text = element_text(size = 35),
-        legend.direction = "horizontal")
-
-# 4.7.- BAI80 ####
-
-bai80_df <- ci_df_3 %>% filter(variable == "mean_1980")
-
-fig_3_bai80 <- ggplot(bai80_df) + 
-  geom_point(aes(x = sp_id, y = emmean, colour = vigor_id,
-                 alpha = significant), size = 4.5, 
-             position = position_dodge(width = 0.5)) + 
-  geom_errorbar(aes(x = sp_id, ymin = lower.CL, ymax = upper.CL, 
-                    colour = vigor_id, alpha = significant),
-                linewidth = 2, width = 0,
-                position = position_dodge(width = 0.5)) +
-  scale_x_discrete(expand = c(0.1, 0.1)) + 
-  scale_color_manual(breaks = c("hot_healthy", "hot_damaged"),
-                     values = c("hot_healthy" = "#D71515",
-                                "hot_damaged" = "#650304"),
-                     labels = c("Healthy",
-                                "Damaged"),
+fig_3_d13c <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
                      name = "") + 
-  scale_x_discrete(labels = c("Abialba" = "A. alba",
-                              "Pinsylv" = "P. sylvestris",
-                              "Pinpine" = "P. pinea")) + 
-  scale_alpha_manual(values = c("yes" = 1,
-                                "no" = 0.3),
-                     name = "",
-                     labels = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
   xlab("") + 
-  ylab("") + 
-  ylim(350, 2700) + 
+  ylab("") +  
   theme_classic() + 
-  theme(axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
-                                   face = "italic"),
+  theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
+## 5.7.- BAI80 ####
 
-# 5.- Plotting ####
+fig_3_bai80 <- ggplot(hot_target) + 
+  geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id), size = 2, alpha = 0) + 
+  geom_smooth(aes(x = mean_def_obs, y = mean_1980, colour = sp_id, fill = sp_id), 
+              linewidth = 2, alpha = 0.3, method = "lm") +
+  geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id,
+                 shape = pair_id), size = 2, alpha = 0.4) + 
+  scale_shape_manual(values = c(1,3,7,8,15,16,17)) + 
+  scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                     values = c("Abialba" = "#785EF0",
+                                "Pinsylv" = "#FFB000",
+                                "Pinpine" = "#990000"),
+                     labels = c("Abies alba",
+                                "Pinus sylvestris",
+                                "Pinus pinea"),
+                     name = "") + 
+  scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
+                    values = c("Abialba" = "#785EF0",
+                               "Pinsylv" = "#FFB000",
+                               "Pinpine" = "#990000"),
+                    labels = c("Abies alba",
+                               "Pinus sylvestris",
+                               "Pinus pinea"),
+                    name = "") + 
+  xlab("Defoliation (%)") + 
+  ylab("") +  
+  theme_classic() + 
+  theme(axis.text.x = element_text(size = 25),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size = 20),
+        axis.title.x = element_text(size = 30),
+        legend.text = element_text(size = 35),
+        legend.direction = "horizontal")
+
+# 6.- Plotting ####
 
 tiff("04_figures/63_06_Fig1_fused.tiff", units = "mm", width = 300, height = 800,
      res = 500, compression = "lzw")
@@ -596,13 +609,15 @@ tiff("04_figures/63_06_Fig1_fused.tiff", units = "mm", width = 300, height = 800
     plot_layout(ncol = 1, 
                 guides = "collect", 
                 heights = c(1, 1, 1, 1, 1, 1, 1, 0.35)) & 
-    guides(alpha = "none", color = guide_legend(nrow = 2))  &
+    guides(alpha = "none", color = guide_legend(nrow = 2),
+           shape = "none")  &
     theme(legend.position = "bottom")) | (fig_3_h + fig_3_sla + fig_3_n + fig_3_chl + fig_3_xc + fig_3_d13c + fig_3_bai80 + 
                                             guide_area() +
                                             plot_layout(ncol = 1, 
                                                         guides = "collect", 
-                                                        heights = c(1, 1, 1, 1, 1, 1, 1, 0.35)) & 
-                                            guides(alpha = "none", color = guide_legend(nrow = 2))  &
+                                                        heights = c(1, 1, 1, 1, 1, 1, 1, 0.59)) & 
+                                            guides(alpha = "none", color = guide_legend(nrow = 3),
+                                                   shape = "none")  &
                                             theme(legend.position = "bottom"))
 
 dev.off()
