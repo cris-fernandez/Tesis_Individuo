@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "vegan", "stats", "devtools") #list of packages
+        "viridis", "vegan", "stats", "devtools", "lavaan") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -14,11 +14,14 @@ getwd()
 
 install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
 library(pairwiseAdonis)
-?pairwise.adonis
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
+#   mutate(site = substr(plot_id, 1, 3))
+
+clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
 
@@ -82,12 +85,7 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
-  rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, 
-                  sla_22, xc_fw_22,mean_1980, mean_def_obs, tree_number, sp_id, spot_status, vigor_id)) %>% 
-  dplyr::select(sort(names(.)))
-
-clean_target <- clean_target[complete.cases(clean_target), ]
+  rename(mean_bai = mean)
 
 summary(clean_target)
 
@@ -97,88 +95,53 @@ aa_target <- clean_target %>% filter(sp_id == "Abialba")
 ps_target <- clean_target %>% filter(sp_id == "Pinsylv")
 pp_target <- clean_target %>% filter(sp_id == "Pinpine")
 
-# 7.- Normalization ####
+# 7.- tryingggg ####
 
-norm_aa_target <- aa_target %>%
-  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
-         leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
-         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
+data(HolzingerSwineford1939)
 
-vigor_aa <- norm_aa_target$vigor_id
-norm_aa_target <- norm_aa_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
+HS.model <- ' visual  =~ x1 + x2 + x3
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
 
-norm_ps_target <- ps_target %>%
-  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
-         leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
-         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
+fit <- cfa(HS.model, 
+           data = HolzingerSwineford1939, 
+           group = "school")
 
-vigor_ps <- norm_ps_target$vigor_id
-norm_ps_target <- norm_ps_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
+summary(fit)
 
+# Empiezo chatgpteando aqui!
+head(clean_target)
+sem_target <- clean_target %>% 
+  dplyr::select(c(height, sla_22, leaf_d13c, mean_1980, mean_def_obs, spot_status,
+                  percent_n))
+head(sem_target)
 
-norm_pp_target <- pp_target %>%
-  mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
-         chl_ST = (total_chl_fw_22 - mean(total_chl_fw_22, na.rm = T)) / sd(total_chl_fw_22, na.rm = T),
-         xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
-         percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
-         leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
-         sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
-         bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
+# 1.- 
+# table(sem_target$spot_status)
+# summary(sem_target)
+# colSums(is.na(sem_target))
 
-vigor_pp <- norm_pp_target$vigor_id
-norm_pp_target <- norm_pp_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
+# Apparently this is awful:
+semz_target <- clean_target %>% 
+  filter(sp_id == "Pinsylv") %>% 
+  mutate(across(c(height, sla_22, leaf_d13c, mean_1980, mean_def_obs, percent_n,
+                  leaf_d18o_corrected), scale))
 
-# 8.- Distance matrix ####
+model_multigroup <- '
+  iWUE =~ leaf_d13c + leaf_d18o_corrected
+  mean_1980 ~ height + sla_22
+  leaf_d13c ~ mean_1980 + iWUE
+  mean_def_obs ~ mean_1980 + iWUE
+'
+# Asegurarse que spot_status es factor
+semz_target$spot_status <- as.factor(semz_target$spot_status)
 
-# First, I need to extract the vigor_id column from normalised dataframes:
+# Ajuste del modelo
+fit_multigroup <- sem(model_multigroup,
+                      data = semz_target,
+                      group = "spot_status",
+                      meanstructure = TRUE)
 
-aa_vigor <- norm_aa_target$vigor_id
-ps_vigor <- norm_ps_target$vigor_id
-pp_vigor <- norm_pp_target$vigor_id
-
-norm_aa_target2 <- norm_aa_target %>% dplyr::select(-vigor_id)
-norm_ps_target2 <- norm_ps_target %>% dplyr::select(-vigor_id)
-norm_pp_target2 <- norm_pp_target %>% dplyr::select(-vigor_id)
-
-# Distance matrix
-
-dist_aa <- dist(norm_aa_target2, method = "euclidean")
-dist_ps <- dist(norm_ps_target2, method = "euclidean")
-dist_pp <- dist(norm_pp_target2, method = "euclidean")
-
-# 9.- Permanova analyses ####
-
-permanova_aa <- adonis2(dist_aa ~ aa_vigor, permutations = 999)
-permanova_ps <- adonis2(dist_ps ~ ps_vigor, permutations = 999)
-permanova_pp <- adonis2(dist_pp ~ pp_vigor, permutations = 999)
-
-# All permanova tests show that, for all species, there are differences in the 
-# disposition of the points, and thus in the trait coordination across vigour groups.
-
-# 10.- Pairwise permanova ####
-
-# pairwise_aa <- pairwise_adonis(x = dist_aa, 
-#                           groups = aa_vigor, 
-#                           p.adjust.method = "bonferroni", 
-#                           perm = 999)
-
-# pairwiseAdonis(norm_aa_target, factors = aa_vigor, sim.method = "euclidean")
-wawa <- pairwise.adonis(x=norm_aa_target[,1:7],factors=norm_aa_target$vigor_id,sim.function='dist',
-                        sim.method='euclidean',p.adjust.m='bonferroni') #se puede usar vegdist en vez de dist
-
-wewe <- pairwise.adonis(x=norm_ps_target[,1:7],factors=norm_ps_target$vigor_id,sim.function='vegdist',
-                        sim.method='euclidean',p.adjust.m='bonferroni')
-
-wiwi <- pairwise.adonis(x=norm_pp_target[,1:7],factors=norm_pp_target$vigor_id,sim.function='vegdist',
-                        sim.method='euclidean',p.adjust.m='bonferroni')
+# Resumen con fit indices y coeficientes estandarizados
+summary(fit_multigroup, standardized = TRUE, fit.measures = TRUE)
+sem
