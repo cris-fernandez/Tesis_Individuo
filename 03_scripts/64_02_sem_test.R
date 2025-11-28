@@ -182,6 +182,3 @@ wewe <- pairwise.adonis(x=norm_ps_target[,1:7],factors=norm_ps_target$vigor_id,s
 
 wiwi <- pairwise.adonis(x=norm_pp_target[,1:7],factors=norm_pp_target$vigor_id,sim.function='vegdist',
                         sim.method='euclidean',p.adjust.m='bonferroni')
-
-
-# At just two levels???? add the column of spot_status :)
