@@ -17,7 +17,11 @@ library(pairwiseAdonis)
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
+#   mutate(site = substr(plot_id, 1, 3))
+
+clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
 
@@ -81,9 +85,13 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
+<<<<<<< HEAD
   rename(mean_bai = mean) %>% 
   dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, 
                   sla_22, xc_fw_22,mean_1980, mean_def_obs, tree_number, sp_id, spot_status, vigor_id))
+=======
+  rename(mean_bai = mean)
+>>>>>>> 6ac1b799ca321fdec86b665ee1940065e228fb92
 
 summary(clean_target)
 
@@ -94,7 +102,60 @@ aa_target <- clean_target %>% filter(sp_id == "Abialba") %>% mutate(across(where
 ps_target <- clean_target %>% filter(sp_id == "Pinsylv") %>% mutate(across(where(is.numeric), scale))%>% na.omit()
 pp_target <- clean_target %>% filter(sp_id == "Pinpine") %>% mutate(across(where(is.numeric), scale))%>% na.omit()
 
+<<<<<<< HEAD
 # 7.- Pinus sylvestris SEM ####
 
 apply(aa_target, 2, var)
 
+=======
+# 7.- tryingggg ####
+
+data(HolzingerSwineford1939)
+
+HS.model <- ' visual  =~ x1 + x2 + x3
+              textual =~ x4 + x5 + x6
+              speed   =~ x7 + x8 + x9 '
+
+fit <- cfa(HS.model, 
+           data = HolzingerSwineford1939, 
+           group = "school")
+
+summary(fit)
+
+# Empiezo chatgpteando aqui!
+head(clean_target)
+sem_target <- clean_target %>% 
+  dplyr::select(c(height, sla_22, leaf_d13c, mean_1980, mean_def_obs, spot_status,
+                  percent_n))
+head(sem_target)
+
+# 1.- 
+# table(sem_target$spot_status)
+# summary(sem_target)
+# colSums(is.na(sem_target))
+
+# Apparently this is awful:
+semz_target <- clean_target %>% 
+  filter(sp_id == "Pinsylv") %>% 
+  mutate(across(c(height, sla_22, leaf_d13c, mean_1980, mean_def_obs, percent_n,
+                  leaf_d18o_corrected), scale))
+
+model_multigroup <- '
+  iWUE =~ leaf_d13c + leaf_d18o_corrected
+  mean_1980 ~ height + sla_22
+  leaf_d13c ~ mean_1980 + iWUE
+  mean_def_obs ~ mean_1980 + iWUE
+'
+# Asegurarse que spot_status es factor
+semz_target$spot_status <- as.factor(semz_target$spot_status)
+
+# Ajuste del modelo
+fit_multigroup <- sem(model_multigroup,
+                      data = semz_target,
+                      group = "spot_status",
+                      meanstructure = TRUE)
+
+# Resumen con fit indices y coeficientes estandarizados
+summary(fit_multigroup, standardized = TRUE, fit.measures = TRUE)
+sem
+>>>>>>> 6ac1b799ca321fdec86b665ee1940065e228fb92
