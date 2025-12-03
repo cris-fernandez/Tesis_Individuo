@@ -83,7 +83,7 @@ clean_target <- clean_target %>%
 clean_target <- clean_target %>% 
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, 
+  dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, leaf_d18o_corrected, 
                   sla_22, xc_fw_22,mean_1980, mean_def_obs, tree_number, sp_id, spot_status, vigor_id)) %>% 
   dplyr::select(sort(names(.)))
 
@@ -105,12 +105,12 @@ norm_aa_target <- aa_target %>%
          xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
 
 vigor_aa <- norm_aa_target$vigor_id
-norm_aa_target <- norm_aa_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
+norm_aa_target <- norm_aa_target %>% dplyr::select(c(contains("_ST"), vigor_id))
 
 norm_ps_target <- ps_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
@@ -118,13 +118,12 @@ norm_ps_target <- ps_target %>%
          xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
 
 vigor_ps <- norm_ps_target$vigor_id
-norm_ps_target <- norm_ps_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
-
+norm_ps_target <- norm_ps_target %>% dplyr::select(c(contains("_ST"), vigor_id))
 
 norm_pp_target <- pp_target %>%
   mutate(height_ST = (height - mean(height, na.rm = T)) / sd(height, na.rm = T),
@@ -132,12 +131,12 @@ norm_pp_target <- pp_target %>%
          xc_ST = (xc_fw_22 - mean(xc_fw_22, na.rm = T)) / sd(xc_fw_22, na.rm = T),
          percent_n_ST = (percent_n - mean(percent_n, na.rm = T)) / sd(percent_n, na.rm = T),
          leaf_d13c_ST = (leaf_d13c - mean(leaf_d13c, na.rm = T)) / sd(leaf_d13c, na.rm = T),
+         leaf_d18o_ST = (leaf_d18o_corrected - mean(leaf_d18o_corrected, na.rm = T)) / sd(leaf_d18o_corrected, na.rm = T),
          sla_ST = (sla_22 - mean(sla_22, na.rm = T)) / sd(sla_22, na.rm = T),
          bai_1980_ST = (mean_1980 - mean(mean_1980, na.rm = T)) / sd(mean_1980, na.rm = T))
 
 vigor_pp <- norm_pp_target$vigor_id
-norm_pp_target <- norm_pp_target %>% dplyr::select(c(contains("_ST"), vigor_id)) %>% 
-  dplyr::select(-spot_status)
+norm_pp_target <- norm_pp_target %>% dplyr::select(c(contains("_ST"), vigor_id))
 
 # 8.- Distance matrix ####
 
@@ -147,9 +146,13 @@ aa_vigor <- norm_aa_target$vigor_id
 ps_vigor <- norm_ps_target$vigor_id
 pp_vigor <- norm_pp_target$vigor_id
 
-norm_aa_target2 <- norm_aa_target %>% dplyr::select(-vigor_id)
-norm_ps_target2 <- norm_ps_target %>% dplyr::select(-vigor_id)
-norm_pp_target2 <- norm_pp_target %>% dplyr::select(-vigor_id)
+aa_status <- norm_aa_target$spot_status
+ps_status <- norm_ps_target$spot_status
+pp_status <- norm_pp_target$spot_status
+
+norm_aa_target2 <- norm_aa_target %>% dplyr::select(-c(spot_status, vigor_id))
+norm_ps_target2 <- norm_ps_target %>% dplyr::select(-c(spot_status, vigor_id))
+norm_pp_target2 <- norm_pp_target %>% dplyr::select(-c(spot_status, vigor_id))
 
 # Distance matrix
 
@@ -157,30 +160,24 @@ dist_aa <- dist(norm_aa_target2, method = "euclidean")
 dist_ps <- dist(norm_ps_target2, method = "euclidean")
 dist_pp <- dist(norm_pp_target2, method = "euclidean")
 
-# 9.- Permanova analyses ####
+# 9.- Permanova analyses - spot_status ####
 
-permanova_aa <- adonis2(dist_aa ~ aa_vigor, permutations = 999)
-permanova_ps <- adonis2(dist_ps ~ ps_vigor, permutations = 999)
-permanova_pp <- adonis2(dist_pp ~ pp_vigor, permutations = 999)
+permanova_aa <- adonis2(dist_aa ~ aa_status, permutations = 999)
+permanova_ps <- adonis2(dist_ps ~ ps_status, permutations = 999)
+permanova_pp <- adonis2(dist_pp ~ pp_status, permutations = 999)
 
 # All permanova tests show that, for all species, there are differences in the 
 # disposition of the points, and thus in the trait coordination across vigour groups.
 
 # 10.- Pairwise permanova ####
 
-# pairwise_aa <- pairwise_adonis(x = dist_aa, 
-#                           groups = aa_vigor, 
-#                           p.adjust.method = "bonferroni", 
-#                           perm = 999)
-
-# pairwiseAdonis(norm_aa_target, factors = aa_vigor, sim.method = "euclidean")
-wawa <- pairwise.adonis(x=norm_aa_target[,1:7],factors=norm_aa_target$vigor_id,sim.function='dist',
+pairwise.adonis(x=norm_aa_target[,2:8],factors=norm_aa_target$vigor_id,sim.function='dist',
                         sim.method='euclidean',p.adjust.m='bonferroni') #se puede usar vegdist en vez de dist
 
-wewe <- pairwise.adonis(x=norm_ps_target[,1:7],factors=norm_ps_target$vigor_id,sim.function='vegdist',
+pairwise.adonis(x=norm_ps_target[,2:8],factors=norm_ps_target$vigor_id,sim.function='vegdist',
                         sim.method='euclidean',p.adjust.m='bonferroni')
 
-wiwi <- pairwise.adonis(x=norm_pp_target[,1:7],factors=norm_pp_target$vigor_id,sim.function='vegdist',
+pairwise.adonis(x=norm_pp_target[,2:8],factors=norm_pp_target$vigor_id,sim.function='vegdist',
                         sim.method='euclidean',p.adjust.m='bonferroni')
 
 
