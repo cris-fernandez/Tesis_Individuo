@@ -141,10 +141,176 @@ anova(pp_free_sem, pp_cons_sem) # Significantly different
 # 11.- Testing for constraints ####
 ## 11.1.- Abies alba ####
 ### 11.1.1.- d13C ~ Defo ####
-sem_model_aa <- '
+sem_model_aa2 <- '
 mean_1980 ~ height + sla_22
 mean_def_obs ~ mean_1980 + sla_22
 leaf_d13c ~ c("b1", "b1") * mean_def_obs
 '
-aa_cons_sem2 <- sem(sem_model_aa, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem) # Significantly different
+aa_cons_sem2 <- sem(sem_model_aa2, aa_target, group = "spot_status")
+anova(aa_free_sem, aa_cons_sem2) # No difference --> constrain?? IDK if it makes any sense
+
+### 11.1.2.- Defo ~ SLA ####
+sem_model_aa3 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ mean_1980 + c("b2", "b2") * sla_22
+leaf_d13c ~ mean_def_obs
+'
+aa_cons_sem3 <- sem(sem_model_aa3, aa_target, group = "spot_status")
+anova(aa_free_sem, aa_cons_sem3) # Significantly different --> do not constrain
+
+### 11.1.3.- Defo ~ BAI80 ####
+sem_model_aa4 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ c("b3", "b3") * mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+aa_cons_sem4 <- sem(sem_model_aa4, aa_target, group = "spot_status")
+anova(aa_free_sem, aa_cons_sem4) # No difference --> constrain
+
+### 11.1.4.- BAI80 ~ SLA ####
+sem_model_aa5 <- '
+mean_1980 ~ height + c("b4", "b4") * sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+aa_cons_sem5 <- sem(sem_model_aa5, aa_target, group = "spot_status")
+anova(aa_free_sem, aa_cons_sem5) # No difference --> constrain
+
+### 11.1.5.- BAI80 ~ h ####
+sem_model_aa6 <- '
+mean_1980 ~ c("b5", "b5") * height + sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+aa_cons_sem6 <- sem(sem_model_aa6, aa_target, group = "spot_status")
+anova(aa_free_sem, aa_cons_sem6) # No difference --> constrain
+
+### 11.1.6.- Potential final model ####
+
+selected_model_aa <- '
+mean_1980 ~ c("b3", "b3") * height + c("b4", "b4") * sla_22
+mean_def_obs ~ c("b2", "b2") * mean_1980 + sla_22
+leaf_d13c ~ c("b1", "b1") * mean_def_obs
+'
+aa_fitted_sem <- sem(selected_model_aa, aa_target, group = "spot_status")
+summary(aa_fitted_sem, fit.measures = T)
+
+## 11.2.- Pinus sylvestris ####
+### 11.2.1.- d13C ~ Defo ####
+sem_model_ps2 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ c("b1", "b1") * mean_def_obs
+'
+ps_cons_sem2 <- sem(sem_model_ps2, ps_target, group = "spot_status")
+anova(ps_free_sem, ps_cons_sem2) # No difference --> constrain?? IDK if it makes any sense
+
+### 11.2.2.- Defo ~ SLA ####
+sem_model_ps3 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ mean_1980 + c("b2", "b2") * sla_22
+leaf_d13c ~ mean_def_obs
+'
+ps_cons_sem3 <- sem(sem_model_ps3, ps_target, group = "spot_status")
+anova(ps_free_sem, ps_cons_sem3) # Significantly different --> do not constrain
+
+### 11.2.3.- Defo ~ BAI80 ####
+sem_model_ps4 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ c("b3", "b3") * mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+ps_cons_sem4 <- sem(sem_model_ps4, ps_target, group = "spot_status")
+anova(ps_free_sem, ps_cons_sem4) # No difference --> constrain
+
+### 11.2.4.- BAI80 ~ SLA ####
+sem_model_ps5 <- '
+mean_1980 ~ height + c("b4", "b4") * sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+ps_cons_sem5 <- sem(sem_model_ps5, ps_target, group = "spot_status")
+anova(ps_free_sem, ps_cons_sem5) # No difference --> constrain
+
+### 11.2.5.- BAI80 ~ h ####
+sem_model_ps6 <- '
+mean_1980 ~ c("b5", "b5") * height + sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+ps_cons_sem6 <- sem(sem_model_ps6, ps_target, group = "spot_status")
+anova(ps_free_sem, ps_cons_sem6) # No difference --> constrain
+
+### 11.2.6.- Potential final model ####
+
+selected_model_ps <- '
+mean_1980 ~ c("b3", "b3") * height + c("b4", "b4") * sla_22
+mean_def_obs ~ c("b2", "b2") * mean_1980 + sla_22
+leaf_d13c ~ c("b1", "b1") * mean_def_obs
+'
+ps_fitted_sem <- sem(selected_model_ps, ps_target, group = "spot_status")
+summary(ps_fitted_sem, fit.measures = T)
+
+## 11.3.- Pinus pinea ####
+### 11.3.1.- d13C ~ Defo ####
+sem_model_pp2 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ c("b1", "b1") * mean_def_obs
+'
+pp_cons_sem2 <- sem(sem_model_pp2, pp_target, group = "spot_status")
+anova(pp_free_sem, pp_cons_sem2) # No difference --> constrain?? IDK if it makes any sense
+
+### 11.2.2.- Defo ~ SLA ####
+sem_model_pp3 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ mean_1980 + c("b2", "b2") * sla_22
+leaf_d13c ~ mean_def_obs
+'
+pp_cons_sem3 <- sem(sem_model_pp3, pp_target, group = "spot_status")
+anova(pp_free_sem, pp_cons_sem3) # Significantly different --> do not constrain
+
+### 11.2.3.- Defo ~ BAI80 ####
+sem_model_pp4 <- '
+mean_1980 ~ height + sla_22
+mean_def_obs ~ c("b3", "b3") * mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+pp_cons_sem4 <- sem(sem_model_pp4, pp_target, group = "spot_status")
+anova(pp_free_sem, pp_cons_sem4) # No difference --> constrain
+
+### 11.2.4.- BAI80 ~ SLA ####
+sem_model_pp5 <- '
+mean_1980 ~ height + c("b4", "b4") * sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+pp_cons_sem5 <- sem(sem_model_pp5, pp_target, group = "spot_status")
+anova(pp_free_sem, pp_cons_sem5) # No difference --> constrain
+
+### 11.1.5.- BAI80 ~ h ####
+sem_model_pp6 <- '
+mean_1980 ~ c("b5", "b5") * height + sla_22
+mean_def_obs ~ mean_1980 + sla_22
+leaf_d13c ~ mean_def_obs
+'
+pp_cons_sem6 <- sem(sem_model_pp6, pp_target, group = "spot_status")
+anova(pp_free_sem, pp_cons_sem6) # Significant difference!
+
+### 11.2.6.- Potential final model ####
+
+selected_model_pp <- '
+mean_1980 ~ height + percent_n
+mean_def_obs ~ mean_1980 + percent_n
+leaf_d13c ~ mean_def_obs
+'
+
+selected_model_pp <- '
+mean_1980 ~ height
+percent_n ~ mean_1980
+leaf_d13c ~ percent_n
+mean_def_obs ~ percent_n + mean_1980
+'
+pp_fitted_sem <- sem(selected_model_pp, pp_target, group = "spot_status")
+summary(pp_fitted_sem, fit.measures = T)
+
