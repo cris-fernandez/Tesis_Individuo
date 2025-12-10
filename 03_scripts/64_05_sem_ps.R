@@ -192,11 +192,16 @@ anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
 ## 11.6.- Potential final model ####
 
 sem_model_final <- '
-mean_1980 ~ height
-leaf_d13c ~ sla_22 + c("b3", "b3")*height
-mean_def_obs ~ c("b4", "b4")*mean_1980 + c("b5", "b5")*height
+# mean_1980 ~ height
+# leaf_d13c ~ sla_22 + c("b3", "b3")*height
+# mean_def_obs ~ c("b4", "b4")*mean_1980 + c("b5", "b5")*height
+ mean_1980 ~ height
+ leaf_d13c ~ sla_22 + height
+ mean_def_obs ~ mean_1980 + height
 '
-ps_final_sem <- sem(sem_model_final, ps_target, group = "spot_status")
+ps_final_sem <- sem(sem_model_final, ps_target, group = "spot_status",
+                    se = "bootstrap",
+                    bootstrap = 5000)
 summary(ps_final_sem, standardized = TRUE, fit.measures = TRUE)
 
 
