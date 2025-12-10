@@ -527,7 +527,7 @@ biplot_pp3 <- ggplot() +
 
 # 14.- Saving ####
 
-tiff("04_figures/51_06_PCA_ellipses_comparisons.tiff", units = "mm",
+tiff("04_figures/51_06_PCA_ellipses_comparisons_V2.tiff", units = "mm",
      width = 600, height = 800,
      res = 600, compression = "lzw")
 (biplot_aa2 + biplot_ps2 + biplot_pp2 + 

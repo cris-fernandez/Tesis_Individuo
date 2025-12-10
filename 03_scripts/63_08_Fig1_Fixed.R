@@ -675,7 +675,7 @@ fig_3_bai80 <- ggplot(hot_target) +
 
 # 6.- Plotting ####
 
-tiff("04_figures/63_08_Fig1_fixed.tiff",
+tiff("04_figures/63_08_Fig1_fixed_V2.tiff",
      units = "mm", width = 300, height = 850,
      res = 500, compression = "lzw")
 left_panel <- (
