@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "vegan", "stats", "devtools", "lavaan") #list of packages
+        "viridis", "vegan", "stats", "devtools", "lavaan", "tidySEM") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -17,13 +17,13 @@ library(pairwiseAdonis)
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3))
+
+clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
                          header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
-
-# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
-#   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
@@ -94,89 +94,74 @@ summary(clean_target)
 # 6.- Filtering per species ####
 # Also normalization:
 
-aa_target <- clean_target %>% filter(sp_id == "Abialba") %>% mutate(across(where(is.numeric), scale)) %>% na.omit()
+aa_target <- clean_target %>% filter(sp_id == "Abialba") %>% mutate(across(where(is.numeric), scale))
+summary(aa_target)
 
 # 7.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
-leaf_d13c ~ mean_1980 + sla_22
-mean_def_obs ~ mean_1980
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ sla_22 + mean_1980 + height
+mean_def_obs ~~ leaf_d13c
 '
-
 # 8.- Free model ####
 # In lavaan
 
-aa_free_sem <- sem(sem_model, aa_target, group = "spot_status")
+aa_free_sem <- sem(sem_model,
+                   aa_target,
+                   group = "spot_status",
+                   estimator = "ML",
+                   se = "bootstrap",
+                   bootstrap = 5000)
 summary(aa_free_sem, fit.measures = T)
 
-# 9.- Constrained model ####
-# Intercepts and regressions are set the same in both groups
+summary(aa_free_sem, standardized = TRUE, fit.measures = TRUE)
 
-aa_cons_sem <- sem(sem_model, aa_target, group = "spot_status",
-                   group.equal = c("intercepts", "regressions"))
+#Even after bootstraping, many paths are non-significant for both groups, so they can
+# be removed. That way, we can also increase the DF's and reduce the number of 
+# parameters, effectively reducing the overfitting problem of our SEM given the 
+# small sample size
 
-# 10.- Comparing with Anova ####
-
-anova(aa_free_sem, aa_cons_sem) # Significantly different
-
-# The model is significantly different from the unconstrained 
-# model, so some paths could be constrained? Additionally, model performance 
-# is quite bad so it needs to be improved
-
-# 11.- Testing for constraints ####
-## 11.1.- BAI80 ~ h ####
 sem_model2 <- '
-mean_1980 ~ c("b1", "b1") * height + sla_22
-leaf_d13c ~ mean_1980 + sla_22
-mean_def_obs ~ mean_1980
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ sla_22 + mean_1980 + height
 '
-aa_cons_sem2 <- sem(sem_model2, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem2) # No difference --> constrain?? 
+# 9.- New model ####
+# In lavaan
 
-## 11.2.- BAI80 ~ SLA ####
+ps_free_sem2 <- sem(sem_model2, aa_target, group = "spot_status",
+                    estimator = "ML",
+                    se = "bootstrap",
+                    bootstrap = 5000)
+summary(ps_free_sem2, standardized = TRUE, fit.measures = TRUE)
+
+
+# 10.- FIML ####
+# In lavaan
+# As i have many observations with SOME Na's, I can force lavaan to use them 
+# instead of discarding them
+
+aa_fiml_sem <- sem(sem_model,
+                   aa_target,
+                   group = "spot_status",
+                   missing = "fiml",
+                   estimator = "ML",
+                   fixed.x = FALSE)
+summary(aa_fiml_sem, standardized = TRUE, fit.measures = T)
+
+# Ok so now we remove non significant correlations:
+
 sem_model3 <- '
-mean_1980 ~ height + c("b2", "b2") * sla_22
-leaf_d13c ~ mean_1980 + sla_22
-mean_def_obs ~ mean_1980
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ sla_22
 '
-aa_cons_sem3 <- sem(sem_model3, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem3) # No difference --> constrain?? 
 
-## 11.3.- d13C ~ BAI ####
-sem_model4 <- '
-mean_1980 ~ height + sla_22
-leaf_d13c ~ c("b3", "b3") * mean_1980 + sla_22
-mean_def_obs ~ mean_1980
-'
-aa_cons_sem4 <- sem(sem_model4, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem4) # No difference --> constrain?? 
-
-## 11.4.- d13C ~ SLA ####
-sem_model5 <- '
-mean_1980 ~ height + sla_22
-leaf_d13c ~ mean_1980 + c("b4", "b4") * sla_22
-mean_def_obs ~ mean_1980
-'
-aa_cons_sem5 <- sem(sem_model5, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem5) # No difference --> constrain?? 
-
-## 11.5.- Defo ~ BAI ####
-sem_model6 <- '
-mean_1980 ~ height + sla_22
-leaf_d13c ~ mean_1980 + sla_22
-mean_def_obs ~ c("b5", "b5") * mean_1980
-'
-aa_cons_sem6 <- sem(sem_model6, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem6) # No difference --> constrain?? IDK if it makes any sense
-
-### 11.1.6.- Potential final model ####
-
-sem_model_aa6 <- '
-mean_1980 ~ height + sla_22
-mean_def_obs ~ mean_1980 + sla_22
-leaf_d13c ~ mean_def_obs
-'
-aa_cons_sem6 <- sem(sem_model_aa6, aa_target, group = "spot_status")
-anova(aa_free_sem, aa_cons_sem6) # No difference --> constrain' ????
+aa_fiml_sem <- sem(sem_model3,
+                   aa_target,
+                   group = "spot_status",
+                   missing = "fiml",
+                   estimator = "ML", #change to MLR?
+                   fixed.x = FALSE)
+summary(aa_fiml_sem, standardized = TRUE, fit.measures = T)
 
