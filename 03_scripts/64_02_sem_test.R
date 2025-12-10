@@ -136,15 +136,14 @@ head(sem_target)
 
 # Apparently this is awful:
 semz_target <- clean_target %>% 
-  filter(sp_id == "Pinsylv") %>% 
+  filter(pair_id == "Gua-Pinsylv") %>% 
   mutate(across(c(height, sla_22, leaf_d13c, mean_1980, mean_def_obs, percent_n,
                   leaf_d18o_corrected), scale))
 
 model_multigroup <- '
-  iWUE =~ leaf_d13c + leaf_d18o_corrected
   mean_1980 ~ height + sla_22
-  leaf_d13c ~ mean_1980 + iWUE
-  mean_def_obs ~ mean_1980 + iWUE
+  mean_def_obs ~ mean_1980
+  #leaf_d13c ~ mean_1980
 '
 # Asegurarse que spot_status es factor
 semz_target$spot_status <- as.factor(semz_target$spot_status)
@@ -157,6 +156,9 @@ fit_multigroup <- sem(model_multigroup,
 
 # Resumen con fit indices y coeficientes estandarizados
 summary(fit_multigroup, standardized = TRUE, fit.measures = TRUE)
+<<<<<<< HEAD
+
+=======
 sem
 >>>>>>> 
   rm(list=ls()) #Clearing Gl environment
@@ -355,3 +357,4 @@ leaf_d13c ~ c("b1", "b1") * mean_def_obs
 '
 aa_fitted_sem <- sem(selected_model_aa, aa_target, group = "spot_status")
 summary(aa_fitted_sem, fit.measures = T)
+>>>>>>> 1dcbdd76eecd447dd5d711e4a4ad27720c4e20f8
