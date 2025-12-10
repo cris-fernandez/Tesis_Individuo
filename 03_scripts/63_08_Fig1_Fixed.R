@@ -21,8 +21,12 @@ ci_df_2 <- read.csv("02_clean_data/63_01_AICc_discrete2.csv",
 ci_df_3 <- read.csv("02_clean_data/63_02_AICc_discrete3.csv", 
                     header = T, sep = ",") %>% dplyr::select(-X)
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
-                         header = T, sep = ",") %>% dplyr::select(-X) %>% 
+# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>% 
+#   mutate(site = substr(plot_id, 1, 3))
+
+clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+                         header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Variable tidying ####
