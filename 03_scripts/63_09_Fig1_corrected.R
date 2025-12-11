@@ -707,7 +707,7 @@ fig_3_bai80 <- ggplot(hot_target) +
 
 tiff("04_figures/63_09_Fig1_fixed_V3.tiff",
      units = "mm", width = 600, height = 550,
-     res = 200, compression = "lzw")
+     res = 500, compression = "lzw")
 left_panel <- (
   fig_2_h + fig_2_sla + fig_2_n + fig_2_chl +
     guide_area()
