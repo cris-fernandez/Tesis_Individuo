@@ -109,10 +109,8 @@ mean_def_obs ~~ leaf_d13c
 # In lavaan
 
 ps_free_sem <- sem(sem_model, ps_target, group = "spot_status")
-summary(ps_free_sem, fit.measures = T)
 
 summary(ps_free_sem, standardized = TRUE, fit.measures = TRUE)
-
 
 # So it seems we need to drop (very low beta, non-significant p-val and low std all)
 # SLA 22 from all paths:
@@ -120,7 +118,7 @@ summary(ps_free_sem, standardized = TRUE, fit.measures = TRUE)
 sem_model2 <- '
 mean_1980 ~ height
 leaf_d13c ~ sla_22 + height
-mean_def_obs ~ mean_1980 + height
+mean_def_obs ~ height
 '
 # 9.- New model ####
 # In lavaan

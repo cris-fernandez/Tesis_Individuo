@@ -250,11 +250,11 @@ max_def <- max(clean_target$mean_def_obs)
 biplot_aa2 <- ggplot() +
   stat_ellipse(data = pca_df_aa, aes(x = Comp.1, y = Comp.2, fill = spot_status), 
                type = "norm", level = 0.95, geom = "polygon",
-               alpha = 0.42, col = NA) + 
+               alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_aa, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
              size = 4, alpha = 0.95) +
-  scale_color_gradient(low = "#e10e0e", 
-                       high = "#7a0c0c",  
+  scale_color_gradient(low = "#F87C63", 
+                       high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
                        name = "Defoliation (%)") +
@@ -297,11 +297,11 @@ biplot_aa2 <- ggplot() +
 biplot_ps2 <- ggplot() +
   stat_ellipse(data = pca_df_ps, aes(x = Comp.1, y = Comp.2, fill = spot_status), 
                type = "norm", level = 0.95, geom = "polygon",
-               alpha = 0.42, col = NA) + 
+               alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_ps, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
              size = 4, alpha = 0.95) +
-  scale_color_gradient(low = "#e10e0e", 
-                       high = "#7a0c0c",  
+  scale_color_gradient(low = "#F87C63", 
+                       high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
                        name = "Defoliation (%)") +
@@ -344,11 +344,11 @@ biplot_ps2 <- ggplot() +
 biplot_pp2 <- ggplot() +
   stat_ellipse(data = pca_df_pp, aes(x = Comp.1, y = Comp.2, fill = spot_status), 
                type = "norm", level = 0.95, geom = "polygon",
-               alpha = 0.42, col = NA) + 
+               alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_pp, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
              size = 4, alpha = 0.95) +
-  scale_color_gradient(low = "#e10e0e", 
-                       high = "#7a0c0c",  
+  scale_color_gradient(low = "#F87C63", 
+                       high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
                        name = "Defoliation (%)") +

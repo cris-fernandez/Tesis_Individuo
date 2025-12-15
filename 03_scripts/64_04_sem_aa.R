@@ -5,7 +5,7 @@ pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
         "viridis", "vegan", "stats", "devtools", "lavaan", "tidySEM") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
-if(length(new_pck)) install.packages(new_pck) #install new packages
+if(length(new_pck)) install.packages(new_pck, type = "binary") #install new packages
 lapply(pck, library, character.only=T) #load all packages
 
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
@@ -17,13 +17,13 @@ library(pairwiseAdonis)
 
 # 1.- Reading target data ####
 
-# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3))
-
-clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
                          header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
+
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
@@ -111,10 +111,28 @@ mean_def_obs ~~ leaf_d13c
 aa_free_sem <- sem(sem_model,
                    aa_target,
                    group = "spot_status",
-                   estimator = "ML",
-                   se = "bootstrap",
-                   bootstrap = 5000)
+                   missing = "ML")
 summary(aa_free_sem, fit.measures = T)
+
+# 9.- Discarding non-significant paths in both models: 
+
+sem_model <- '
+mean_1980 ~ height + sla_22
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ sla_22 + mean_1980 + height
+mean_def_obs ~~ leaf_d13c
+'
+
+
+
+aa_free_sem <- sem(sem_model,
+                   aa_target,
+                   group = "spot_status",
+                   missing = "ML")
+summary(aa_free_sem, fit.measures = T)
+
+
+
 
 summary(aa_free_sem, standardized = TRUE, fit.measures = TRUE)
 
@@ -125,7 +143,7 @@ summary(aa_free_sem, standardized = TRUE, fit.measures = TRUE)
 
 sem_model2 <- '
 leaf_d13c ~ sla_22 + height
-mean_def_obs ~ sla_22 + mean_1980 + height
+mean_def_obs ~ mean_1980 + height
 '
 # 9.- New model ####
 # In lavaan
@@ -141,14 +159,19 @@ summary(ps_free_sem2, standardized = TRUE, fit.measures = TRUE)
 # In lavaan
 # As i have many observations with SOME Na's, I can force lavaan to use them 
 # instead of discarding them
+# Fixed.x = F NO SE PUEDE USAR
+fiml_model2 <- '
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ mean_1980 + sla_22
+'
 
-aa_fiml_sem <- sem(sem_model,
+aa_fiml_sem <- sem(fiml_model2,
                    aa_target,
                    group = "spot_status",
-                   missing = "fiml",
-                   estimator = "ML",
-                   fixed.x = FALSE)
+                   missing = "ML")
 summary(aa_fiml_sem, standardized = TRUE, fit.measures = T)
+
+
 
 # Ok so now we remove non significant correlations:
 
@@ -164,4 +187,7 @@ aa_fiml_sem <- sem(sem_model3,
                    estimator = "ML", #change to MLR?
                    fixed.x = FALSE)
 summary(aa_fiml_sem, standardized = TRUE, fit.measures = T)
+
+# Quizá??
+
 
