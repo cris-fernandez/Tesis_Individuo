@@ -232,7 +232,7 @@ fig_2_chl <- ggplot(chl_df) +
                      name = "",
                      labels = "") + 
   xlab("") + 
-  ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
+  ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),

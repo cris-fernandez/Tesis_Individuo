@@ -245,8 +245,8 @@ max_def <- max(clean_target$mean_def_obs)
 
 # 12.- Plotting - plot level ####
 ## 12.1.- Abies alba ####
+# e10e0e --> base red color just in case I need it again
 
-# e10e0e
 biplot_aa2 <- ggplot() +
   stat_ellipse(data = pca_df_aa, aes(x = Comp.1, y = Comp.2, fill = spot_status), 
                type = "norm", level = 0.95, geom = "polygon",
@@ -271,8 +271,8 @@ biplot_aa2 <- ggplot() +
                                "Declining sites"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
-  xlab("PC1 (35.13 %)") + 
-  ylab("PC2 (19.55 %)") + 
+  xlab("PC1 (32.09 %)") + 
+  ylab("PC2 (17.48 %)") + 
   ggtitle("Abies alba") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -318,8 +318,8 @@ biplot_ps2 <- ggplot() +
                                "Declining sites"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
-  xlab("PC1 (48.58 %)") + 
-  ylab("PC2 (19.97 %)") + 
+  xlab("PC1 (44.02 %)") + 
+  ylab("PC2 (18.98 %)") + 
   ggtitle("Pinus sylvestris") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -366,8 +366,8 @@ biplot_pp2 <- ggplot() +
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   # guides(fill = "none") +
-  xlab("PC1 (32.54 %)") + 
-  ylab("PC2 (21.40 %)") + 
+  xlab("PC1 (28.62 %)") + 
+  ylab("PC2 (21.89 %)") + 
   ggtitle("Pinus pinea") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
