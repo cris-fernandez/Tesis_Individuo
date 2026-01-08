@@ -110,26 +110,22 @@ mean_def_obs ~~ leaf_d13c
 
 aa_free_sem <- sem(sem_model,
                    aa_target,
-                   group = "spot_status",
-                   missing = "ML")
-summary(aa_free_sem, fit.measures = T)
+                   group = "spot_status")
+summary(aa_free_sem, standardized = TRUE, fit.measures = T)
 
 # 9.- Discarding non-significant paths in both models: 
 
-sem_model <- '
-mean_1980 ~ height + sla_22
+sem_model2 <- '
 leaf_d13c ~ sla_22 + height
 mean_def_obs ~ sla_22 + mean_1980 + height
-mean_def_obs ~~ leaf_d13c
 '
 
 
 
-aa_free_sem <- sem(sem_model,
+aa_free_sem2 <- sem(sem_model2,
                    aa_target,
-                   group = "spot_status",
-                   missing = "ML")
-summary(aa_free_sem, fit.measures = T)
+                   group = "spot_status")
+summary(aa_free_sem2, standardized = T, fit.measures = T)
 
 
 

@@ -185,6 +185,9 @@ fig_2_n <- ggplot(n_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
+  scale_x_discrete(labels = c("Abialba" = "A. alba",
+                              "Pinsylv" = "P. sylvestris",
+                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(values = c("yes" = 1,
                                 "no" = 0.3),
                      name = "",
@@ -194,7 +197,8 @@ fig_2_n <- ggplot(n_df) +
   # ylim(0.8, 2) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
+                                   face = "italic"),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -224,9 +228,6 @@ fig_2_chl <- ggplot(chl_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
-  scale_x_discrete(labels = c("Abialba" = "A. alba",
-                              "Pinsylv" = "P. sylvestris",
-                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(values = c("yes" = 1,
                                 "no" = 0.3),
                      name = "",
@@ -236,8 +237,7 @@ fig_2_chl <- ggplot(chl_df) +
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
-                                   face = "italic"),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -345,6 +345,9 @@ fig_2_d18o <- ggplot(d18o_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
+  scale_x_discrete(labels = c("Abialba" = "A. alba",
+                              "Pinsylv" = "P. sylvestris",
+                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(values = c("yes" = 1,
                                 "no" = 0.3),
                      name = "",
@@ -354,7 +357,8 @@ fig_2_d18o <- ggplot(d18o_df) +
   # ylim(-30, -23.5) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
+                                   face = "italic"),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -384,9 +388,6 @@ fig_2_bai80 <- ggplot(bai80_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
-  scale_x_discrete(labels = c("Abialba" = "A. alba",
-                              "Pinsylv" = "P. sylvestris",
-                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(values = c("yes" = 1,
                                 "no" = 0.3),
                      name = "",
@@ -396,8 +397,7 @@ fig_2_bai80 <- ggplot(bai80_df) +
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
-                                   face = "italic"),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -512,13 +512,12 @@ fig_3_n <- ggplot(hot_target) +
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.y = element_blank(),
+        axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 35),
-        legend.direction = "horizontal",
-        legend.position = "none")
+        legend.direction = "horizontal")
 
 # 5.4.- Chl. ####
 
@@ -549,11 +548,12 @@ fig_3_chl <- ggplot(hot_target) +
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.x = element_text(size = 30),
-        legend.text = element_blank(),
+        axis.title.y = element_blank(),
+        legend.text = element_text(size = 35),
+        legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.5.- Car. ####
@@ -646,7 +646,7 @@ fig_3_d18o <- ggplot(hot_target) +
                      labels = c("Abies alba",
                                 "Pinus sylvestris",
                                 "Pinus pinea"),
-                     name = "") +
+                     name = "") + 
   scale_fill_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                     values = c("Abialba" = "#785EF0",
                                "Pinsylv" = "#FFB000",
@@ -654,20 +654,19 @@ fig_3_d18o <- ggplot(hot_target) +
                     labels = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea"),
-                    name = "") +
+                    name = "") + 
   xlab("") +
   ylab("") +
   theme_classic() +
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.y = element_blank(),
+        axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 35),
-        legend.direction = "horizontal",
-        legend.position = "none")
+        legend.direction = "horizontal")
 
-## 5.8.- BAI80 ####
+# 5.8.- BAI80 ####
 
 fig_3_bai80 <- ggplot(hot_target) + 
   geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id), size = 2, alpha = 0) + 
@@ -696,20 +695,21 @@ fig_3_bai80 <- ggplot(hot_target) +
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.x = element_text(size = 30),
+        axis.title.y = element_blank(),
         legend.text = element_text(size = 35),
-        legend.direction = "horizontal")
+        legend.direction = "horizontal",
+        legend.position = "none")
 
 # 6.- Plotting ####
 
-tiff("04_figures/63_09_Fig1_fixed_V3.tiff",
+tiff("04_figures/63_09_Fig1_fixed_V4.tiff",
      units = "mm", width = 600, height = 550,
      res = 500, compression = "lzw")
 left_panel <- (
-  fig_2_h + fig_2_sla + fig_2_n + fig_2_chl +
+  fig_2_h + fig_2_bai80 + fig_2_sla + fig_2_n +
     guide_area()
 ) +
   plot_layout(
@@ -724,7 +724,7 @@ left_panel <- (
   )
 
 mid2_panel <- (
-  fig_3_h + fig_3_sla + fig_3_n + fig_3_chl +
+  fig_3_h + fig_3_bai80 + fig_3_sla + fig_3_n  +
     guide_area()
 ) +
   plot_layout(
@@ -739,7 +739,7 @@ mid2_panel <- (
   )
 
 mid3_panel <- (
-  fig_2_xc + fig_2_d13c + fig_2_d18o + fig_2_bai80 +
+  fig_2_chl + fig_2_xc + fig_2_d13c + fig_2_d18o +
     guide_area()
 ) +
   plot_layout(
@@ -754,7 +754,7 @@ mid3_panel <- (
   )
 
 right_panel <- (
-  fig_3_xc + fig_3_d13c +  fig_3_d18o + fig_3_bai80 +
+  fig_3_chl + fig_3_xc + fig_3_d13c + fig_3_d18o +
     guide_area()
 ) +
   plot_layout(

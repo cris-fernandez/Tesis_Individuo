@@ -126,83 +126,83 @@ mean_def_obs ~ height
 ps_free_sem2 <- sem(sem_model2, ps_target, group = "spot_status")
 summary(ps_free_sem2, standardized = TRUE, fit.measures = TRUE)
 
-
-# 10.- Constrained model ####
-# Intercepts and regressions are set the same in both groups
-
-ps_cons_sem <- sem(sem_model2, ps_target, group = "spot_status",
-                   group.equal = c("intercepts", "regressions"))
-
-# 11.- Comparing with Anova ####
-
-anova(ps_free_sem2, ps_cons_sem) # Significantly different
-
-# The model is significantly different from the unconstrained 
-# model, so some paths could be constrained? Additionally, model performance 
-# is quite bad so it needs to be improved
-
-# 12.- Constraining ####
-## 12.1.- BAI80 ~ h ####
-sem_model_cons <- '
-mean_1980 ~ c("b1", "b1") * height
-leaf_d13c ~ sla_22 + height
-mean_def_obs ~ mean_1980 + height
-'
-ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
-anova(ps_free_sem2, ps_cons_sem2) # Significant --> do not constrain
-
-## 12.2.- d13C ~ SLA ####
-sem_model_cons <- '
-mean_1980 ~ height
-leaf_d13c ~ c("b2", "b2") * sla_22 + height
-mean_def_obs ~ mean_1980 + height
-'
-ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
-anova(ps_free_sem2, ps_cons_sem2) # Significant --> do not constrain
-
-## 12.3.- d13C ~ height ####
-sem_model_cons <- '
-mean_1980 ~ height
-leaf_d13c ~ sla_22 + c("b3", "b3") * height
-mean_def_obs ~ mean_1980 + height
-'
-ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
-anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
-
-## 12.4.- Defo ~ BAI ####
-sem_model_cons <- '
-mean_1980 ~ height
-leaf_d13c ~ sla_22 + height
-mean_def_obs ~ c("b4", "b4") * mean_1980 + height
-'
-ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
-anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
-
-## 12.5.- Defo ~ height ####
-sem_model_cons <- '
-mean_1980 ~ height
-leaf_d13c ~ sla_22 + height
-mean_def_obs ~ mean_1980 + c("b5", "b5") * height
-'
-ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
-anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
-
-## 11.6.- Potential final model ####
-
-sem_model_final <- '
+# 
+# # 10.- Constrained model ####
+# # Intercepts and regressions are set the same in both groups
+# 
+# ps_cons_sem <- sem(sem_model2, ps_target, group = "spot_status",
+#                    group.equal = c("intercepts", "regressions"))
+# 
+# # 11.- Comparing with Anova ####
+# 
+# anova(ps_free_sem2, ps_cons_sem) # Significantly different
+# 
+# # The model is significantly different from the unconstrained 
+# # model, so some paths could be constrained? Additionally, model performance 
+# # is quite bad so it needs to be improved
+# 
+# # 12.- Constraining ####
+# ## 12.1.- BAI80 ~ h ####
+# sem_model_cons <- '
+# mean_1980 ~ c("b1", "b1") * height
+# leaf_d13c ~ sla_22 + height
+# mean_def_obs ~ mean_1980 + height
+# '
+# ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
+# anova(ps_free_sem2, ps_cons_sem2) # Significant --> do not constrain
+# 
+# ## 12.2.- d13C ~ SLA ####
+# sem_model_cons <- '
 # mean_1980 ~ height
-# leaf_d13c ~ sla_22 + c("b3", "b3")*height
-# mean_def_obs ~ c("b4", "b4")*mean_1980 + c("b5", "b5")*height
- mean_1980 ~ height
- leaf_d13c ~ sla_22 + height
- mean_def_obs ~ mean_1980 + height
-'
-ps_final_sem <- sem(sem_model_final, ps_target, group = "spot_status",
-                    se = "bootstrap",
-                    bootstrap = 5000)
-summary(ps_final_sem, standardized = TRUE, fit.measures = TRUE)
-
-
-
-# Plot multi-group SEM
-graph_sem(model = ps_final_sem)
+# leaf_d13c ~ c("b2", "b2") * sla_22 + height
+# mean_def_obs ~ mean_1980 + height
+# '
+# ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
+# anova(ps_free_sem2, ps_cons_sem2) # Significant --> do not constrain
+# 
+# ## 12.3.- d13C ~ height ####
+# sem_model_cons <- '
+# mean_1980 ~ height
+# leaf_d13c ~ sla_22 + c("b3", "b3") * height
+# mean_def_obs ~ mean_1980 + height
+# '
+# ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
+# anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
+# 
+# ## 12.4.- Defo ~ BAI ####
+# sem_model_cons <- '
+# mean_1980 ~ height
+# leaf_d13c ~ sla_22 + height
+# mean_def_obs ~ c("b4", "b4") * mean_1980 + height
+# '
+# ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
+# anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
+# 
+# ## 12.5.- Defo ~ height ####
+# sem_model_cons <- '
+# mean_1980 ~ height
+# leaf_d13c ~ sla_22 + height
+# mean_def_obs ~ mean_1980 + c("b5", "b5") * height
+# '
+# ps_cons_sem2 <- sem(sem_model_cons, ps_target, group = "spot_status")
+# anova(ps_free_sem2, ps_cons_sem2) # Non significant --> constrain
+# 
+# ## 11.6.- Potential final model ####
+# 
+# sem_model_final <- '
+# # mean_1980 ~ height
+# # leaf_d13c ~ sla_22 + c("b3", "b3")*height
+# # mean_def_obs ~ c("b4", "b4")*mean_1980 + c("b5", "b5")*height
+#  mean_1980 ~ height
+#  leaf_d13c ~ sla_22 + height
+#  mean_def_obs ~ mean_1980 + height
+# '
+# ps_final_sem <- sem(sem_model_final, ps_target, group = "spot_status",
+#                     se = "bootstrap",
+#                     bootstrap = 5000)
+# summary(ps_final_sem, standardized = TRUE, fit.measures = TRUE)
+# 
+# 
+# 
+# # Plot multi-group SEM
+# graph_sem(model = ps_final_sem)

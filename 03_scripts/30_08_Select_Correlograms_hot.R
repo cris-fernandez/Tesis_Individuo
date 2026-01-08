@@ -131,13 +131,13 @@ correlogram_pp <- ggcorrplot(correlogram_pp,
 
 # Adding titles to the graph: 
 correlogram_aa2 <- correlogram_aa +
-  labs(title = "*Abies alba*") + 
+  labs(title = "Abies alba") + 
   theme(axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1, size = 12),
         axis.text.y = ggtext::element_markdown(size = 12),
         title = element_text(face = "italic"))
 
 correlogram_ps2 <- correlogram_ps +
-  labs(title = "*Pinus sylvestris*") + 
+  labs(title = "Pinus sylvestris") + 
   theme(axis.text.x = ggtext::element_markdown(angle = 45, hjust = 1, size = 12),
         axis.text.y = ggtext::element_markdown(size = 12),
         title = element_text(face = "italic"))

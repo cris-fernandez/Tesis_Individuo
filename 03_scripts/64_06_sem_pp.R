@@ -17,13 +17,13 @@ library(pairwiseAdonis)
 
 # 1.- Reading target data ####
 
-# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3))
-
-clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
                          header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
+
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
@@ -110,10 +110,22 @@ mean_def_obs ~~ leaf_d13c
 
 pp_free_sem <- sem(sem_model,
                    pp_target,
-                   group = "spot_status",
-                   estimator = "ML",
-                   se = "bootstrap",
-                   bootstrap = 5000)
-summary(pp_free_sem, fit.measures = T)
+                   group = "spot_status")
 
 summary(pp_free_sem, standardized = TRUE, fit.measures = TRUE)
+
+# 7.- SEM structure ####
+
+sem_model2 <- '
+mean_1980 ~ height + sla_22
+leaf_d13c ~ height
+'
+# 8.- Free model ####
+# In lavaan
+
+pp_free_sem2 <- sem(sem_model2,
+                   pp_target,
+                   group = "spot_status")
+
+summary(pp_free_sem2, standardized = TRUE, fit.measures = TRUE)
+
