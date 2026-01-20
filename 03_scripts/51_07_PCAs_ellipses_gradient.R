@@ -252,7 +252,7 @@ biplot_aa2 <- ggplot() +
                type = "norm", level = 0.95, geom = "polygon",
                alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_aa, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
-             size = 4, alpha = 0.95) +
+             size = 4.5, alpha = 0.99) +
   scale_color_gradient(low = "#F87C63", 
                        high = "#701705",  
                        na.value = "#2274A5",
@@ -299,7 +299,7 @@ biplot_ps2 <- ggplot() +
                type = "norm", level = 0.95, geom = "polygon",
                alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_ps, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
-             size = 4, alpha = 0.95) +
+             size = 4, alpha = 0.99) +
   scale_color_gradient(low = "#F87C63", 
                        high = "#701705",  
                        na.value = "#2274A5",
@@ -346,7 +346,7 @@ biplot_pp2 <- ggplot() +
                type = "norm", level = 0.95, geom = "polygon",
                alpha = 0.32, col = NA) + 
   geom_point(data = pca_df_pp, aes(x = Comp.1, y = Comp.2, color = def_gradient), 
-             size = 4, alpha = 0.95) +
+             size = 4.5, alpha = 0.99) +
   scale_color_gradient(low = "#F87C63", 
                        high = "#701705",  
                        na.value = "#2274A5",

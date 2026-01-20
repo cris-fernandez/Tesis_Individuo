@@ -508,7 +508,7 @@ fig_3_n <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("") + 
+  xlab("Defoliation (%)") + 
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -517,7 +517,8 @@ fig_3_n <- ggplot(hot_target) +
         axis.text.y = element_blank(),
         axis.title.x = element_text(size = 30),
         legend.text = element_text(size = 35),
-        legend.direction = "horizontal")
+        legend.direction = "horizontal",
+        legend.position = "none")
 
 # 5.4.- Chl. ####
 
@@ -544,7 +545,7 @@ fig_3_chl <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("Defoliation (%)") + 
+  xlab("") + 
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -655,7 +656,7 @@ fig_3_d18o <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("") +
+  xlab("Defoliation (%)") +
   ylab("") +
   theme_classic() +
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -691,7 +692,7 @@ fig_3_bai80 <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("Defoliation (%)") + 
+  xlab("") + 
   ylab("") +  
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
