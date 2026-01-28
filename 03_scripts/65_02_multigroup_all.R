@@ -93,17 +93,18 @@ levels(clean_target$spot_status) # Coldspot first
 sem_model <- '
 mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ sla_22 + mean_1980 + height
-mean_def_obs ~~ leaf_d13c
+mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
+mean_def_obs ~~ c(0, b4)*leaf_d13c
 '
 
-# 7.- Regular SEM #
+# 7.- Multigroup SEM #
 # The arguments provide the standardized coefficients (useful to compare) and 
 # the R2 values
 
 ## 7.1.- Raw data ####
 free_sem <- sem(sem_model,
-                clean_target)
+                clean_target,
+                group = "spot_status")
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)
 
@@ -118,6 +119,8 @@ norm_target <- clean_target %>%
 ## 7.3.-  SEM with standardized data ####
 
 free_sem <- sem(sem_model,
-                norm_target)
+                norm_target,
+                group = "spot_status")
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)
+

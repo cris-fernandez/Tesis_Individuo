@@ -88,36 +88,72 @@ clean_target <- clean_target %>%
 summary(clean_target)
 levels(clean_target$spot_status) # Coldspot first
 
+# Filtering per species:
+
+clean_target <- clean_target %>% filter(sp_id == "Abialba")
+
 # 6.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ sla_22 + mean_1980 + height
-mean_def_obs ~~ leaf_d13c
+mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
+mean_def_obs ~~ c(0, b4)*leaf_d13c
 '
 
-# 7.- Regular SEM #
+# 7.- Multigroup SEM #
 # The arguments provide the standardized coefficients (useful to compare) and 
 # the R2 values
 
-## 7.1.- Raw data ####
-free_sem <- sem(sem_model,
-                clean_target)
-
-summary(free_sem, standardized = TRUE, fit.measures = TRUE)
-
-# The variables have too different variances, factors of magnitude differences. 
-# Therefore, I will need to rescale the dataframe:
-
-## 7.2.- Standardized data ####
+## 7.1.- Standardized data ####
 
 norm_target <- clean_target %>% 
   mutate(across(where(is.numeric), scale))
 
-## 7.3.-  SEM with standardized data ####
+## 7.2.-  SEM with standardized data ####
 
 free_sem <- sem(sem_model,
-                norm_target)
+                norm_target,
+                group = "spot_status")
+
+summary(free_sem, standardized = TRUE, fit.measures = TRUE)
+
+## 7.3.- FIML? ####
+
+# Poor model fit, and too many missing values in BAI, which makes the usable 
+# observations by lavaan really drop... FIML may help as it apparently uses all available
+# data.
+
+fiml_sem <- sem(sem_model,
+                norm_target,
+                group = "spot_status",
+                missing = "fiml")
+
+summary(fiml_sem, standardized = TRUE, fit.measures = TRUE)
+
+## 7.4.- Fixed x? ####
+
+# Poor model fit, and too many missing values in BAI, which makes the usable 
+# observations by lavaan really drop... Fixed.x may help as it apparently uses all available
+# data.
+
+fixx_sem <- sem(sem_model,
+                norm_target,
+                group = "spot_status",
+                missing = "fiml",
+                fixed.x = T)
+
+summary(fixx_sem, standardized = TRUE, fit.measures = TRUE)
+
+# 8.- No growth ####
+
+sem_model <- '
+leaf_d13c ~ sla_22 + height
+mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*height
+mean_def_obs ~~ c(0, b3)*leaf_d13c
+'
+free_sem <- sem(sem_model,
+                norm_target,
+                group = "spot_status")
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)

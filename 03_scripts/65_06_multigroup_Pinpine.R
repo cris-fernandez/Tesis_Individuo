@@ -88,36 +88,50 @@ clean_target <- clean_target %>%
 summary(clean_target)
 levels(clean_target$spot_status) # Coldspot first
 
+# Filtering per species:
+
+clean_target <- clean_target %>% filter(sp_id == "Pinpine")
+
 # 6.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ sla_22 + mean_1980 + height
-mean_def_obs ~~ leaf_d13c
+mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
+mean_def_obs ~~ c(b4, 0)*leaf_d13c
 '
 
-# 7.- Regular SEM #
+# 7.- Multigroup SEM #
 # The arguments provide the standardized coefficients (useful to compare) and 
 # the R2 values
 
-## 7.1.- Raw data ####
-free_sem <- sem(sem_model,
-                clean_target)
-
-summary(free_sem, standardized = TRUE, fit.measures = TRUE)
-
-# The variables have too different variances, factors of magnitude differences. 
-# Therefore, I will need to rescale the dataframe:
-
-## 7.2.- Standardized data ####
+## 7.1.- Standardized data ####
 
 norm_target <- clean_target %>% 
   mutate(across(where(is.numeric), scale))
 
-## 7.3.-  SEM with standardized data ####
+## 7.2.-  SEM with standardized data ####
 
 free_sem <- sem(sem_model,
-                norm_target)
+                norm_target,
+                group = "spot_status")
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)
+
+## 7.2.- No SLA --> d13C ####
+ 
+# Since we have small n for coldspot (23), we delete this path as it is non
+# significant in either of the groups
+
+sem_model2 <- '
+mean_1980 ~ height + sla_22
+leaf_d13c ~ height + mean_1980
+mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
+mean_def_obs ~~ c(b4, 0)*leaf_d13c
+'
+
+free_sem2 <- sem(sem_model2,
+                norm_target,
+                group = "spot_status")
+
+summary(free_sem2, standardized = TRUE, fit.measures = TRUE)

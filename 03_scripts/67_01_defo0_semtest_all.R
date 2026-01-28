@@ -88,7 +88,14 @@ clean_target <- clean_target %>%
 summary(clean_target)
 levels(clean_target$spot_status) # Coldspot first
 
-# 6.- SEM structure ####
+# 6.- Defoliation adjustment ####
+
+# Defoliation must be 0 in non-declining sites:
+
+clean_target <- clean_target %>% 
+  mutate(mean_def_obs = ifelse(spot_status == "coldspot", 0, mean_def_obs))
+
+# 7.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
@@ -97,25 +104,16 @@ mean_def_obs ~ sla_22 + mean_1980 + height
 mean_def_obs ~~ leaf_d13c
 '
 
-# 7.- Regular SEM #
+# 8.- Regular SEM #
 # The arguments provide the standardized coefficients (useful to compare) and 
 # the R2 values
 
-## 7.1.- Raw data ####
-free_sem <- sem(sem_model,
-                clean_target)
-
-summary(free_sem, standardized = TRUE, fit.measures = TRUE)
-
-# The variables have too different variances, factors of magnitude differences. 
-# Therefore, I will need to rescale the dataframe:
-
-## 7.2.- Standardized data ####
+## 8.1.- Standardized data ####
 
 norm_target <- clean_target %>% 
   mutate(across(where(is.numeric), scale))
 
-## 7.3.-  SEM with standardized data ####
+## 7.2.-  SEM with standardized data ####
 
 free_sem <- sem(sem_model,
                 norm_target)
