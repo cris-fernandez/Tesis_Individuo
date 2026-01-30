@@ -88,6 +88,10 @@ clean_target <- clean_target %>%
 summary(clean_target)
 levels(clean_target$spot_status) # Coldspot first
 
+# Filtering per species:
+
+clean_target <- clean_target %>% filter(sp_id == "Pinsylv")
+
 # 6.- Defoliation adjustment ####
 
 # Defoliation must be 0 in non-declining sites:
@@ -102,6 +106,7 @@ mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
 mean_def_obs ~ sla_22 + mean_1980 + height
 mean_def_obs ~~ leaf_d13c
+leaf_d13c ~~ leaf_d18o_corrected
 '
 
 # 8.- Regular SEM #
