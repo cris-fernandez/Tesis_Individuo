@@ -100,9 +100,9 @@ clean_target <- clean_target %>% filter(sp_id == "Pinsylv")
 
 sem_model <- '
 mean_1980 ~ height + sla_22
-leaf_d13c ~ sla_22 + height + mean_1980
+leaf_d18o_corrected ~ sla_22 + height + mean_1980
 mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
-mean_def_obs ~~ c(0, b4)*leaf_d13c
+mean_def_obs ~~ c(0, b4)*leaf_d18o_corrected
 '
 
 # 7.- Multigroup SEM #

@@ -94,15 +94,15 @@ levels(clean_target$spot_status) # Coldspot first
 
 # Filtering per species:
 
-clean_target <- clean_target %>% filter(sp_id == "Pinsylv")
+clean_target <- clean_target %>% filter(sp_id == "Pinpine")
 
 # 6.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
-leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
-mean_def_obs ~~ c(0, b4)*leaf_d13c
+leaf_d18o_corrected ~ sla_22 + height + mean_1980
+mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
+mean_def_obs ~~ c(b4, 0)*leaf_d18o_corrected
 '
 
 # 7.- Multigroup SEM #
