@@ -15,6 +15,9 @@ getwd()
 clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
                          header = T, sep = ",") %>% select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3)) # PC office
 
 clean_target$pair_id <- ifelse(grepl("NAV|PEL", clean_target$plot_id) == T, "Mad-Pinpine",
                                ifelse(grepl("GUA", clean_target$plot_id) == T, "Mad-Pinsylv",
@@ -48,6 +51,9 @@ soils <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibfor
   mutate(plot_id = substring(tree_id, 1, 5),
          CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
   dplyr::select(-c(soil_sample, USDA_class, description, tree_id))
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv"",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3)) # PC office
 
 soils$CaCO3_perc <- as.numeric(soils$CaCO3_perc)
 
@@ -63,12 +69,11 @@ soils_sites <- full_join(soils, sites, by = "tree_number")
 soils_mean <- soils_sites %>% group_by(pair_id, spot_status) %>% 
   summarise(across(clay_perc:Mg_ppm, ~mean(.x, na.rm=T)))
 
+soils_min <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+  summarise(across(clay_perc:Mg_ppm, ~quantile(.x, .025, na.rm=T)))
 
+soils_max <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+  summarise(across(clay_perc:Mg_ppm, ~quantile(.x, .975, na.rm=T)))
 
-colnames(soils_p_mean)[-1] <- paste0(colnames(soils_p_mean)[-1], "_mean")
-soils_p_sd <- soils %>% group_by(plot_id) %>% 
+soils_sd <- soils_sites %>% group_by(pair_id, spot_status) %>% 
   summarise(across(clay_perc:Mg_ppm, ~sd(.x, na.rm=T)))
-colnames(soils_p_sd)[-1] <- paste0(colnames(soils_p_sd)[-1], "_sd")
-soils_p <- full_join(soils_p_mean, soils_p_sd, by = "plot_id")
-
-tree_lai_p_lab_soils <- full_join(tree_lai_p_lab, soils_p, by = "plot_id")
