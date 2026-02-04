@@ -12,12 +12,12 @@ getwd()
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
-                         header = T, sep = ",") %>% select(-X) %>% 
-  mutate(site = substr(plot_id, 1, 3))
-# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3)) # PC office
+# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+#                          header = T, sep = ",") %>% select(-X) %>% 
+#   mutate(site = substr(plot_id, 1, 3))
+clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+                         header = T, sep = ",") %>% dplyr::select(-X) %>%
+  mutate(site = substr(plot_id, 1, 3)) # PC office
 
 clean_target$pair_id <- ifelse(grepl("NAV|PEL", clean_target$plot_id) == T, "Mad-Pinpine",
                                ifelse(grepl("GUA", clean_target$plot_id) == T, "Mad-Pinsylv",
@@ -47,13 +47,14 @@ aalba <- clean_target %>%
 # 3.- Soil data ####
 # Soil data will be retrieved per site so it can be added to the manuscript
 
-soils <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>% 
-  mutate(plot_id = substring(tree_id, 1, 5),
-         CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
-  dplyr::select(-c(soil_sample, USDA_class, description, tree_id))
-# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv"",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3)) # PC office
+# soils <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>% 
+#   mutate(plot_id = substring(tree_id, 1, 5),
+#          CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
+#   dplyr::select(-c(soil_sample, USDA_class, description, tree_id))
+soils <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>% 
+                  mutate(plot_id = substring(tree_id, 1, 5),
+                         CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
+                    dplyr::select(-c(soil_sample, USDA_class, description, tree_id)) # PC office
 
 soils$CaCO3_perc <- as.numeric(soils$CaCO3_perc)
 
