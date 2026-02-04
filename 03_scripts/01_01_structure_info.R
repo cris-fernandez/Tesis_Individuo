@@ -19,7 +19,9 @@ getwd()
 
 # 1.- Reading tree data ####
 
-clean_tree <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T)
+# clean_tree <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T)
+clean_tree <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T, sep = ",") # PC office
+
 clean_tree <- clean_tree %>% unique() #Some repeated observations...
 
 # Adding pair_id:
