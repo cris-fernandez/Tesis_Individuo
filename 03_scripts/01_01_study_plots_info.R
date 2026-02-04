@@ -66,14 +66,14 @@ soils_sites <- full_join(soils, sites, by = "tree_number")
 
 # 4.- Summarising soil data ####
 
-soils_mean <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+soils_mean <- soils_sites %>% group_by(pair_id) %>% 
   summarise(across(clay_perc:Mg_ppm, ~mean(.x, na.rm=T)))
 
-soils_min <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+soils_min <- soils_sites %>% group_by(pair_id) %>% 
   summarise(across(clay_perc:Mg_ppm, ~quantile(.x, .025, na.rm=T)))
 
-soils_max <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+soils_max <- soils_sites %>% group_by(pair_id) %>% 
   summarise(across(clay_perc:Mg_ppm, ~quantile(.x, .975, na.rm=T)))
 
-soils_sd <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+soils_sd <- soils_sites %>% group_by(pair_id) %>% 
   summarise(across(clay_perc:Mg_ppm, ~sd(.x, na.rm=T)))
