@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "vegan", "stats", "devtools", "lavaan", "tidySEM") #list of packages
+        "viridis", "Hmisc") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -12,18 +12,11 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 setwd('..')
 getwd()
 
-# install_github("pmartinezarbizu/pairwiseAdonis/pairwiseAdonis")
-library(pairwiseAdonis)
-
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-                         header = T, sep = ",") %>% dplyr::select(-X) %>%
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
+                         header = T, sep = ",") %>% dplyr::select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
-# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3)) # PC office
-
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
@@ -77,47 +70,45 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
          vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"),
-         spot_status = fct_relevel(spot_status, "coldspot", "hotspot")) %>% 
-  filter(mean_def_obs < 100)
+         spot_status = fct_relevel(spot_status, "coldspot", "hotspot"))
+
+# 5.- Plots and trees number ####
+
+## 5.1.- Plot number ####
+
+numbers_plot <- clean_target %>% 
+  dplyr::select(c(plot_id, site)) %>% 
+  unique() %>% 
+  count(site)
+
+## 5.2.- Target number ####
+
+numbers_target <- clean_target %>% 
+  dplyr::select(c(plot_id, tree_id, site)) %>% 
+  unique() %>% 
+  count(site)
+
+# 6.- Selecting variables ####
+
+hot_target <- clean_target %>% 
+  dplyr::select(c(site, sp_id, spot_status,
+                  height, percent_n, sla_22, total_chl_fw_22,
+                  leaf_d13c, leaf_d18o_corrected, xc_fw_22, mean_1980,
+                  mean_def_obs)) %>% 
+  filter(spot_status == "hotspot")
+
+# 7.- Correlations ####
+
+aa_hot <- hot_target %>% filter(sp_id == "Abialba") %>% 
+  dplyr::select(-c(site, sp_id, spot_status))
+
+ps_hot <- hot_target %>% filter(sp_id == "Pinsylv") %>% 
+  dplyr::select(-c(site, sp_id, spot_status))
+
+pp_hot <- hot_target %>% filter(sp_id == "Pinpine") %>% 
+  dplyr::select(-c(site, sp_id, spot_status))
 
 
-# 5.- Selecting variables ####
-
-clean_target <- clean_target %>% 
-  mutate(cn_ratio = percent_c / percent_n) %>% 
-  rename(mean_bai = mean) %>% 
-  dplyr::select(c(height, total_chl_fw_22, percent_n, leaf_d13c, leaf_d18o_corrected,
-                  sla_22, xc_fw_22,mean_1980, mean_def_obs, tree_number, sp_id, spot_status, vigor_id))
-
-summary(clean_target)
-levels(clean_target$spot_status) # Coldspot first
-
-# Filtering per species:
-
-clean_target <- clean_target %>% filter(sp_id == "Pinpine")
-
-# 6.- SEM structure ####
-
-sem_model <- '
-mean_1980 ~ height + sla_22
-leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
-mean_def_obs ~~ c(b4, 0)*leaf_d13c
-'
-
-# 7.- Multigroup SEM #
-# The arguments provide the standardized coefficients (useful to compare) and 
-# the R2 values
-
-## 7.1.- Standardized data ####
-
-norm_target <- clean_target %>% 
-  mutate(across(where(is.numeric), scale))
-
-## 7.2.-  SEM with standardized data ####
-
-free_sem <- sem(sem_model,
-                norm_target,
-                group = "spot_status")
-
-summary(free_sem, standardized = TRUE, fit.measures = TRUE)
+rcorr(as.matrix(aa_hot), type = "pearson") # We can also try "spearman"
+rcorr(as.matrix(ps_hot), type = "pearson")
+rcorr(as.matrix(pp_hot), type = "pearson")

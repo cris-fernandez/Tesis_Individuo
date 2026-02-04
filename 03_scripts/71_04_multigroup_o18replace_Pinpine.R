@@ -17,12 +17,12 @@ library(pairwiseAdonis)
 
 # 1.- Reading target data ####
 
-# clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-#   mutate(site = substr(plot_id, 1, 3))
-clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
                          header = T, sep = ",") %>% dplyr::select(-X) %>%
-  mutate(site = substr(plot_id, 1, 3)) # PC office
+  mutate(site = substr(plot_id, 1, 3))
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3)) # PC office
 
 
 # 2.- Removing 2023 data ####

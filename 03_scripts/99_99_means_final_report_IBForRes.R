@@ -96,10 +96,12 @@ clean_target <- clean_target %>%
   mutate(cn_ratio = percent_c / percent_n) %>% 
   rename(mean_bai = mean) %>% 
   dplyr::select(c(site, height, percent_n, sla_22, hegyi_index, total_chl_fw_22,
-                  age, wc_22, leaf_d13c, leaf_d18o, xc_fw_22))
+                  age, wc_22, leaf_d13c, leaf_d18o_corrected, xc_fw_22, sp_id,
+                  mean_1980,
+                  spot_status))
 
 ## 6.2.- Summarising ####
 
 means_target <- clean_target %>% 
-  group_by(site) %>% 
+  group_by(sp_id, spot_status) %>% 
   summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))

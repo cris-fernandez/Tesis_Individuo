@@ -16,6 +16,15 @@ clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_loca
                          header = T, sep = ",") %>% select(-X) %>% 
   mutate(site = substr(plot_id, 1, 3))
 
+clean_target$pair_id <- ifelse(grepl("NAV|PEL", clean_target$plot_id) == T, "Mad-Pinpine",
+                               ifelse(grepl("GUA", clean_target$plot_id) == T, "Mad-Pinsylv",
+                                      ifelse(grepl("ADO|TRA|ALU", clean_target$plot_id) == T, "Gua-Pinsylv",
+                                             ifelse(grepl("COR|CED", clean_target$plot_id) == T, "Ter-Pinsylv",
+                                                    ifelse(grepl("RON|URZ", clean_target$plot_id) == T, "Nav-Pinsylv",
+                                                           ifelse(grepl("BAS|SAR", clean_target$plot_id) == T, "Nav-Abialba",
+                                                                  ifelse(grepl("FAG|OZA", clean_target$plot_id) == T, "Hue-Abialba",
+                                                                         "z")))))))
+
 # 2.- Number of plots per species ####
 
 psylv <- clean_target %>% 
@@ -32,3 +41,34 @@ aalba <- clean_target %>%
   unique() 
 # We have 52 P. sylvestris, 17 P. pinea and 23 A. alba plots :)
 
+# 3.- Soil data ####
+# Soil data will be retrieved per site so it can be added to the manuscript
+
+soils <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>% 
+  mutate(plot_id = substring(tree_id, 1, 5),
+         CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
+  dplyr::select(-c(soil_sample, USDA_class, description, tree_id))
+
+soils$CaCO3_perc <- as.numeric(soils$CaCO3_perc)
+
+# Adding site info from clean_target
+
+sites <- clean_target %>% dplyr::select(c(tree_number, pair_id,
+                                          spot_status))
+
+soils_sites <- full_join(soils, sites, by = "tree_number")
+
+# 4.- Summarising soil data ####
+
+soils_mean <- soils_sites %>% group_by(pair_id, spot_status) %>% 
+  summarise(across(clay_perc:Mg_ppm, ~mean(.x, na.rm=T)))
+
+
+
+colnames(soils_p_mean)[-1] <- paste0(colnames(soils_p_mean)[-1], "_mean")
+soils_p_sd <- soils %>% group_by(plot_id) %>% 
+  summarise(across(clay_perc:Mg_ppm, ~sd(.x, na.rm=T)))
+colnames(soils_p_sd)[-1] <- paste0(colnames(soils_p_sd)[-1], "_sd")
+soils_p <- full_join(soils_p_mean, soils_p_sd, by = "plot_id")
+
+tree_lai_p_lab_soils <- full_join(tree_lai_p_lab, soils_p, by = "plot_id")

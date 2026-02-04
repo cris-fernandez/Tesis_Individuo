@@ -24,7 +24,6 @@ clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_loca
 #                          header = T, sep = ",") %>% dplyr::select(-X) %>%
 #   mutate(site = substr(plot_id, 1, 3)) # PC office
 
-
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
 
@@ -94,15 +93,16 @@ levels(clean_target$spot_status) # Coldspot first
 
 # Filtering per species:
 
-clean_target <- clean_target %>% filter(sp_id == "Pinpine")
+clean_target <- clean_target %>% filter(sp_id == "Abialba")
 
 # 6.- SEM structure ####
 
 sem_model <- '
 mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
-mean_def_obs ~~ c(b4, 0)*leaf_d13c
+mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
+mean_def_obs ~~ c(0, b4)*leaf_d13c
+leaf_d13c ~~ leaf_d18o_corrected
 '
 
 # 7.- Multigroup SEM #
@@ -121,3 +121,30 @@ free_sem <- sem(sem_model,
                 group = "spot_status")
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)
+
+## 7.3.- FIML? ####
+
+# Poor model fit, and too many missing values in BAI, which makes the usable 
+# observations by lavaan really drop... FIML may help as it apparently uses all available
+# data.
+
+fiml_sem <- sem(sem_model,
+                norm_target,
+                group = "spot_status",
+                missing = "fiml")
+
+summary(fiml_sem, standardized = TRUE, fit.measures = TRUE)
+
+## 7.4.- Fixed x? ####
+
+# Poor model fit, and too many missing values in BAI, which makes the usable 
+# observations by lavaan really drop... Fixed.x may help as it apparently uses all available
+# data.
+
+fixx_sem <- sem(sem_model,
+                norm_target,
+                group = "spot_status",
+                missing = "fiml",
+                fixed.x = T)
+
+summary(fixx_sem, standardized = TRUE, fit.measures = TRUE)

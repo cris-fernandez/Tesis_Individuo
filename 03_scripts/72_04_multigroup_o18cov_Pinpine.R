@@ -103,6 +103,7 @@ mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
 mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
 mean_def_obs ~~ c(b4, 0)*leaf_d13c
+leaf_d18o_corrected ~~ leaf_d13c
 '
 
 # 7.- Multigroup SEM #
