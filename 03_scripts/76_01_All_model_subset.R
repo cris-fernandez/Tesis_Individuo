@@ -151,6 +151,39 @@ for (i in 1:999) {
   print(i)
 }
 
+
+# 9.- Grouping results ####
+
+## 9.1.- Filtering only op == "~", which is the regular correlation ####
+
+for (i in 1:999) {
+  fit_list[[i]] <- fit_list[[i]] %>% filter(op == "~")
+  print(i)
+}
+
+## 9.2.- Fusing lhs and rhs ####
+# That way data can be grouped by a single variable 
+# Also adding an iteration column so all values are unique
+
+for (i in 1:999) {
+  fit_list[[i]] <- fit_list[[i]] %>% 
+    mutate(path = paste0(lhs, op, rhs, "_", group),
+           iteration = i)
+  print(i)
+}
+
+## 9.3.- List to dataframe ####
+
+fit_df <- do.call(rbind.data.frame, fit_list)
+
+## 9.4.- p-values and coefficients ####
+
+fit_df <- fit_df %>% 
+  group_by(path) %>% 
+  summarise(pval_mean = mean(pvalue, na.rm = T),
+            pval_sd = sd(pvalue, na.rm = T),
+            coef_mean = mean(std.all, na.rm = T),
+            coef_sd = sd(std.all, na.rm = T))
 # 
 # summary(mlr_sem, standardized = TRUE, fit.measures = TRUE)
 # Okay, so the SEM is actually robust to the violation of normality as the coefficients

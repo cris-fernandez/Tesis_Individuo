@@ -74,7 +74,7 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
-clean_target <- clean_target %>% filter(mean_def_obs < 60)
+clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
 clean_target$site <- as.factor(clean_target$site)
 
@@ -89,8 +89,8 @@ aa_target <- clean_target %>%
 ps_target <- clean_target %>% 
   filter(sp_id == "Pinsylv")
 pp_target <- clean_target %>% 
-  filter(sp_id == "Pinpine") %>% 
-  filter(mean_def_obs < 60)
+  filter(sp_id == "Pinpine")
+  # filter(mean_def_obs < 60) Why did I did this
 
 # 5.- Variable selection ####
 
@@ -203,9 +203,9 @@ aa_aicc$delta <- aa_aicc$aa_aicc_full - aa_aicc$aa_aicc_null
 ps_aicc$delta <- ps_aicc$ps_aicc_full - ps_aicc$ps_aicc_null
 pp_aicc$delta <- pp_aicc$pp_aicc_full - pp_aicc$pp_aicc_null
 
-aa_aicc$significant <- ifelse(aa_aicc$delta < -3, "yes", "no")
-ps_aicc$significant <- ifelse(ps_aicc$delta < -3, "yes", "no")
-pp_aicc$significant <- ifelse(pp_aicc$delta < -3, "yes", "no")
+aa_aicc$significant <- ifelse(aa_aicc$delta < -2, "yes", "no")
+ps_aicc$significant <- ifelse(ps_aicc$delta < -2, "yes", "no")
+pp_aicc$significant <- ifelse(pp_aicc$delta < -2, "yes", "no")
 
 # 8.- Summary with C.I. 95% ####
 
@@ -249,3 +249,4 @@ ci_df <- rbind(aa_ci_df, ps_ci_df, pp_ci_df)
 # 10.- Export ####
 
 write.csv(ci_df, "02_clean_data/63_01_AICc_discrete2.csv")
+
