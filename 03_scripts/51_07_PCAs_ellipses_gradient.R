@@ -77,6 +77,21 @@ clean_target <- clean_target %>%
          spot_status = fct_relevel(spot_status, "coldspot", "hotspot")) %>% 
   filter(mean_def_obs < 100)
 
+# Outlayers deletion:
+
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 4783, NA, clean_target$mean_1980)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_target$sp_id == "Abialba",
+                                    NA, clean_target$mean_def_obs)
+clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
+                              NA, clean_target$sla_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
+                                    NA, clean_target$mean_def_obs)
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
+                                 NA, clean_target$mean_1980)
 
 # 5.- Selecting variables ####
 
@@ -271,8 +286,8 @@ biplot_aa2 <- ggplot() +
                                "Declining sites"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
-  xlab("PC1 (32.09 %)") + 
-  ylab("PC2 (17.48 %)") + 
+  xlab("PC1 (32.30 %)") + 
+  ylab("PC2 (17.40 %)") + 
   ggtitle("Abies alba") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -318,8 +333,8 @@ biplot_ps2 <- ggplot() +
                                "Declining sites"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
-  xlab("PC1 (44.02 %)") + 
-  ylab("PC2 (18.98 %)") + 
+  xlab("PC1 (45.40 %)") + 
+  ylab("PC2 (18.88 %)") + 
   ggtitle("Pinus sylvestris") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -366,8 +381,8 @@ biplot_pp2 <- ggplot() +
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   # guides(fill = "none") +
-  xlab("PC1 (28.62 %)") + 
-  ylab("PC2 (21.89 %)") + 
+  xlab("PC1 (28.50 %)") + 
+  ylab("PC2 (21.95 %)") + 
   ggtitle("Pinus pinea") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -389,7 +404,7 @@ biplot_pp2 <- ggplot() +
 
 # 13.- Saving ####
 
-tiff("04_figures/51_07_PCA_ellipses_gradient.tiff", units = "mm",
+tiff("04_figures/51_07_PCA_ellipses_gradient_V2.tiff", units = "mm",
      width = 400, height = 400,
      res = 600, compression = "lzw")
 (biplot_aa2 + biplot_ps2 + biplot_pp2 + 

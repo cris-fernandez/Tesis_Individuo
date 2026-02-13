@@ -84,6 +84,22 @@ clean_target <- clean_target %>%
 
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
+# Outlayers deletion:
+
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 4783, NA, clean_target$mean_1980)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_target$sp_id == "Abialba",
+                                    NA, clean_target$mean_def_obs)
+clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
+                              NA, clean_target$sla_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
+                                    NA, clean_target$mean_def_obs)
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
+                                 NA, clean_target$mean_1980)
+
 # 4.- Plot level ####
 # 4.1.- Height ####
 h_df <- ci_df_2 %>% filter(variable == "height")
@@ -702,7 +718,7 @@ fig_3_bai80 <- ggplot(hot_target) +
 
 # 6.- Plotting ####
 
-tiff("04_figures/63_10_Fig1_fixed_V6.tiff",
+tiff("04_figures/63_10_Fig1_fixed_V7.tiff",
      units = "mm", width = 600, height = 550,
      res = 500, compression = "lzw")
 left_panel <- (

@@ -76,6 +76,21 @@ clean_target <- clean_target %>%
          spot_status = fct_relevel(spot_status, "coldspot", "hotspot")) %>% 
   filter(mean_def_obs < 100)
 
+# Outlayers deletion:
+
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 4783, NA, clean_target$mean_1980)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_target$sp_id == "Abialba",
+                                    NA, clean_target$mean_def_obs)
+clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
+                              NA, clean_target$sla_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
+                                    NA, clean_target$mean_def_obs)
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
+                                 NA, clean_target$mean_1980)
 
 # 5.- Selecting variables ####
 

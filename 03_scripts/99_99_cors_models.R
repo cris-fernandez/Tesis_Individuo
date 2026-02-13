@@ -115,4 +115,10 @@ aa_df <- do.call(rbind.data.frame, aa_list)
 ps_df <- do.call(rbind.data.frame, ps_list)
 pp_df <- do.call(rbind.data.frame, pp_list)
 
+# Adding variables:
+
+aa_df$var <- vars_list
+ps_df$var <- vars_list
+pp_df$var <- vars_list
+
 summary(pp_model)
