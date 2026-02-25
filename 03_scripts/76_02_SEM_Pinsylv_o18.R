@@ -150,8 +150,7 @@ summary(mlr_sem, standardized = TRUE, fit.measures = TRUE)
 
 sem_cov <- '
 mean_1980 ~ height + sla_22
-leaf_d13c ~ sla_22 + height + mean_1980
-leaf_d18o_corrected ~~ leaf_d13c
+leaf_d18o_corrected ~ sla_22 + height + mean_1980
 '
 
 cov_sem <- sem(sem_cov,
