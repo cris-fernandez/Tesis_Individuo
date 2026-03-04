@@ -92,6 +92,7 @@ clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_targe
 clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
                                  NA, clean_target$mean_1980)
 
+
 # 5.- Selecting variables ####
 
 clean_target <- clean_target %>% 
@@ -105,11 +106,10 @@ levels(clean_target$spot_status) # Coldspot first
 
 # 6.- Filtering and standardising ####
 # Standardization by site
-aa_target <- clean_target %>% filter(sp_id == "Abialba") %>% 
+pp_target <- clean_target %>% filter(sp_id == "Abialba") %>% 
   group_by(pair_id) %>% 
   mutate(across(where(is.numeric), scale))
 
-summary(aa_target)
 # 7.- SEM structure ####
 
 sem_model <- '
@@ -124,7 +124,7 @@ leaf_d13c ~ sla_22 + height + mean_1980
 ## 8.1.- ML ####
 
 ml_sem <- sem(sem_model,
-              aa_target,
+              pp_target,
               group = "spot_status",
               missing   = "fiml",
               fixed.x = F)
@@ -132,11 +132,11 @@ ml_sem <- sem(sem_model,
 summary(ml_sem, standardized = TRUE, fit.measures = TRUE)
 
 ## 8.2.-  MLR ####
-# Since my variables are not normal, the estimator "MLR" assesses that violation 
+# Since my variables are not normal, the estimator "RML" assesses that violation 
 # of the normality presumption
 
 mlr_sem <- sem(sem_model,
-               aa_target,
+               pp_target,
                group = "spot_status",
                estimator = "MLR",
                missing   = "fiml",
@@ -145,3 +145,20 @@ mlr_sem <- sem(sem_model,
 summary(mlr_sem, standardized = TRUE, fit.measures = TRUE)
 # Okay, so the SEM is actually robust to the violation of normality as the coefficients
 # remain constant :)
+
+# 9.- Covariance? ####
+
+sem_cov <- '
+mean_1980 ~ height + sla_22
+leaf_d13c ~ sla_22 + height + mean_1980
+leaf_d13c ~~ leaf_d18o_corrected
+'
+
+cov_sem <- sem(sem_cov,
+               pp_target,
+               group = "spot_status",
+               estimator = "MLR",
+               missing   = "fiml",
+               fixed.x = F)
+
+summary(cov_sem, standardized = TRUE, fit.measures = TRUE)
