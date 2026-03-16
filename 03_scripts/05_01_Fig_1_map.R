@@ -51,6 +51,20 @@ countries <- world %>%
                       "Tunisia", "Libya", "Germany")) %>%
   st_transform(crs = 4326)
 
+coastline <- countries %>% 
+  st_union() %>% 
+  st_boundary() %>% 
+  st_as_sf()
+
+spain_coast <- countries %>%
+  filter(admin == "Spain") %>%
+  st_union() %>% 
+  st_boundary() %>% 
+  st_as_sf()
+
+coastline <- st_difference(coastline, spain_coast) %>%
+  st_as_sf() 
+
 # 3.- Reading distribution maps ####
 
 abialba <- read_sf(dsn = "01_raw_data/Abies alba/shapefiles/Abies_alba_plg.shp")
@@ -116,12 +130,13 @@ distrib_map <- ggplot() +
 
 focus_map <- ggplot() +
   geom_sf(data = neighbours, fill = "gray96", col = NA) +
-  geom_sf(data = provinces_sf, fill = "#ffffff", col = "#d5d5d5", linewidth = 0.6) +
+  geom_sf(data = provinces_sf, fill = "#ffffff", col = "black", linewidth = 0.6) + # formerly col = d5d5d5
   geom_sf(data = provinces_ibf, fill = "#d3d3d3", col = "black", linewidth = 0.6) +
   geom_sf(data = abialba_crop, aes(fill = "Abies alba"), col = NA, alpha = 0.65) +
   geom_sf(data = pinsylv_crop, aes(fill = "Pinus sylvestris"), col = NA, alpha = 0.65) +
   geom_sf(data = pinpine_crop, aes(fill = "Pinus pinea"), col = NA, alpha = 0.65) +
-  geom_sf(data = countries, fill = NA, col = "black", linewidth = 0.6) +
+  geom_sf(data = coastline,
+          color = "black", fill = NA, linewidth = 0.6) +
   geom_sf_text(data = provinces_ibf, aes(label = ine.prov.name), size = 4,
                family = "sans", col = "#565656") +
   geom_point(data = sites, aes(x = geo_lon, y = geo_lat, fill = sp_id),
@@ -212,6 +227,7 @@ distrib_world <- ggplot() +
   theme(legend.position = "bottom") +
   coord_sf(xlim = c(-15, 65), ylim = c(35, 75), expand = FALSE) +
   theme(panel.grid = element_line(color = "gray90"),
+        plot.background = element_rect(fill = "transparent", colour = NA),
         legend.text = element_text(face = 'italic', size = 25,
                                    margin = margin(l = 0.3, r = 2, unit = 'cm')),
         axis.text.x = element_blank(),
@@ -254,7 +270,7 @@ final_map2 <- ggdraw() +
 
 # 11.- Exporting ####
  
-tiff("04_figures/05_02_fig1_review.tiff", units = "mm", width = 300, height = 300,
+tiff("04_figures/05_02_fig1_review2.tiff", units = "mm", width = 300, height = 300,
      res = 600, compression = "lzw")
 final_map2
 dev.off()
