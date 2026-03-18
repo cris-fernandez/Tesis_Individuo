@@ -36,19 +36,24 @@ site_plot <- plots %>% dplyr::select(plot_id, pair_id)
 climate_data <- left_join(climate_data, site_plot, by = "plot_id")
 climate_means <- climate_data %>% 
   dplyr::select(c(pair_id, year, MAP, T_max, T_min)) %>% 
+  mutate(T_mean = (T_max + T_min) / 2) %>% 
   group_by(pair_id) %>% 
-  summarise(MAP_mean = mean(MAP, na.rm = TRUE),
+  summarise(MAP_mean = mean(MAP, na.rm = T),
             MAP_sd = sd(MAP, na.rm = T),
             MAP_max = max(MAP, na.rm = T),
             MAP_min = min(MAP, na.rm = T),
-            T_max_mean = mean(T_max, na.rm = TRUE),
+            T_max_mean = mean(T_max, na.rm = T),
             T_max_sd = sd(T_max, na.rm = T),
             T_max_max = max(T_max, na.rm = T),
             T_max_min = min(T_max, na.rm = T),
-            T_min_mean  = mean(T_min, na.rm = TRUE),
+            T_min_mean  = mean(T_min, na.rm = T),
             T_min_sd = sd(T_min, na.rm = T),
             T_min_max = max(T_min, na.rm = T),
             T_min_min = min(T_min, na.rm = T),
+            T_mean_mean = mean(T_mean, na.rm = T),
+            T_mean_sd = sd(T_mean, na.rm = T),
+            T_mean_max = max(T_mean, na.rm = T),
+            T_mean_min = min(T_mean, na.rm = T)
             )
 
 ## 3.2.- SPEI data ####
