@@ -3,7 +3,7 @@ rm(list=ls()) #Clearing Gl environment
 pck<- c("tidyverse", "dplyr", "patchwork", "grid", "easyclimate",
         "ggprism", "forcats", "GGally", "MuMIn", "corrr", "ggcorrplot","ggfortify", 
         "FactoMineR", "factoextra", "ggplot2", "ggbiplot", "ggfortify", "MASS", 
-        "viridis", "lme4", "lmerTest", "emmeans", "mgcv", "broom.mixed", "xlsx") #list of packages
+        "viridis", "lme4", "lmerTest", "emmeans", "mgcv", "broom.mixed", "xlsx", "ggtext") #list of packages
 new_pck <- pck[!(pck %in% installed.packages()[,"Package"])] #new packages (not installed ones)
 if(length(new_pck)) install.packages(new_pck) #install new packages
 lapply(pck, library, character.only=T) #load all packages
@@ -428,12 +428,12 @@ hot_target <- clean_target %>% filter(!vigor_id == "cold_healthy") %>%
 # 5.1.- Height ####
 
 fig_3_h <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = height, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = height, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_smooth(data = hot_target %>% filter(sp_id == "Pinsylv"),
               aes(x = mean_def_obs, y = height, colour = sp_id, fill = sp_id), 
               linewidth = 2, alpha = 0.3, method = "lm") +
   geom_point(aes(x = mean_def_obs, y = height, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -459,16 +459,17 @@ fig_3_h <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.2.- SLA ####
 
 fig_3_sla <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = sla_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = sla_22, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_point(aes(x = mean_def_obs, y = sla_22, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -494,19 +495,20 @@ fig_3_sla <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.3.- N ####
 
 fig_3_n <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = percent_n, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = percent_n, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_smooth(data = hot_target %>% filter(sp_id == "Pinsylv"),
               aes(x = mean_def_obs, y = percent_n, colour = sp_id, fill = sp_id), 
               linewidth = 2, alpha = 0.3, method = "lm") +
   geom_point(aes(x = mean_def_obs, y = percent_n, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -532,19 +534,20 @@ fig_3_n <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_text(size = 30),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.4.- Chl. ####
 
 fig_3_chl <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_smooth(data = hot_target %>% filter(sp_id != "Abialba"),
               aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id, fill = sp_id), 
               linewidth = 2, alpha = 0.3, method = "lm") +
   geom_point(aes(x = mean_def_obs, y = total_chl_fw_22, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -570,19 +573,20 @@ fig_3_chl <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.5.- Car. ####
 
 fig_3_xc <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_smooth(data = hot_target %>% filter(sp_id == "Pinpine"),
               aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id, fill = sp_id), 
               linewidth = 2, alpha = 0.3, method = "lm") +
   geom_point(aes(x = mean_def_obs, y = xc_fw_22, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -608,16 +612,17 @@ fig_3_xc <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.6.- d13C ####
 
 fig_3_d13c <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_point(aes(x = mean_def_obs, y = leaf_d13c, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -643,16 +648,17 @@ fig_3_d13c <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
 # 5.7.- d18O ####
 
 fig_3_d18o <- ggplot(hot_target) +
-  geom_point(aes(x = mean_def_obs, y = leaf_d18o_corrected, colour = sp_id), size = 2, alpha = 0) +
+  geom_point(aes(x = mean_def_obs, y = leaf_d18o_corrected, colour = sp_id), size = 3.05, alpha = 0) +
   geom_point(aes(x = mean_def_obs, y = leaf_d18o_corrected, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) +
+                 shape = pair_id), size = 3.05, alpha = 0.4) +
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -678,15 +684,16 @@ fig_3_d18o <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_text(size = 30),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal")
 
 # 5.8.- BAI80 ####
 
 fig_3_bai80 <- ggplot(hot_target) + 
-  geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id), size = 2, alpha = 0) + 
+  geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id), size = 3.05, alpha = 0) + 
   geom_point(aes(x = mean_def_obs, y = mean_1980, colour = sp_id,
-                 shape = pair_id), size = 2, alpha = 0.4) + 
+                 shape = pair_id), size = 3.05, alpha = 0.4) + 
   scale_shape_manual(values = c(16,16,16,15,15,17,18)) + 
   scale_color_manual(breaks = c("Abialba", "Pinsylv", "Pinpine"),
                      values = c("Abialba" = "#785EF0",
@@ -712,7 +719,8 @@ fig_3_bai80 <- ggplot(hot_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 35,
+                                   face = "italic"),
         legend.direction = "horizontal",
         legend.position = "none")
 
