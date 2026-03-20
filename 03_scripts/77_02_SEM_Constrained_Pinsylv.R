@@ -105,17 +105,17 @@ levels(clean_target$spot_status) # Coldspot first
 
 # 6.- Filtering and standardising ####
 # Standardization by site
-pp_target <- clean_target %>% filter(sp_id == "Pinpine") %>% 
+ps_target <- clean_target %>% filter(sp_id == "Pinsylv") %>% 
   group_by(pair_id) %>% 
   mutate(across(where(is.numeric), scale))
 
-summary(pp_target)
+summary(ps_target)
 
 # 7.- SEM structure ####
 
 sem_model <- '
-mean_1980 ~ height + sla_22 
-leaf_d13c ~ height + mean_1980 + sla_22
+mean_1980 ~ height + sla_22
+leaf_d13c ~ sla_22 + height + mean_1980
 '
 # 8.- Constrained model ####
 # Since my variables were generally quasi-normal, it is justified to use 
@@ -124,81 +124,75 @@ leaf_d13c ~ height + mean_1980 + sla_22
 # According to Antonio, the first step is to test the model with all paths constrained
 
 locked_sem <- sem(sem_model, 
-                  pp_target, 
+                  ps_target, 
                   group = "spot_status", 
                   group.equal = c("regressions"), 
-                  missing = "fiml")
+                  missing = "fiml",
+                  fixed.x = F)
 
 # Checking the "test statistic (Chi-square) y P-value
 # (Chi-square)" of the model
 
 summary(locked_sem, standardized = TRUE, fit.measures = TRUE)
-# This model has a p = 0.000 (non-significant), so the model does not adjust well
-# to my data
+# This model has a p = 0.795 (significant), so the model adjusts well
+# to my data --> similar relationships between my paths in declining and non-declining?
 
 # 9.- Free model ####
-# Since the constrained model does not adjust correctly to the data, 
-# I now need to fit the free model to see if it does fit well:
+# Not really needed but useful for an anova later
 
 free_sem <- sem(sem_model,
-                pp_target,
+                ps_target,
                 group = "spot_status",
-                missing   = "fiml")
+                missing   = "fiml",
+                fixed.x = F)
 
 summary(free_sem, standardized = TRUE, fit.measures = TRUE)
-# p = 0.622 --> the model adjusts to my data, so there is a model in between I can try
 
+# I cannot see the p-value, as the model 'theoretically' adjusts perfectly to 
+# the data: but in reality, it is overidentified (hence CFI and TLI = 1.000), so 
+# there is no way to test any hypothesis and therefore no p-value. But we can assume
+# it is "significantish"
 
-# 10.- Liberating paths ####
-## 10.1.- Modindices ####
-# It says what paths are more influential in the model's X-squared
+# 10.- Modindices ####
+# Indeed mi values (the "importance" of a path on determining the goodness of fit)
+# are quite lower than in Abies alba and Pinus pinea
 
 modindices(locked_sem, sort = TRUE) 
 lavTestScore(locked_sem)
 
-# Although height -> BAI is the most influential path, we are not interested in 
-# assessing that relation and can be left constrained. Moreover, this path is 
-# only very influential in one of the groups, not in both. So we can jump to the #2
-# and #3 path, which is BAI -> d13C
+# 11.- ANOVA ####
+# To compare locked and free models
+anova(locked_sem, free_sem)
 
-## 10.2.- BAI -> d13C ####
+# In this case, leaf_d13c ~ height in both groups is the most 
+# influential path, so it can be liberated.
 
-liber_sem <- sem(sem_model,
-                 pp_target,
-                 group = "spot_status",
-                 missing = "fiml",
-                 group.equal = "regressions",
-                 group.partial = c("leaf_d13c ~ mean_1980"))
-
-summary(liber_sem, standardized = TRUE, fit.measures = TRUE)
-
-# p = 0.012, we can further liberate paths
-modindices(liber_sem, sort = T)
-
-## 10.3.- Height -> d13C ####
-
-liber_sem2 <- sem(sem_model,
-                 pp_target,
-                 group = "spot_status",
-                 missing = "fiml",
-                 group.equal = "regressions",
-                 group.partial = c("leaf_d13c ~ mean_1980",
-                                   "mean_1980 ~ height"))
-
-summary(liber_sem2, standardized = TRUE, fit.measures = TRUE)
-modindices(liber_sem2, sort = T)
-# All metrics have significantly improved :)
-
-## 10.4.- SLA -> BAI ####
-
-liber_sem2 <- sem(sem_model,
-                  pp_target,
-                  group = "spot_status",
-                  missing = "fiml",
-                  group.equal = "regressions",
-                  group.partial = c("leaf_d13c ~ mean_1980",
-                                    "mean_1980 ~ height",
-                                    "mean_1980 ~ sla_22"))
-
-summary(liber_sem2, standardized = TRUE, fit.measures = TRUE)
-# All metrics have significantly improved :)
+# ## 10.2.- Height -> d13C ####
+# 
+# liber_sem <- sem(sem_model,
+#                  ps_target,
+#                  group = "spot_status",
+#                  missing = "fiml",
+#                  group.equal = "regressions",
+#                  group.partial = c("mean_1980 ~ height"),
+#                  fixed.x = F)
+# 
+# summary(liber_sem, standardized = TRUE, fit.measures = TRUE)
+# 
+# modindices(liber_sem, sort = T)
+# 
+# # Already non.significant?
+# 
+# ## 10.3.- SLA -> BAI
+# 
+# liber_sem <- sem(sem_model,
+#                  ps_target,
+#                  group = "spot_status",
+#                  missing = "fiml",
+#                  group.equal = "regressions",
+#                  group.partial = c("leaf_d13c ~ height",
+#                                    "mean_1980 ~ sla_22"),
+#                  fixed.x = F)
+# 
+# summary(liber_sem, standardized = TRUE, fit.measures = TRUE)
+# 
