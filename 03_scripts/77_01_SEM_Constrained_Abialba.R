@@ -117,26 +117,11 @@ mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
 '
 
-# 8.- Multigroup SEM #
-# The arguments provide the standardized coefficients (useful to compare) and 
-# the R2 values
-
-## 8.1.- Free model ####
+# 8.- Constrained model ####
 # Since my variables were generally quasi-normal, it is justified to use 
 # "ML", the default estimator, instead of "MLR", the estimator of preferred use in 
 # case of violation of normality. Although it is safer, it is also less flexible
-
-free_sem <- sem(sem_model,
-              aa_target,
-              group = "spot_status",
-              missing   = "fiml",
-              fixed.x = F)
-
-summary(free_sem, standardized = TRUE, fit.measures = TRUE)
-
-## 8.2.-  Fully constrained model ####
-# group.equal = c("regressions") forces all regressions to be equal, so that the 
-# sem is left with all its paths constrained
+# According to Antonio, the first step is to test the model with all paths constrained
 
 locked_sem <- sem(sem_model, 
                   aa_target, 
@@ -145,36 +130,92 @@ locked_sem <- sem(sem_model,
                   missing = "fiml", 
                   fixed.x = F)
 
+# Checking the "test statistic (Chi-square) y P-value
+# (Chi-square)" of the model
+
 summary(locked_sem, standardized = TRUE, fit.measures = TRUE)
+# This model has a p = 0.008 (significant), so the model does not adjust well
+# to my data
 
-# Comparison of locked
+# 9.- Free model ####
+# Since the constrained model does not adjust correctly to the data, 
+# I now need to fit the free model to see if it does fit well:
 
-anova(locked_sem, free_sem)
-# Both models are significantly different, which justifies the "liberation" of certain
-# paths...
+free_sem <- sem(sem_model,
+                aa_target,
+                group = "spot_status",
+                missing   = "fiml",
+                fixed.x = F)
 
-## 8.3.- Univariate test scores ####
-# Path code (p1, ..., p5) obtainable from line 148
-# p1: height -> bai
-# p2: sla -> bai
-# p3: sla -> d13c
-# p4: height -> d13c
-# p5: bai -> d13c
+summary(free_sem, standardized = TRUE, fit.measures = TRUE)
 
+# I cannot see the p-value, as the model 'theoretically' adjusts perfectly to 
+# the data: but in reality, it is overidentified (hence CFI and TLI = 1.000), so 
+# there is no way to test any hypothesis and therefore no p-value. But we can assume
+# it is "significantish"
+
+# 10.- Liberating paths ####
+## 10.1.- Modindices ####
+# It says what paths are more influential in the model's X-squared
+
+modindices(locked_sem, sort = TRUE) 
 lavTestScore(locked_sem)
 
-# Global p < 0.05 so that means that a path has to be freed
-# Those paths with a significant p value can be liberated (??)
+# Modindices provides information about the most influential paths in the X-squared value,
+# from highest to lowest. In this case, sla_22  ~ leaf_d13c in both groups is the most 
+# influential path, so it can be liberated.
 
-# In this case, height -> bai and sla -> d13c can be freed
+## 10.2.- SLA -> d13C ####
 
 liber_sem <- sem(sem_model,
                  aa_target,
                  group = "spot_status",
                  missing = "fiml",
                  group.equal = "regressions",
-                 group.partial = c("mean_1980 ~ height",
-                                   "leaf_d13c ~ sla_22"),
+                 group.partial = c("leaf_d13c ~ sla_22"),
                  fixed.x = F)
 
 summary(liber_sem, standardized = TRUE, fit.measures = TRUE)
+# p-val = 0.022, df = 4, chi-sq = 11.442 --> Still need to liberate more paths
+
+modindices(liber_sem, sort = T) # Now height --> d13C is the next more influential
+
+
+## 10.3.- Height -> d13C ####
+
+liber_sem2 <- sem(sem_model,
+                 aa_target,
+                 group = "spot_status",
+                 missing = "fiml",
+                 group.equal = c("regressions"),
+                 group.partial = c("leaf_d13c ~ sla_22",
+                                   "leaf_d13c ~ height"),
+                 fixed.x = F)
+
+summary(liber_sem2, standardized = TRUE, fit.measures = TRUE)
+
+# p-val = 0.057, df = 3, chi-sq = 7.518 --> now we can stop
+# But RMSEA is catastrophic (0.164) and TLI and CFI could be improved.
+
+modindices(liber_sem2, sort = T) # Now height --> d13C is the next more influential
+
+## 10.4.- Height -> BAI ####
+
+liber_sem3 <- sem(sem_model,
+                  aa_target,
+                  group = "spot_status",
+                  missing = "fiml",
+                  group.equal = c("regressions"),
+                  group.partial = c("leaf_d13c ~ sla_22",
+                                    "leaf_d13c ~ height",
+                                    "mean_1980 ~ height"),
+                  fixed.x = F)
+
+summary(liber_sem3, standardized = TRUE, fit.measures = TRUE)
+# Ole
+
+
+
+# # Comparison;
+# anova(locked_sem, liber_sem)
+# anova(free_sem, liber_sem)
