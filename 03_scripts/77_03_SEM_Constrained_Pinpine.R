@@ -191,7 +191,7 @@ modindices(liber_sem2, sort = T)
 
 ## 10.4.- SLA -> BAI ####
 
-liber_sem2 <- sem(sem_model,
+liber_sem3 <- sem(sem_model,
                   pp_target,
                   group = "spot_status",
                   missing = "fiml",
@@ -200,5 +200,5 @@ liber_sem2 <- sem(sem_model,
                                     "mean_1980 ~ height",
                                     "mean_1980 ~ sla_22"))
 
-summary(liber_sem2, standardized = TRUE, fit.measures = TRUE)
+summary(liber_sem3, standardized = TRUE, fit.measures = TRUE)
 # All metrics have significantly improved :)

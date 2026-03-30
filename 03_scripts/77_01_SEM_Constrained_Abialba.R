@@ -214,7 +214,7 @@ liber_sem3 <- sem(sem_model,
 summary(liber_sem3, standardized = TRUE, fit.measures = TRUE)
 # Ole
 
-
+standardizedSolution(liber_sem3)
 
 # # Comparison;
 # anova(locked_sem, liber_sem)
