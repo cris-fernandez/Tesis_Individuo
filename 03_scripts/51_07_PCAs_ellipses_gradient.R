@@ -84,8 +84,10 @@ clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_targe
                                     NA, clean_target$mean_def_obs)
 clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
                               NA, clean_target$sla_22)
-clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 150 & clean_target$sp_id == "Pinsylv",
                                        NA, clean_target$total_chl_fw_22)
+clean_target$xc_fw_22 <- ifelse(clean_target$xc_fw_22 < 5 & clean_target$sp_id == "Pinsylv",
+                                NA, clean_target$xc_fw_22)
 clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
                                        NA, clean_target$total_chl_fw_22)
 clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
@@ -288,6 +290,7 @@ biplot_aa2 <- ggplot() +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   xlab("PC1 (32.30 %)") + 
   ylab("PC2 (17.40 %)") + 
+  labs(tag = "A") + 
   ggtitle("Abies alba") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -295,6 +298,7 @@ biplot_aa2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -335,6 +339,7 @@ biplot_ps2 <- ggplot() +
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   xlab("PC1 (45.40 %)") + 
   ylab("PC2 (18.88 %)") + 
+  labs(tag = "B") +
   ggtitle("Pinus sylvestris") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -342,6 +347,7 @@ biplot_ps2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -383,6 +389,7 @@ biplot_pp2 <- ggplot() +
   # guides(fill = "none") +
   xlab("PC1 (28.50 %)") + 
   ylab("PC2 (21.95 %)") + 
+  labs(tag = "C") + 
   ggtitle("Pinus pinea") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -390,6 +397,7 @@ biplot_pp2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -404,7 +412,7 @@ biplot_pp2 <- ggplot() +
 
 # 13.- Saving ####
 
-tiff("04_figures/51_07_PCA_ellipses_gradient_V2.tiff", units = "mm",
+tiff("04_figures/51_07_PCA_ellipses_gradient_V4.tiff", units = "mm",
      width = 400, height = 400,
      res = 600, compression = "lzw")
 (biplot_aa2 + biplot_ps2 + biplot_pp2 + 

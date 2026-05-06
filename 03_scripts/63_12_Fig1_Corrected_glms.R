@@ -15,7 +15,7 @@ getwd()
 
 # 1.- Reading data ####
 
-ci_df_2 <- read.csv("02_clean_data/63_01_AICc_discrete2.csv", 
+ci_df_2 <- read.csv("02_clean_data/63_01_AICc_discrete2_glm.csv", 
                     header = T, sep = ",") %>% dplyr::select(-X)
 
 ci_df_3 <- read.csv("02_clean_data/63_02_AICc_discrete3.csv", 
@@ -91,8 +91,10 @@ clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_targe
                                     NA, clean_target$mean_def_obs)
 clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
                               NA, clean_target$sla_22)
-clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 150 & clean_target$sp_id == "Pinsylv",
                                        NA, clean_target$total_chl_fw_22)
+clean_target$xc_fw_22 <- ifelse(clean_target$xc_fw_22 < 5 & clean_target$sp_id == "Pinsylv",
+                                NA, clean_target$xc_fw_22)
 clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
                                        NA, clean_target$total_chl_fw_22)
 clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
@@ -106,9 +108,6 @@ h_df <- ci_df_2 %>% filter(variable == "height")
 
 h_df$significant <- factor(h_df$significant, levels = c("yes", "no"))
 
-# This is so there is a phantom "non-significant" point that can be used for the 
-# legend :)
-
 h_df <- bind_rows(
   h_df,
   data.frame(
@@ -120,8 +119,6 @@ h_df <- bind_rows(
     significant = factor("no", levels = c("yes", "no"))
   )
 )
-
-h_df$sp_id <- factor(h_df$sp_id, levels = c("Abialba", "Pinsylv", "Pinpine"))
 
 fig_2_h <- ggplot(h_df) + 
   geom_point(aes(x = sp_id, y = emmean, colour = spot_status,
@@ -292,7 +289,7 @@ fig_2_chl <- ggplot(chl_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
-  labs(tag = "G") + 
+  labs(tag = "E") + 
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -329,9 +326,6 @@ fig_2_xc <- ggplot(xc_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
-  scale_x_discrete(labels = c("Abialba" = "A. alba",
-                              "Pinsylv" = "P. sylvestris",
-                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(breaks = c("yes", "no"),
                      values = c("yes" = 1,
                                 "no" = 0.3),
@@ -340,12 +334,11 @@ fig_2_xc <- ggplot(xc_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("Car. (μg g"^"-1", ")"))) +
-  labs(tag = "H") + 
+  labs(tag = "F") + 
   # ylim(20, 60) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
-                                   face = "italic"),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -386,7 +379,7 @@ fig_2_d13c <- ggplot(d13c_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(bquote("δ"^13~C~"(‰)")) +
-  labs(tag = "E") + 
+  labs(tag = "G") + 
   # ylim(-30, -23.5) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -423,6 +416,9 @@ fig_2_d18o <- ggplot(d18o_df) +
                      labels = c("Non-declining",
                                 "Declining"),
                      name = "") + 
+  scale_x_discrete(labels = c("Abialba" = "A. alba",
+                              "Pinsylv" = "P. sylvestris",
+                              "Pinpine" = "P. pinea")) + 
   scale_alpha_manual(breaks = c("yes", "no"),
                      values = c("yes" = 1,
                                 "no" = 0.3),
@@ -431,11 +427,12 @@ fig_2_d18o <- ggplot(d18o_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(bquote("δ"^18~O~"(‰)")) +
-  labs(tag = "F") +
+  labs(tag = "H") +
   # ylim(-30, -23.5) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25, vjust = 1, angle = 45, hjust = 1,
+                                   face = "italic"),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
@@ -680,15 +677,15 @@ fig_3_xc <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("Defoliation (%)") +
-  ylab("") +
+  xlab("") + 
+  ylab("") +  
   labs(tag = " ") +
-  theme_classic() +
+  theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_text(size = 25),
+        axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.x = element_text(size = 30, vjust = 14),
+        axis.title.y = element_blank(),
         plot.tag = element_text(size = 30),
         legend.text = element_text(size = 35,
                                    face = "italic"),
@@ -756,15 +753,15 @@ fig_3_d18o <- ggplot(hot_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  xlab("") + 
-  ylab("") +  
+  xlab("Defoliation (%)") +
+  ylab("") +
   labs(tag = " ") +
-  theme_classic() + 
+  theme_classic() +
   theme(axis.ticks.length = unit(-5, "pt"),
-        axis.text.x = element_blank(),
+        axis.text.x = element_text(size = 25),
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.title.y = element_blank(),
+        axis.title.x = element_text(size = 30, vjust = 14),
         plot.tag = element_text(size = 30),
         legend.text = element_text(size = 35,
                                    face = "italic"),
@@ -888,14 +885,14 @@ fig_3_bai80 <- ggplot(hot_target) +
 
 
 # Segundo intento
- 
 
-figures <- fig_2_h + fig_3_h + fig_2_d13c + fig_3_d13c + 
-  fig_2_bai80 + fig_3_bai80 + fig_2_d18o + fig_3_d18o + 
-  fig_2_sla + fig_3_sla + fig_2_chl + fig_3_chl + 
-  fig_2_n + fig_3_n + fig_2_xc + fig_3_xc
 
-tiff("04_figures/63_11_Fig1_fixed_V13.tiff",
+figures <- fig_2_h + fig_3_h + fig_2_chl + fig_3_chl + 
+  fig_2_bai80 + fig_3_bai80 + fig_2_xc + fig_3_xc + 
+  fig_2_sla + fig_3_sla + fig_2_d13c + fig_3_d13c + 
+  fig_2_n + fig_3_n + fig_2_d18o + fig_3_d18o
+
+tiff("04_figures/63_12_Fig1_fixed_V10.tiff",
      units = "mm", width = 600, height = 550,
      res = 700, compression = "lzw")
 
@@ -903,11 +900,11 @@ final_plot <- (figures / guide_area()) +
   plot_layout(ncol = 1, 
               guides = "collect",
               heights = c(8, 0.8)) &
-    guides(alpha = guide_legend(nrow = 2),
-           color = guide_legend(nrow = 3,
-                     override.aes = list(size = 6,
-                                         alpha = 1)),
-           shape = "none") & 
+  guides(alpha = guide_legend(nrow = 2),
+         color = guide_legend(nrow = 3,
+                              override.aes = list(size = 6,
+                                                  alpha = 1)),
+         shape = "none") & 
   theme(legend.box = "horizontal")
 final_plot
 
