@@ -88,8 +88,8 @@ density_all <- ggplot(data = clean_target) +
   scale_fill_manual(breaks=c("hotspot", "coldspot"),
                     values = c("hotspot" = "#D71515",
                                "coldspot" = "#2274A5"),
-                    labels = c("Declining sites",
-                               "Non-declining sites"),
+                    labels = c("Declining stands",
+                               "Non-declining stands"),
                     name = "") +
   geom_vline(xintercept = all_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
@@ -120,8 +120,8 @@ density_abialba <- ggplot(data = clean_target[clean_target$sp_id == "Abialba", ]
   scale_fill_manual(breaks=c("hotspot", "coldspot"),
                     values = c("hotspot" = "#D71515",
                                "coldspot" = "#2274A5"),
-                    labels = c("Declining sites",
-                               "Non-declining sites"),
+                    labels = c("Declining stands",
+                               "Non-declining stands"),
                     name = "") +
   geom_vline(xintercept = abialba_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
@@ -155,8 +155,8 @@ density_pinsylv <- ggplot(data = clean_target[clean_target$sp_id == "Pinsylv", ]
   scale_fill_manual(breaks=c("hotspot", "coldspot"),
                     values = c("hotspot" = "#D71515",
                                "coldspot" = "#2274A5"),
-                    labels = c("Declining sites",
-                               "Non-declining sites"),
+                    labels = c("Declining stands",
+                               "Non-declining stands"),
                     name = "") +
   geom_vline(xintercept = pinsylv_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 
@@ -188,8 +188,8 @@ density_pinpine <- ggplot(data = clean_target[clean_target$sp_id == "Pinpine", ]
   scale_fill_manual(breaks=c("hotspot", "coldspot"),
                     values = c("hotspot" = "#D71515",
                                "coldspot" = "#2274A5"),
-                    labels = c("Declining sites",
-                               "Non-declining sites"),
+                    labels = c("Declining stands",
+                               "Non-declining stands"),
                     name = "") +
   geom_vline(xintercept = pinpine_quantile, color = "navy", linewidth = 3, 
              linetype = "dashed") + 

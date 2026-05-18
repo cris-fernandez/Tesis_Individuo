@@ -14,9 +14,13 @@ getwd()
 
 # 1.- Reading target data ####
 
-clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv", 
-                         header = T, sep = ",") %>% dplyr::select(-X) %>% 
+clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+                         header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
+
+# clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+#                          header = T, sep = ",") %>% dplyr::select(-X) %>%
+#   mutate(site = substr(plot_id, 1, 3))
 
 # 2.- Removing 2023 data ####
 # So I can have in the same column 2022 and 2023 values
@@ -63,22 +67,43 @@ clean_target$sp_id <- ifelse(clean_target$tree_number == "missing_1" |
                              "Pinsylv", clean_target$sp_id)
 
 clean_target <- clean_target %>% 
-  filter(spot_status == "hotspot") %>% 
   mutate(sp_id = factor(sp_id),
-         vigor_id = fct_relevel(vigor_id, "hot_healthy", "hot_damaged")) %>% 
-  droplevels()
+         vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
 
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target$cn <- clean_target$percent_c / clean_target$percent_n
 
-clean_target <- clean_target %>% filter(mean_def_obs < 60)
+clean_target <- clean_target %>% filter(mean_def_obs < 100)
 
 clean_target$site <- as.factor(clean_target$site)
+
+# Outlayers deletion:
+
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 4783, NA, clean_target$mean_1980)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_target$sp_id == "Abialba",
+                                    NA, clean_target$mean_def_obs)
+clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
+                              NA, clean_target$sla_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 150 & clean_target$sp_id == "Pinsylv",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$xc_fw_22 <- ifelse(clean_target$xc_fw_22 < 5 & clean_target$sp_id == "Pinsylv",
+                                NA, clean_target$xc_fw_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
+                                    NA, clean_target$mean_def_obs)
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
+                                 NA, clean_target$mean_1980)
+
 
 # Transforming spot status into a factor so it can be modellised:
 
 clean_target$spot_status <- as.factor(clean_target$spot_status)
+
+# Keeping only hotspots:
+
+clean_target <- clean_target %>% filter(spot_status == "hotspot")
 
 # Filtering by species: 
 
@@ -87,17 +112,14 @@ aa_target <- clean_target %>%
 ps_target <- clean_target %>% 
   filter(sp_id == "Pinsylv")
 pp_target <- clean_target %>% 
-  filter(sp_id == "Pinpine") %>% 
-  filter(mean_def_obs < 60)
+  filter(sp_id == "Pinpine")
+# filter(mean_def_obs < 60) Why did I do this
 
 # 5.- Variable selection ####
 
-var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
-              "cn", "sla_22", "age", 
-              "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
-              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", 
-              "leaf_d18o_corrected",
-              "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
+var_list <- c("height", "mean_1980", "sla_22", "percent_n",
+              "total_chl_fw_22", "xc_fw_22", 
+              "leaf_d13c", "leaf_d18o_corrected")
 
 # 6.- Lm estimates ####
 ## 6.1.- Abies alba ####
@@ -108,7 +130,7 @@ model_list_aa <- list()
 null_list_aa <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
+  model_formula <- as.formula(paste(var_list[i], "~ mean_def_obs"))
   aa_target2 <- aa_target %>% filter(!is.na(var_list[i]))
   model_list_aa[[i]] <- lm(model_formula, data = aa_target2)
   coefs_model <- broom.mixed::tidy(model_list_aa[[i]]) %>% 
@@ -133,7 +155,7 @@ model_list_ps <- list()
 null_list_ps <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
+  model_formula <- as.formula(paste(var_list[i], "~ mean_def_obs"))
   ps_target2 <- ps_target %>% filter(!is.na(var_list[i]))
   model_list_ps[[i]] <- lm(model_formula, data = ps_target2)
   coefs_model <- broom.mixed::tidy(model_list_ps[[i]]) %>% 
@@ -157,7 +179,7 @@ model_list_pp <- list()
 null_list_pp <- list()
 
 for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ vigor_id"))
+  model_formula <- as.formula(paste(var_list[i], "~ mean_def_obs"))
   pp_target2 <- pp_target %>% filter(!is.na(var_list[i]))
   model_list_pp[[i]] <- lm(model_formula, data = pp_target2)
   coefs_model <- broom.mixed::tidy(model_list_pp[[i]]) %>% 
@@ -201,9 +223,9 @@ aa_aicc$delta <- aa_aicc$aa_aicc_full - aa_aicc$aa_aicc_null
 ps_aicc$delta <- ps_aicc$ps_aicc_full - ps_aicc$ps_aicc_null
 pp_aicc$delta <- pp_aicc$pp_aicc_full - pp_aicc$pp_aicc_null
 
-aa_aicc$significant <- ifelse(aa_aicc$delta < -3, "yes", "no")
-ps_aicc$significant <- ifelse(ps_aicc$delta < -3, "yes", "no")
-pp_aicc$significant <- ifelse(pp_aicc$delta < -3, "yes", "no")
+aa_aicc$significant <- ifelse(aa_aicc$delta < -2, "yes", "no")
+ps_aicc$significant <- ifelse(ps_aicc$delta < -2, "yes", "no")
+pp_aicc$significant <- ifelse(pp_aicc$delta < -2, "yes", "no")
 
 # 8.- Summary with C.I. 95% ####
 
@@ -212,9 +234,9 @@ ps_ci_df <- data.frame()
 pp_ci_df <- data.frame()
 
 for (i in 1:length(var_list)) {
-  aa_ci <- summary(emmeans(model_list_aa[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
-  ps_ci <- summary(emmeans(model_list_ps[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
-  pp_ci <- summary(emmeans(model_list_pp[[i]], ~ vigor_id)) %>% mutate(variable = var_list[i])
+  aa_ci <- summary(emmeans(model_list_aa[[i]], ~ mean_def_obs)) %>% mutate(variable = var_list[i])
+  ps_ci <- summary(emmeans(model_list_ps[[i]], ~ mean_def_obs)) %>% mutate(variable = var_list[i])
+  pp_ci <- summary(emmeans(model_list_pp[[i]], ~ mean_def_obs)) %>% mutate(variable = var_list[i])
   
   aa_ci_df <- rbind(aa_ci_df, aa_ci)
   ps_ci_df <- rbind(ps_ci_df, ps_ci)
@@ -246,4 +268,85 @@ ci_df <- rbind(aa_ci_df, ps_ci_df, pp_ci_df)
 
 # 10.- Export ####
 
-write.csv(ci_df, "02_clean_data/63_02_AICc_discrete3.csv")
+write.csv(ci_df, "02_clean_data/63_02_AICc_defo.csv")
+
+# 11.- Confidence intervals ####
+
+## 11.1.- Abies alba ####
+
+summary(lm(mean_def_obs ~ height, data = aa_target2))
+confint(lm(mean_def_obs ~ height, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ mean_1980, data = aa_target2))
+confint(lm(mean_def_obs ~ mean_1980, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ sla_22, data = aa_target2))
+confint(lm(mean_def_obs ~ sla_22, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ percent_n, data = aa_target2))
+confint(lm(mean_def_obs ~ percent_n, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ total_chl_fw_22, data = aa_target2))
+confint(lm(mean_def_obs ~ total_chl_fw_22, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ xc_fw_22, data = aa_target2))
+confint(lm(mean_def_obs ~ xc_fw_22, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d13c, data = aa_target2))
+confint(lm(mean_def_obs ~ leaf_d13c, data = aa_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = aa_target2))
+confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = aa_target2), level = 0.95)
+
+## 11.2.- Pinus sylvestris ####
+
+summary(lm(mean_def_obs ~ height, data = ps_target2))
+confint(lm(mean_def_obs ~ height, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ mean_1980, data = ps_target2))
+confint(lm(mean_def_obs ~ mean_1980, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ sla_22, data = ps_target2))
+confint(lm(mean_def_obs ~ sla_22, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ percent_n, data = ps_target2))
+confint(lm(mean_def_obs ~ percent_n, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ total_chl_fw_22, data = ps_target2))
+confint(lm(mean_def_obs ~ total_chl_fw_22, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ xc_fw_22, data = ps_target2))
+confint(lm(mean_def_obs ~ xc_fw_22, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d13c, data = ps_target2))
+confint(lm(mean_def_obs ~ leaf_d13c, data = ps_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = ps_target2))
+confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = ps_target2), level = 0.95)
+
+## 11.3.- Pinus pinea ####
+
+summary(lm(mean_def_obs ~ height, data = pp_target2))
+confint(lm(mean_def_obs ~ height, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ mean_1980, data = pp_target2))
+confint(lm(mean_def_obs ~ mean_1980, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ sla_22, data = pp_target2))
+confint(lm(mean_def_obs ~ sla_22, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ percent_n, data = pp_target2))
+confint(lm(mean_def_obs ~ percent_n, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ total_chl_fw_22, data = pp_target2))
+confint(lm(mean_def_obs ~ total_chl_fw_22, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ xc_fw_22, data = pp_target2))
+confint(lm(mean_def_obs ~ xc_fw_22, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d13c, data = pp_target2))
+confint(lm(mean_def_obs ~ leaf_d13c, data = pp_target2), level = 0.95)
+
+summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = pp_target2))
+confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = pp_target2), level = 0.95)
+

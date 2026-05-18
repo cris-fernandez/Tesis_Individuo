@@ -190,6 +190,14 @@ pca_df_aa <- cbind(norm_aa_target, pca_results_aa$scores) # Scores for the point
 pca_df_ps <- cbind(norm_ps_target, pca_results_ps$scores) # Scores for the points
 pca_df_pp <- cbind(norm_pp_target, pca_results_pp$scores) # Scores for the points
 
+# TESTING WHETHER PRINCOMP AND RDA GIVE DIFFERENT RESULTS:
+# Comprobation as I got a comment of Paloma asking whether the PCA was done with 
+# vegan (rda()) or not. 
+# biplot(pca_results_aa)
+# library(vegan)
+# pca_rda <- rda(norm_aa_target)
+# plot(pca_rda)
+
 # 10.- Biplots ####
 
 ## 10.1.- Loadings dataframe ####
@@ -274,7 +282,7 @@ biplot_aa2 <- ggplot() +
                        high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_aa,
@@ -284,8 +292,8 @@ biplot_aa2 <- ggplot() +
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                     values = c("coldspot" = "#2274A5",
                                "hotspot" = "#D71515"),
-                    labels = c("Non-declining sites",
-                               "Declining sites"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   xlab("PC1 (32.30 %)") + 
@@ -323,7 +331,7 @@ biplot_ps2 <- ggplot() +
                        high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_ps,
@@ -333,8 +341,8 @@ biplot_ps2 <- ggplot() +
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                     values = c("coldspot" = "#2274A5",
                                "hotspot" = "#D71515"),
-                    labels = c("Non-declining sites",
-                               "Declining sites"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   xlab("PC1 (45.40 %)") + 
@@ -372,7 +380,7 @@ biplot_pp2 <- ggplot() +
                        high = "#701705",  
                        na.value = "#2274A5",
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_pp,
@@ -382,8 +390,8 @@ biplot_pp2 <- ggplot() +
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                     values = c("coldspot" = "#2274A5",
                                "hotspot" = "#D71515"),
-                    labels = c("Non-declining sites",
-                               "Declining sites"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
                     name = "") + 
   guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
   # guides(fill = "none") +
@@ -412,7 +420,7 @@ biplot_pp2 <- ggplot() +
 
 # 13.- Saving ####
 
-tiff("04_figures/51_07_PCA_ellipses_gradient_V4.tiff", units = "mm",
+tiff("04_figures/51_07_PCA_ellipses_gradient_V5.tiff", units = "mm",
      width = 400, height = 400,
      res = 600, compression = "lzw")
 (biplot_aa2 + biplot_ps2 + biplot_pp2 + 

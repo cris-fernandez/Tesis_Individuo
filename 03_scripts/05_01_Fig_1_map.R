@@ -82,8 +82,9 @@ abialba_crop <- st_intersection(abialba, st_union(countries))
 
 sites <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_01_result_plot.csv", 
                          header = T, sep = ",") %>% 
-  dplyr::select(c(plot_id, site, geo_lat, geo_lon, sp_id)) %>% 
-  filter(grepl("01", plot_id)) %>% 
+  dplyr::select(c(plot_id, site, geo_lat, geo_lon, sp_id, pair_id)) %>% 
+  filter(plot_id %in% c("OZA01", "SAR01", "URZ01", "CED01", "ALU01", "GUA01", "NAV01")) %>% 
+  # filter(grepl("01", plot_id)) %>%
   mutate(sp_id = ifelse(sp_id == "Pinpine", "Pinuspinea",
                         ifelse(sp_id == "Abialba", "Abiesalba", 
                                "Pinussylvestris")))
@@ -270,7 +271,7 @@ final_map2 <- ggdraw() +
 
 # 11.- Exporting ####
  
-tiff("04_figures/05_02_fig1_review2.tiff", units = "mm", width = 300, height = 300,
+tiff("04_figures/05_02_fig1_review3.tiff", units = "mm", width = 300, height = 300,
      res = 600, compression = "lzw")
 final_map2
 dev.off()

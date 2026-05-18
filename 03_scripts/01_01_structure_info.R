@@ -19,8 +19,8 @@ getwd()
 
 # 1.- Reading tree data ####
 
-# clean_tree <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T)
-clean_tree <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T, sep = ",") # PC office
+clean_tree <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T)
+# clean_tree <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/02_clean_data/02_02_clean_tree.csv", header = T, sep = ",") # PC office
 
 clean_tree <- clean_tree %>% unique() #Some repeated observations...
 
@@ -39,6 +39,14 @@ clean_tree$pair_id <- ifelse(grepl("NAV|PEL", clean_tree$plot_id) == T, "Mad-Pin
 
 pairs <- clean_tree %>% dplyr::select(c(plot_id, pair_id)) %>% unique()
 
+# Extracting province - spot:
+
+spots <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
+                         header = T, sep = ",") %>% select(-X) %>%
+  mutate(site = substr(plot_id, 1, 3)) %>% 
+  dplyr::select(c(plot_id, spot_status))
+
+
 # 3.- BA values ####
 
 clean_tree$ba <- pi * (clean_tree$dbh/2)^2
@@ -49,16 +57,18 @@ basim <- clean_tree %>%
   mutate(abs_ba_ha = abs_ba/(pi * (17^2)))
 
 basim <- full_join(pairs, basim, by = "plot_id")
+basim <- full_join(spots, basim, by = "plot_id")
+basim <- basim %>% mutate(plot_code = paste0(pair_id, "-", spot_status))
 
 # 4.- Mean, sd, min, max ####
 
-ba_mean <- basim %>% group_by(pair_id) %>% 
+ba_mean <- basim %>% group_by(plot_code) %>% 
   summarise(mean_ba_ha = mean(abs_ba_ha, na.rm = T))
-ba_sd <- basim %>% group_by(pair_id) %>% 
+ba_sd <- basim %>% group_by(plot_code) %>% 
   summarise(sd_ba_ha = sd(abs_ba_ha, na.rm = T))
-ba_min <- basim %>% group_by(pair_id) %>% 
+ba_min <- basim %>% group_by(plot_code) %>% 
   summarise(min_ba_ha = quantile(abs_ba_ha, .025, na.rm = T))
-ba_max <- basim %>% group_by(pair_id) %>% 
+ba_max <- basim %>% group_by(plot_code) %>% 
   summarise(max_ba_ha = quantile(abs_ba_ha, .975, na.rm = T))
 
 # 5.- Density values ####
@@ -69,14 +79,16 @@ density <- clean_tree %>%
   mutate(stand_dens = (tree_number * 10000)/(pi * (17^2)))
 
 density <- full_join(pairs, density, by = "plot_id")
+density <- full_join(spots, density, by = "plot_id")
+density <- density %>% mutate(plot_code = paste0(pair_id, "-", spot_status))
 
 # 6.- Mean, sd, min, max ####
 
-dens_mean <- density %>% group_by(pair_id) %>% 
+dens_mean <- density %>% group_by(plot_code) %>% 
   summarise(mean_dens = mean(stand_dens, na.rm = T))
-dens_sd <- density %>% group_by(pair_id) %>% 
+dens_sd <- density %>% group_by(plot_code) %>% 
   summarise(sd_dens = sd(stand_dens, na.rm = T))
-dens_min <- density %>% group_by(pair_id) %>% 
+dens_min <- density %>% group_by(plot_code) %>% 
   summarise(min_dens = quantile(stand_dens, .025, na.rm = T))
-dens_max <- density %>% group_by(pair_id) %>% 
+dens_max <- density %>% group_by(plot_code) %>% 
   summarise(max_dens = quantile(stand_dens, .975, na.rm = T))

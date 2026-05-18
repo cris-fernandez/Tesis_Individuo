@@ -272,7 +272,7 @@ biplot_aa2 <- ggplot() +
                        high = "#701705",  
                        na.value = NA,
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_aa,
@@ -283,11 +283,12 @@ biplot_aa2 <- ggplot() +
                     values = c("coldspot" = NA,
                                "hotspot" = "#D71515"),
                     labels = c("",
-                               "Declining sites"),
+                               "Declining stands"),
                     name = "") + 
-  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
+  guides(fill = "none") + 
   xlab("PC1 (32.30 %)") + 
   ylab("PC2 (17.40 %)") + 
+  labs(tag = "A") +
   ggtitle("Abies alba") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -295,6 +296,7 @@ biplot_aa2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -319,7 +321,7 @@ biplot_ps2 <- ggplot() +
                        high = "#701705",  
                        na.value = NA,
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_ps,
@@ -330,11 +332,12 @@ biplot_ps2 <- ggplot() +
                     values = c("coldspot" = NA,
                                "hotspot" = "#D71515"),
                     labels = c("",
-                               "Declining sites"),
+                               "Declining stands"),
                     name = "") + 
-  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
+  guides(fill = "none") + 
   xlab("PC1 (45.40 %)") + 
   ylab("PC2 (18.88 %)") + 
+  labs(tag = "B") +
   ggtitle("Pinus sylvestris") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -342,6 +345,7 @@ biplot_ps2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -366,7 +370,7 @@ biplot_pp2 <- ggplot() +
                        high = "#701705",  
                        na.value = NA,
                        limits = c(min_def, max_def),
-                       name = "Defoliation (%)") +
+                       name = "Defoliation in\ndeclining stands\n(%)") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
   geom_segment(data = loadings_df_pp,
@@ -377,12 +381,13 @@ biplot_pp2 <- ggplot() +
                     values = c("coldspot" = NA,
                                "hotspot" = "#D71515"),
                     labels = c("",
-                               "Declining sites"),
+                               "Declining stands"),
                     name = "") + 
-  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) + 
+  guides(fill = "none") + 
   # guides(fill = "none") +
   xlab("PC1 (28.50 %)") + 
   ylab("PC2 (21.95 %)") + 
+  labs(tag = "C") +
   ggtitle("Pinus pinea") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -390,6 +395,7 @@ biplot_pp2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
+        plot.tag = element_text(size = 30),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
