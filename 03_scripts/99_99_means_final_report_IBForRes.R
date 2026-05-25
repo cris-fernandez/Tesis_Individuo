@@ -62,6 +62,22 @@ clean_target$sp_id <- ifelse(clean_target$tree_number == "missing_1" |
                                clean_target$tree_number == "missing_2",
                              "Pinsylv", clean_target$sp_id)
 
+# Outlayers deletion:
+
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 4783, NA, clean_target$mean_1980)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 60 & clean_target$sp_id == "Abialba",
+                                    NA, clean_target$mean_def_obs)
+clean_target$sla_22 <- ifelse(clean_target$sla_22 > 99 & clean_target$sp_id == "Pinsylv",
+                              NA, clean_target$sla_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 75 & clean_target$sp_id == "Pinsylv",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$total_chl_fw_22 <- ifelse(clean_target$total_chl_fw_22 < 40 & clean_target$sp_id == "Pinpine",
+                                       NA, clean_target$total_chl_fw_22)
+clean_target$mean_def_obs <- ifelse(clean_target$mean_def_obs > 58 & clean_target$sp_id == "Pinpine",
+                                    NA, clean_target$mean_def_obs)
+clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp_id == "Abialba" & clean_target$spot_status == "hotspot",
+                                 NA, clean_target$mean_1980)
+
 clean_target <- clean_target %>% 
   mutate(sp_id = factor(sp_id))
 
@@ -93,15 +109,34 @@ numbers_target <- clean_target %>%
 ## 6.1.- Selecting variables ####
 
 clean_target <- clean_target %>% 
-  mutate(cn_ratio = percent_c / percent_n) %>% 
-  rename(mean_bai = mean) %>% 
-  dplyr::select(c(site, height, percent_n, sla_22, hegyi_index, total_chl_fw_22,
-                  age, wc_22, leaf_d13c, leaf_d18o_corrected, xc_fw_22, sp_id,
-                  mean_1980,
-                  spot_status))
+  mutate(pair_spot = paste0(pair_id, "-", spot_status),
+         sp_spot = paste0(sp_id, "-", spot_status)) %>% 
+  dplyr::select(c(sp_spot, height, mean_1980, sla_22, percent_n, 
+                  leaf_d13c, leaf_d18o_corrected, total_chl_fw_22, xc_fw_22))
 
 ## 6.2.- Summarising ####
 
 means_target <- clean_target %>% 
-  group_by(sp_id, spot_status) %>% 
+  group_by(sp_spot) %>% 
   summarise(across(where(is.numeric), ~ mean(.x, na.rm = TRUE)))
+
+sd_target <- clean_target %>% 
+  group_by(sp_spot) %>% 
+  summarise(across(where(is.numeric), ~ sd(.x, na.rm = TRUE)))
+
+cv_target <- sd_target
+
+for (i in 1:6) {
+  for (j in 1:8) {
+    cv_target[i, j+1] <- sd_target[i, j+1]/means_target[i, j+1]
+    print(paste0(i, ":", j))
+  }
+}
+
+min_target <- clean_target %>% 
+  group_by(sp_spot) %>% 
+  summarise(across(where(is.numeric), ~ quantile(.x, 0.025, na.rm = T)))
+
+max_target <- clean_target %>% 
+  group_by(sp_spot) %>% 
+  summarise(across(where(is.numeric), ~ quantile(.x, 0.975, na.rm = T)))

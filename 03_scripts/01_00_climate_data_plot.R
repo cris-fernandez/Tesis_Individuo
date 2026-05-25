@@ -28,6 +28,22 @@ plots <- plots %>% dplyr::select(c(plot_id, spot_status, sp_name,
 climate_data_series <- read.csv("02_clean_data/02_00_climate_series.csv") %>% 
   dplyr::select(-X)
 
+# 2.1.- Doing a small chart for the manuscript 
+
+# climate_table <- full_join(climate_data_series, plots, by = "plot_id") %>% 
+#   mutate(Tmean = (Tmin + Tmax)/2,
+#          pair_status = paste0(pair_id, "-", spot_status))
+# 
+# averages <- climate_table %>% group_by(pair_status) %>% 
+#   summarise(Avg_Tmean = mean(Tmean, na.rm = T),
+#             Avg_Prcp = mean(Prcp, na.rm = T),
+#             sd_Tmean = sd(Tmean, na.rm = T),
+#             sd_Prcp = sd(Prcp, na.rm = T),
+#             min_Tmean = quantile(Tmean, .025, na.rm = T),
+#             min_Prcp = quantile(Prcp, .025, na.rm = T),
+#             max_Tmean = quantile(Tmean, .975, na.rm = T),
+#             max_Prcp = quantile(Prcp, .975, na.rm = T))
+
 # 3.- Joining ####
 
 climate_plots <- full_join(climate_data_series, plots, by = "plot_id") %>% 
