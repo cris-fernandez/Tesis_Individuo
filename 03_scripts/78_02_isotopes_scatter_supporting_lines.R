@@ -141,7 +141,7 @@ aa_plot <- ggplot(aa_target) +
                                 "Declining"),
                      name = "") + 
   xlab("") + 
-  ylab(bquote("δ"~O^18~"(‰)")) +
+  ylab(bquote("δ"^{18}*O~"(‰)")) +
   labs(tag = "A") +
   spot_theme + 
   guides(shape = "none")
@@ -170,7 +170,7 @@ ps_plot <- ggplot(ps_target) +
                     labels = c("Non-declining",
                                "Declining"),
                     name = "") + 
-  xlab(bquote("δ"~C^13~"(‰)")) + 
+  xlab(bquote("δ"^{13}*C~"(‰)")) +
   ylab("") +
   labs(tag = "B") +
   spot_theme + 
@@ -200,8 +200,8 @@ pp_plot <- ggplot(pp_target) +
                     labels = c("Non-declining",
                                "Declining"),
                     name = "") + 
-  xlab(bquote("δ"~C^13~"(‰)")) + 
-  ylab(bquote("δ"~O^18~"(‰)")) +
+  xlab(bquote("δ"^{13}*C~"(‰)")) +
+  ylab(bquote("δ"^{18}*O~"(‰)")) +
   labs(tag = "C") +
   spot_theme + 
   guides(shape = "none")

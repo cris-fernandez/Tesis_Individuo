@@ -140,3 +140,45 @@ min_target <- clean_target %>%
 max_target <- clean_target %>% 
   group_by(sp_spot) %>% 
   summarise(across(where(is.numeric), ~ quantile(.x, 0.975, na.rm = T)))
+
+# 7.- Elevation ####
+# Reading clean plot and adding extra IDs:
+
+clean_plot <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/02_clean_data/02_01_clean_plot.csv", 
+                         header = T, sep = ",") %>% dplyr::select(-X) %>% 
+  mutate(site = substr(plot_id, 1, 3))
+
+clean_plot$pair_id <- ifelse(grepl("NAV|PEL", clean_plot$plot_id) == T, "Mad-Pinpine",
+                               ifelse(grepl("GUA", clean_plot$plot_id) == T, "Mad-Pinsylv",
+                                      ifelse(grepl("ADO|TRA|ALU", clean_plot$plot_id) == T, "Gua-Pinsylv",
+                                             ifelse(grepl("COR|CED", clean_plot$plot_id) == T, "Ter-Pinsylv",
+                                                    ifelse(grepl("RON|URZ", clean_plot$plot_id) == T, "Nav-Pinsylv",
+                                                           ifelse(grepl("BAS|SAR", clean_plot$plot_id) == T, "Nav-Abialba",
+                                                                  ifelse(grepl("FAG|OZA", clean_plot$plot_id) == T, "Hue-Abialba",
+                                                                         "z")))))))
+clean_plot$pair_spot <- paste0(clean_plot$pair_id, "-", clean_plot$spot_status)
+
+# Calculating mean
+
+means_elev <- clean_plot %>% 
+  group_by(pair_spot) %>% 
+  summarise(elev = mean(geo_GPScm_UTM_elev, na.rm = TRUE))
+
+sd_elev <- clean_plot %>% 
+  group_by(pair_spot) %>% 
+  summarise(elev = sd(geo_GPScm_UTM_elev, na.rm = TRUE))
+
+cv_elev <- sd_elev
+
+for (i in 1:14) {
+    cv_elev[i, 2] <- sd_elev[i, 2]/means_elev[i, 2]
+    print(i)
+  }
+
+min_elev <- clean_plot %>% 
+  group_by(pair_spot) %>% 
+  summarise(elev = quantile(geo_GPScm_UTM_elev, 0.025, na.rm = T))
+
+max_elev <- clean_plot %>% 
+  group_by(pair_spot) %>% 
+  summarise(elev = quantile(geo_GPScm_UTM_elev, 0.975, na.rm = T))
