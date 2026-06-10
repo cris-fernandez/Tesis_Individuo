@@ -47,10 +47,12 @@ aalba <- clean_target %>%
 # 3.- Soil data ####
 # Soil data will be retrieved per site so it can be added to the manuscript
 
-soils <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>%
+soils <- read.csv("C:/Users/recup/Universidad de Alcala/PROYECTO BBDD VERSION ANTERIOR/01_raw_data/01_07_raw_soils.csv") %>%
   mutate(plot_id = substring(tree_id, 1, 5),
-         CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>%
-  dplyr::select(-c(soil_sample, USDA_class, description, tree_id))
+         CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc),
+         tree_number = str_extract(tree_id, "T\\d+"),
+         tree_number = paste0( "T", str_pad(str_remove(tree_number, "T"), width = 3, pad = "0"))) %>% 
+  dplyr::select(-c(soil_sample, USDA_class, description))
 # soils <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/01_raw_data/01_07_raw_soils.csv") %>% 
 #                   mutate(plot_id = substring(tree_id, 1, 5),
 #                          CaCO3_perc = ifelse(CaCO3_perc == "<L.D.(0,058)", 0, CaCO3_perc)) %>% 
@@ -79,3 +81,16 @@ soils_max <- soils_sites %>% group_by(site) %>%
 
 soils_sd <- soils_sites %>% group_by(site) %>% 
   summarise(across(clay_perc:Mg_ppm, ~sd(.x, na.rm=T)))
+
+# 5.- Wilcoxon ####
+
+wilcox_clay <- soils_sites %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(clay_perc ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))
+  
+
+wilcox_sand <- soils_sites %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(sand_perc ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))

@@ -150,7 +150,7 @@ fig_2_h <- ggplot(h_df) +
                      drop = F) + 
   xlab("") + 
   ylab("Height (m)") +  
-  labs(tag = "A") + 
+  labs(tag = "(a)") + 
   # ylim(10, 35) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -158,7 +158,8 @@ fig_2_h <- ggplot(h_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 # fuerza cómo se ven los dos niveles
@@ -197,7 +198,7 @@ fig_2_sla <- ggplot(sla_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
-  labs(tag = "C") + 
+  labs(tag = "(c)") + 
   # ylim(39, 61) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -205,7 +206,8 @@ fig_2_sla <- ggplot(sla_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -245,7 +247,7 @@ fig_2_n <- ggplot(n_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("N content (%)"))) + 
-  labs(tag = "D") +
+  labs(tag = "(d)") +
   # ylim(0.8, 2) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -254,7 +256,8 @@ fig_2_n <- ggplot(n_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -291,7 +294,7 @@ fig_2_chl <- ggplot(chl_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
-  labs(tag = "G") + 
+  labs(tag = "(g)") + 
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -299,7 +302,8 @@ fig_2_chl <- ggplot(chl_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -339,7 +343,7 @@ fig_2_xc <- ggplot(xc_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("Car. (μg g"^"-1", ")"))) +
-  labs(tag = "H") + 
+  labs(tag = "(h)") + 
   # ylim(20, 60) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -348,7 +352,8 @@ fig_2_xc <- ggplot(xc_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -385,7 +390,7 @@ fig_2_d13c <- ggplot(d13c_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(bquote("δ"^13~C~"(‰)")) +
-  labs(tag = "E") + 
+  labs(tag = "(e)") + 
   # ylim(-30, -23.5) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -393,7 +398,8 @@ fig_2_d13c <- ggplot(d13c_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -429,8 +435,8 @@ fig_2_d18o <- ggplot(d18o_df) +
                      labels = c("Significant",
                                 "Non-significant")) + 
   xlab("") + 
-  ylab(bquote("δ"^18~O~"(‰)")) +
-  labs(tag = "F") +
+  ylab(bquote("Δ"^18~O~"(‰)")) +
+  labs(tag = "(f)") +
   # ylim(-30, -23.5) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -438,7 +444,8 @@ fig_2_d18o <- ggplot(d18o_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -475,7 +482,7 @@ fig_2_bai80 <- ggplot(bai80_df) +
                                 "Non-significant")) + 
   xlab("") + 
   ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
-  labs(tag = "B") +
+  labs(tag = "(b)") +
   # ylim(350, 2700) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
@@ -483,7 +490,8 @@ fig_2_bai80 <- ggplot(bai80_df) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 

@@ -30,19 +30,34 @@ climate_data_series <- read.csv("02_clean_data/02_00_climate_series.csv") %>%
 
 # 2.1.- Doing a small chart for the manuscript 
 
-# climate_table <- full_join(climate_data_series, plots, by = "plot_id") %>% 
-#   mutate(Tmean = (Tmin + Tmax)/2,
-#          pair_status = paste0(pair_id, "-", spot_status))
-# 
-# averages <- climate_table %>% group_by(pair_status) %>% 
-#   summarise(Avg_Tmean = mean(Tmean, na.rm = T),
-#             Avg_Prcp = mean(Prcp, na.rm = T),
-#             sd_Tmean = sd(Tmean, na.rm = T),
-#             sd_Prcp = sd(Prcp, na.rm = T),
-#             min_Tmean = quantile(Tmean, .025, na.rm = T),
-#             min_Prcp = quantile(Prcp, .025, na.rm = T),
-#             max_Tmean = quantile(Tmean, .975, na.rm = T),
-#             max_Prcp = quantile(Prcp, .975, na.rm = T))
+climate_table <- full_join(climate_data_series, plots, by = "plot_id") %>%
+  mutate(Tmean = (Tmin + Tmax)/2,
+         pair_status = paste0(pair_id, "-", spot_status))
+
+averages <- climate_table %>% group_by(pair_status) %>%
+  summarise(Avg_Tmean = mean(Tmean, na.rm = T),
+            Avg_Prcp = mean(Prcp, na.rm = T),
+            sd_Tmean = sd(Tmean, na.rm = T),
+            sd_Prcp = sd(Prcp, na.rm = T),
+            min_Tmean = quantile(Tmean, .025, na.rm = T),
+            min_Prcp = quantile(Prcp, .025, na.rm = T),
+            max_Tmean = quantile(Tmean, .975, na.rm = T),
+            max_Prcp = quantile(Prcp, .975, na.rm = T))
+
+# 2.2.- Wilcoxon climate ####
+
+wilcox_temp <- climate_table %>% 
+  dplyr::select(c(Tmean, spot_status, pair_id)) %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(Tmean ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))
+
+wilcox_prcp <- climate_table %>% 
+  dplyr::select(c(Prcp, spot_status, pair_id)) %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(Prcp ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))
+  
 
 # 3.- Joining ####
 
@@ -81,13 +96,17 @@ hue_aa_plot <- ggplot(hue_aa) +
                      name = "") + 
   ylab("Temperature (ºC)") + 
   xlab("") + 
-  labs(tag = "A") + 
+  labs(tag = "(a)",
+       title = expression(italic("A. alba") * " - Huesca")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -104,13 +123,17 @@ nav_aa_plot <- ggplot(nav_aa) +
                      name = "") + 
   ylab("Temperature (ºC)") + 
   xlab("") + 
-  labs(tag = "B") + 
+  labs(tag = "(b)",
+       title = expression(italic("A. alba") * " - Navarra")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -127,13 +150,17 @@ nav_ps_plot <- ggplot(nav_ps) +
                      name = "") + 
   ylab("Temperature (ºC)") + 
   xlab("") + 
-  labs(tag = "C") + 
+  labs(tag = "(c)",
+       title = expression(italic("P. sylvestris") * " - Navarra")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -150,14 +177,18 @@ ter_ps_plot <- ggplot(ter_ps) +
                      name = "") + 
   ylab("Temperature (ºC)") + 
   xlab("") + 
-  labs(tag = "D") + 
+  labs(tag = "(d)",
+       title = expression(italic("P. sylvestris") * " - Teruel")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_text(size = 20),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -174,13 +205,17 @@ gua_ps_plot <- ggplot(gua_ps) +
                      name = "") + 
   ylab("") + 
   xlab("") + 
-  labs(tag = "E") + 
+  labs(tag = "(e)",
+       title = expression(italic("P. sylvestris") * " - Guadalajara")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -197,13 +232,17 @@ mad_ps_plot <- ggplot(mad_ps) +
                      name = "") + 
   ylab("") + 
   xlab("") + 
-  labs(tag = "F") + 
+  labs(tag = "(f)",
+       title = expression(italic("P. sylvestris") * " - Madrid")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -220,13 +259,17 @@ mad_pp_plot <- ggplot(mad_pp) +
                      name = "") + 
   ylab("") + 
   xlab("") + 
-  labs(tag = "G") + 
+  labs(tag = "(h)",
+       title = expression(italic("P. pinea") * " - Madrid")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_text(size = 20),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.direction = "horizontal")
 
@@ -255,13 +298,17 @@ hue_aa_plot <- ggplot(hue_aa) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
-  labs(tag = "A") + 
+  labs(tag = "(a)",
+       title = expression(italic("A. alba") * " - Huesca")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -272,13 +319,17 @@ nav_aa_plot <- ggplot(nav_aa) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
-  labs(tag = "B") + 
+  labs(tag = "(b)",
+       title = expression(italic("A. alba") * " - Navarra")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -289,13 +340,17 @@ nav_ps_plot <- ggplot(nav_ps) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
-  labs(tag = "C") + 
+  labs(tag = "(c)",
+       title = expression(italic("P. sylvestris") * " - Navarra")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -306,13 +361,17 @@ ter_ps_plot <- ggplot(ter_ps) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
-  labs(tag = "D") + 
+  labs(tag = "(d)",
+       title = expression(italic("P. sylvestris") * " - Teruel")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_text(size = 20),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -323,13 +382,17 @@ gua_ps_plot <- ggplot(gua_ps) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 
   xlab("") + 
-  labs(tag = "E") + 
+  labs(tag = "(e)",
+       title = expression(italic("P. sylvestris") * " - Guadalajara")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -340,13 +403,17 @@ mad_ps_plot <- ggplot(mad_ps) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 
   xlab("") + 
-  labs(tag = "F") + 
+  labs(tag = "(f)",
+       title = expression(italic("P. sylvestris") * " - Madrid")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 
@@ -358,13 +425,17 @@ mad_pp_plot <- ggplot(mad_pp) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 
   xlab("") + 
-  labs(tag = "G") + 
+  labs(tag = "(g)",
+       title = expression(italic("P. pinea") * " - Madrid")) + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_text(size = 20),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 25,
+                                face = "bold"),
+        plot.title = element_text(size = 22,
+                                  vjust= 1.9),
         legend.text = element_text(size = 35),
         legend.position = "none")
 

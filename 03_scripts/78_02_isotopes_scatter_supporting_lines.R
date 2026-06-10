@@ -113,7 +113,8 @@ spot_theme <- list(theme_classic(),
                          axis.text.y = element_text(size = 22),
                          axis.title.y = element_text(size = 30),
                          legend.text = element_text(size = 25),
-                         plot.tag = element_text(size = 30)))
+                         plot.tag = element_text(size = 25,
+                                                 face = "bold")))
 
 # 6.- Plotting ####
 ## 6.1.- Abies alba ####
@@ -131,18 +132,18 @@ aa_plot <- ggplot(aa_target) +
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+                     labels = c("Non-declining\nstands",
+                                "Declining\nstands"),
                      name = "") + 
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+                     labels = c("Non-declining\nstands",
+                                "Declining\nstands"),
                      name = "") + 
   xlab("") + 
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "A") +
+  labs(tag = "(a)") +
   spot_theme + 
   guides(shape = "none")
 
@@ -161,18 +162,18 @@ ps_plot <- ggplot(ps_target) +
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+                     labels = c("Non-declining\nstands",
+                                "Declining\nstands"),
                      name = "") + 
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                     values = c("coldspot" = "#2274A5",
                                "hotspot" = "#D71515"),
-                    labels = c("Non-declining",
-                               "Declining"),
+                    labels = c("Non-declining\nstands",
+                               "Declining\nstands"),
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
   ylab("") +
-  labs(tag = "B") +
+  labs(tag = "(b)") +
   spot_theme + 
   guides(shape = "none")
 
@@ -191,18 +192,18 @@ pp_plot <- ggplot(pp_target) +
   scale_color_manual(breaks = c("coldspot", "hotspot"),
                      values = c("coldspot" = "#2274A5",
                                 "hotspot" = "#D71515"),
-                     labels = c("Non-declining",
-                                "Declining"),
+                     labels = c("Non-declining\nstands",
+                                "Declining\nstands"),
                      name = "") + 
   scale_fill_manual(breaks = c("coldspot", "hotspot"),
                     values = c("coldspot" = "#2274A5",
                                "hotspot" = "#D71515"),
-                    labels = c("Non-declining",
-                               "Declining"),
+                    labels = c("Non-declining\nstands",
+                               "Declining\nstands"),
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "C") +
+  labs(tag = "(c)") +
   spot_theme + 
   guides(shape = "none")
 

@@ -114,14 +114,15 @@ spot_theme <- list(theme_classic(),
                    theme(legend.position = "right",
                          legend.key.size = unit(2, "cm"),  
                          legend.title = element_blank(),
-                         axis.text.x = element_text(size = 22),
-                         axis.title.x = element_text(size = 30),
-                         axis.text.y = element_text(size = 22),
-                         axis.title.y = element_text(size = 30),
+                         axis.text.x = element_text(size = 20),
+                         axis.title.x = element_text(size = 25),
+                         axis.text.y = element_text(size = 20),
+                         axis.title.y = element_text(size = 25),
                          legend.text = element_text(size = 25),
-                         plot.tag = element_text(size = 30),
-                         plot.title = element_text(size = 25,
-                                                   vjust= 1.12)))
+                         plot.tag = element_text(size = 25,
+                                                 face = "bold"),
+                         plot.title = element_text(size = 22,
+                                                   vjust= 1.9)))
 
 # 6.- Plotting Abies alba ####
 ## 6.1.- Huesca ####
@@ -149,10 +150,10 @@ hue_aa_plot <- ggplot(hue_aa_target) +
                     name = "") + 
   xlab("") + 
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "A",
+  labs(tag = "(a)",
        title = expression(italic("A. alba") * " - Huesca")) +
   spot_theme + 
-  theme(plot.title = element_text(hjust = -0.60)) + 
+  # theme(plot.title = element_text(hjust = -0.65)) + 
   guides(shape = "none")
 
 ## 6.2.- Navarra ####
@@ -180,10 +181,10 @@ nav_aa_plot <- ggplot(nav_aa_target) +
                     name = "") + 
   xlab("") + 
   ylab("") +
-  labs(tag = "B",
+  labs(tag = "(b)",
        title = expression(italic("A. alba") * " - Navarra")) +
   spot_theme + 
-  theme(plot.title = element_text(hjust = -0.70)) + 
+  # theme(plot.title = element_text(hjust = -0.70)) + 
   guides(shape = "none")
 
 # 7.- Plotting Pinus sylvestris ####
@@ -212,10 +213,10 @@ nav_ps_plot <- ggplot(nav_ps_target) +
                     name = "") + 
   xlab("") + 
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "C",
+  labs(tag = "(c)",
        title = expression(italic("P. sylvestris") * " - Navarra")) +
   spot_theme + 
-  theme(plot.title = element_text(hjust = -140)) + 
+  # theme(plot.title = element_text(hjust = 4)) + 
   guides(shape = "none")
 
 ## 7.2.- Teruel ####
@@ -243,10 +244,10 @@ ter_ps_plot <- ggplot(ter_ps_target) +
                     name = "") + 
   xlab("") + 
   ylab("") +
-  labs(tag = "D",
+  labs(tag = "(d)",
        title = expression(italic("P. sylvestris") * " - Teruel")) +
   spot_theme +
-  theme(plot.title = element_text(hjust = -2)) + 
+  # theme(plot.title = element_text(hjust = -2)) + 
   guides(shape = "none")
 
 ## 7.3.- Guadalajara ####
@@ -274,10 +275,10 @@ gua_ps_plot <- ggplot(gua_ps_target) +
                     name = "") + 
   xlab("") + 
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "E",
+  labs(tag = "(e)",
        title = expression(italic("P. sylvestris") * " - Guadalajara")) +
   spot_theme + 
-  theme(plot.title = element_text(hjust = 0.89)) + 
+  # theme(plot.title = element_text(hjust = 0.89)) + 
   guides(shape = "none")
 
 ## 7.4.- Madrid ####
@@ -305,10 +306,10 @@ mad_ps_plot <- ggplot(mad_ps_target) +
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
   ylab("") +
-  labs(tag = "F",
+  labs(tag = "(f)",
        title = expression(italic("P. sylvestris") * " - Madrid")) +
   spot_theme + 
-  theme(plot.title = element_text(hjust = -2.8)) + 
+  # theme(plot.title = element_text(hjust = -2.8)) + 
   guides(shape = "none")
 
 # 8.- Pinus pinea ####
@@ -337,15 +338,15 @@ mad_pp_plot <- ggplot(mad_pp_target) +
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
   ylab(bquote("δ"^{18}*O~"(‰)")) +
-  labs(tag = "G",
+  labs(tag = "(g)",
        title = expression(italic("P. pinea") * " - Madrid")) + 
   spot_theme +
-  theme(plot.title = element_text(hjust = -0.6)) + 
+  # theme(plot.title = element_text(hjust = -0.29)) +
   guides(shape = "none")
 
 # 7.- Plotting ####
 
-tiff("04_figures/78_03_Isotopes_Scatter_Supporting_sites_v2.tiff", units = "mm", width = 250, height = 400,
+tiff("04_figures/78_03_Isotopes_Scatter_Supporting_sites_v2.tiff", units = "mm", width = 270, height = 450,
      res = 400, compression = "lzw")
 hue_aa_plot + nav_aa_plot + 
   nav_ps_plot + ter_ps_plot + 

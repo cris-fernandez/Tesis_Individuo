@@ -78,12 +78,20 @@ elev_means <- plots %>%
             elev_max = max(elevation, na.rm = T),
             elev_min = min(elevation, na.rm = T))
 
-# 5.- Joining the three tables ####
+# 5.- Elevation wilcoxon ####
+
+elev_wilcox <- plots %>%
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(elevation ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))
+
+
+# 6.- Joining the three tables ####
 
 site_means <- full_join(elev_means, climate_means, by = "pair_id")
 site_means <- full_join(site_means, spei_means, by = "pair_id")
 
-# 6.- Saving ####
+# 7.- Saving ####
 
 write.csv(site_means, "02_clean_data/02_03_site_means.csv")
 write.xlsx(site_means, "02_clean_data/02_03_site_means.xlsx")

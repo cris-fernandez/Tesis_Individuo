@@ -92,3 +92,19 @@ dens_min <- density %>% group_by(plot_code) %>%
   summarise(min_dens = quantile(stand_dens, .025, na.rm = T))
 dens_max <- density %>% group_by(plot_code) %>% 
   summarise(max_dens = quantile(stand_dens, .975, na.rm = T))
+
+# 7.- Wilcoxon for density and BA ####
+
+density_wilcox <- density %>% 
+  dplyr::select(c(spot_status, pair_id, stand_dens)) %>% 
+  unique() %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(stand_dens ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))
+
+basim_wilcox <- basim %>% 
+  dplyr::select(c(spot_status, pair_id, abs_ba_ha)) %>% 
+  unique() %>% 
+  group_by(pair_id) %>% 
+  summarise(p = wilcox.test(abs_ba_ha ~ spot_status)$p.value) %>% 
+  mutate(p_bonf = p.adjust(p, method = "bonferroni"))

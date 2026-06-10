@@ -203,7 +203,7 @@ loadings_df_pp$variable <- rownames(loadings_df_pp)
 
 # Adding a column with the proper names of the variables to appear on the PCA:
 
-varnames_loadings <- c("Height", "Chl.", "Car.", "N", "δ13C", "δ18O", "SLA", "BAI80")
+varnames_loadings <- c("Height", "Chl.", "Car.", "N", "δ13C", "Δ18O", "SLA", "BAI80")
 
 loadings_df_aa$varnames <- varnames_loadings
 loadings_df_ps$varnames <- varnames_loadings
@@ -288,7 +288,7 @@ biplot_aa2 <- ggplot() +
   guides(fill = "none") + 
   xlab("PC1 (32.30 %)") + 
   ylab("PC2 (17.40 %)") + 
-  labs(tag = "A") +
+  labs(tag = "(a)") +
   ggtitle("Abies alba") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -296,7 +296,8 @@ biplot_aa2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -337,7 +338,7 @@ biplot_ps2 <- ggplot() +
   guides(fill = "none") + 
   xlab("PC1 (45.40 %)") + 
   ylab("PC2 (18.88 %)") + 
-  labs(tag = "B") +
+  labs(tag = "(b)") +
   ggtitle("Pinus sylvestris") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -345,7 +346,8 @@ biplot_ps2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),
@@ -387,7 +389,7 @@ biplot_pp2 <- ggplot() +
   # guides(fill = "none") +
   xlab("PC1 (28.50 %)") + 
   ylab("PC2 (21.95 %)") + 
-  labs(tag = "C") +
+  labs(tag = "(c)") +
   ggtitle("Pinus pinea") +
   theme_classic() + 
   theme(axis.text.x = element_text(size = 15),
@@ -395,7 +397,8 @@ biplot_pp2 <- ggplot() +
         axis.title.x = element_text(size = 25),
         axis.title.y = element_text(size = 25),
         plot.title = element_text(size = 28, face = "italic"),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.position = "right",
         legend.direction = "horizontal",
         legend.key.size = unit(2, "cm"),

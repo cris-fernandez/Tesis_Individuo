@@ -125,14 +125,15 @@ chl_plot <- ggplot(clean_target) +
                      name = "") + 
   ylab(expression(paste("Chl. (μg g"^"-1", ")"))) +
   xlab("") + 
-  labs(tag = "A") + 
+  labs(tag = "(a)") + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35,
                                    face = "italic"),
         legend.direction = "horizontal")
@@ -151,14 +152,15 @@ xc_plot <- ggplot(clean_target) +
                     name = "") + 
   ylab(expression(paste("Car. (μg g"^"-1", ")"))) +
   xlab("") + 
-  labs(tag = "B") + 
+  labs(tag = "(b)") + 
   theme_classic() + 
   theme(axis.ticks.length = unit(-5, "pt"),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35,
                                    face = "italic"),
         legend.direction = "horizontal")
@@ -175,9 +177,9 @@ d13c_plot <- ggplot(clean_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  ylab(bquote("δ"~C^13~"(‰)")) +
+  ylab(bquote("δ"^{13}*C~"(‰)")) +
   xlab("") + 
-  labs(tag = "C") + 
+  labs(tag = "(c)") + 
   scale_x_discrete(labels = c("Huesca", "Navarra", "Navarra", "Teruel", 
                                 "Guadalajara", "Madrid", "Madrid")) + 
   theme_classic() + 
@@ -188,7 +190,8 @@ d13c_plot <- ggplot(clean_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35,
                                    face = "italic"),
         legend.direction = "horizontal")
@@ -205,9 +208,9 @@ d18o_plot <- ggplot(clean_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  ylab(bquote("δ"~O^18~"(‰)")) +
+  ylab(bquote("δ"^{18}*O~"(‰)")) +
   xlab("") + 
-  labs(tag = "D") +  
+  labs(tag = "(d)") +  
   scale_x_discrete(labels = c("Huesca", "Navarra", "Navarra", "Teruel", 
                                                     "Guadalajara", "Madrid", "Madrid")) + 
   theme_classic() + 
@@ -218,7 +221,8 @@ d18o_plot <- ggplot(clean_target) +
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size = 20),
         axis.title.y = element_text(size = 30),
-        plot.tag = element_text(size = 30),
+        plot.tag = element_text(size = 30,
+                                face = "bold"),
         legend.text = element_text(size = 35,
                                    face = "italic"),
         legend.direction = "horizontal")

@@ -111,7 +111,7 @@ box_h <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "A") +
+  labs(tag = "(a)") +
   xlab("") + 
   ylab("Tree height (m)") +
   theme_classic() +
@@ -122,7 +122,8 @@ box_h <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22,
+                                face = "bold")) 
 
 ## 5.2.- BAI80 ####
 
@@ -141,7 +142,7 @@ box_bai <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "B") +
+  labs(tag = "(b)") +
   xlab("") + 
   ylab(expression(paste("BAI80 (mm² year"^"-1", ")"))) + 
   theme_classic() +
@@ -152,7 +153,8 @@ box_bai <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22,
+                                face = "bold")) 
 
 ## 5.3.- SLA ####
 
@@ -173,7 +175,7 @@ box_sla <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "C") +
+  labs(tag = "(c)") +
   ylab(expression(paste("SLA (cm² g"^"-1", ")"))) + 
   xlab("") + 
   theme_classic() +
@@ -184,7 +186,8 @@ box_sla <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22))
+        plot.tag = element_text(size = 22,
+                                face = "bold"))
 
 ## 5.4.- N content ####
 
@@ -205,7 +208,7 @@ box_n <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "D") +
+  labs(tag = "(d)") +
   ylab(expression(paste("Leaf N content (%)"))) +
   xlab("") + 
   theme_classic() +
@@ -216,7 +219,8 @@ box_n <- ggplot(clean_target) +
         axis.text.x = element_text(size = 20, angle = 60, vjust = -0.09),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22))
+        plot.tag = element_text(size = 22,
+                                face = "bold"))
 
 ## 5.5.- Chl ####
 
@@ -237,7 +241,7 @@ box_chl <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "E") +
+  labs(tag = "(e)") +
   xlab("") + 
   ylab(expression(paste("Chl. content (μg g"^"-1", ")"))) +
   theme_classic() +
@@ -248,7 +252,8 @@ box_chl <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22,
+                                face = "bold")) 
 
 
 ## 5.6.- Carotenoids ####
@@ -270,7 +275,7 @@ box_xc <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "F") +
+  labs(tag = "(f)") +
   xlab("") + 
   ylab(expression(paste("Car. content (μg g"^"-1", ")"))) +
   theme_classic() +
@@ -281,7 +286,8 @@ box_xc <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22,
+                                face = "bold")) 
 
 ## 5.7.- d13C ####
 
@@ -302,8 +308,8 @@ box_d13c <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "G") +
-  ylab(bquote("Leaves δ"~C^13~"(‰)")) +
+  labs(tag = "(g)") +
+  ylab(bquote("δ"^{13}*C~"(‰)")) +
   xlab("") + 
   theme_classic() +
   theme(legend.position = "bottom",
@@ -313,7 +319,8 @@ box_d13c <- ggplot(clean_target) +
         axis.text.x = element_blank(),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22)) 
+        plot.tag = element_text(size = 22,
+                                face = "bold")) 
 
 ## 5.8.- d18O ####
 
@@ -334,8 +341,8 @@ box_d18o <- ggplot(clean_target) +
                                 "coldspot" = 1),
                      name = "") + 
   guides(alpha = "none") +
-  labs(tag = "H") +
-  ylab(bquote("Leaves δ"~O^18~"(‰)")) +
+  labs(tag = "(h)") +
+  ylab(bquote("δ"^{18}*O~"(‰)")) +
   xlab("") + 
   theme_classic() +
   theme(legend.position = "bottom",
@@ -345,7 +352,8 @@ box_d18o <- ggplot(clean_target) +
         axis.text.x = element_text(size = 20, angle = 60, vjust = -0.09),
         axis.title.x = element_text(size = 30, vjust = 1.15),
         legend.text = element_text(size = 23),
-        plot.tag = element_text(size = 22))
+        plot.tag = element_text(size = 22,
+                                face = "bold"))
 
 # 6.- Leaf traits plotting ####
 
