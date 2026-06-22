@@ -94,7 +94,7 @@ clean_target <- clean_target %>%
   dplyr::select(c(height, mean_1980, sla_22, percent_n, total_chl_fw_22, xc_fw_22,
                   leaf_d13c, leaf_d18o_corrected, mean_def_obs, sp_id, spot_status, pair_id))
 colnames(clean_target) <- c("Height", "BAI80", "SLA", "Leaf N", "Chl.", "Car.",
-                            "δ13C", "δ18O", "Defoliation", "sp_id", "spot_status", "pair_id")
+                            "δ13C", "Δ18O", "Defoliation", "sp_id", "spot_status", "pair_id")
 
 # 6.- Correlograms per species and sites ####
 # And standardization per site!
@@ -130,10 +130,10 @@ pp_hot <- clean_target %>% filter(sp_id == "Pinpine" & spot_status == "hotspot")
 # allow for the method to be changed:
 # Source: https://stackoverflow.com/questions/35085261/how-to-use-loess-method-in-ggallyggpairs-using-wrap-function
 
-my_fn <- function(data, mapping, method = "loess", ...){
+my_fn <- function(data, mapping, method = "loess", span = 1.5, ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#2274A5") + 
-    geom_smooth(method = method, col = "black", ...)
+    geom_point(col = "#2274A5", alpha = 0.5) + 
+    geom_smooth(method = method, col = "black", span = span, ...)
   p
 }
 
@@ -160,79 +160,85 @@ cor_sig <- function(data, mapping, method = "pearson",
 ## 6.1.- Cold Aa ####
 
 aa_cold_corr <- ggpairs(aa_cold, 
-                        title = "A",
+                        title = "(a)",
                         upper = list(continuous = cor_sig),
                         lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.2.- Cold Ps ####
 
 ps_cold_corr <- ggpairs(ps_cold, 
-                        title = "C",
+                        title = "(c)",
                         upper = list(continuous = cor_sig),
                         lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.3.- Cold Pp ####
 
 pp_cold_corr <- ggpairs(pp_cold, 
-                        title = "E",
+                        title = "(e)",
                         upper = list(continuous = cor_sig),
                         lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.4.- Hot Aa ####
 
-my_fn <- function(data, mapping, method = "loess", ...){
+my_fn <- function(data, mapping, method = "loess", span = 1.5, ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#D71515") + 
-    geom_smooth(method = method, col = "black", ...)
+    geom_point(col = "#D71515", alpha = 0.5) + 
+    geom_smooth(method = method, col = "black", span = span, ...)
   p
 }
 
 aa_hot_corr <- ggpairs(aa_hot, 
-                       title = "B",
+                       title = "(b)",
                        upper = list(continuous = cor_sig),
                        lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.5.- Hot ps ####
 
 ps_hot_corr <- ggpairs(ps_hot, 
-                       title = "D",
+                       title = "(d)",
                        upper = list(continuous = cor_sig),
                        lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
-## 6.6.- Hot ps ####
+## 6.6.- Hot pp ####
 
 pp_hot_corr <- ggpairs(pp_hot, 
-                       title = "E",
+                       title = "(f)",
                        upper = list(continuous = cor_sig),
                        lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 

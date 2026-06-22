@@ -208,7 +208,7 @@ d18o_plot <- ggplot(clean_target) +
                                "Pinus sylvestris",
                                "Pinus pinea"),
                     name = "") + 
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   xlab("") + 
   labs(tag = "(d)") +  
   scale_x_discrete(labels = c("Huesca", "Navarra", "Navarra", "Teruel", 

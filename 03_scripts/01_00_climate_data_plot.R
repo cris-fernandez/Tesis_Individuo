@@ -87,6 +87,10 @@ precipitation <- climate_plots_long %>%
 
 hue_aa <- temperatures %>% filter(pair_id == "Hue-Abialba")
 hue_aa_plot <- ggplot(hue_aa) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -114,6 +118,10 @@ hue_aa_plot <- ggplot(hue_aa) +
 
 nav_aa <- temperatures %>% filter(pair_id == "Nav-Abialba")
 nav_aa_plot <- ggplot(nav_aa) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -141,6 +149,10 @@ nav_aa_plot <- ggplot(nav_aa) +
 
 nav_ps <- temperatures %>% filter(pair_id == "Nav-Pinsylv")
 nav_ps_plot <- ggplot(nav_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -168,6 +180,10 @@ nav_ps_plot <- ggplot(nav_ps) +
 
 ter_ps <- temperatures %>% filter(pair_id == "Ter-Pinsylv")
 ter_ps_plot <- ggplot(ter_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -196,6 +212,10 @@ ter_ps_plot <- ggplot(ter_ps) +
 
 gua_ps <- temperatures %>% filter(pair_id == "Gua-Pinsylv")
 gua_ps_plot <- ggplot(gua_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -223,6 +243,10 @@ gua_ps_plot <- ggplot(gua_ps) +
 
 mad_ps <- temperatures %>% filter(pair_id == "Mad-Pinsylv")
 mad_ps_plot <- ggplot(mad_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -250,6 +274,10 @@ mad_ps_plot <- ggplot(mad_ps) +
 
 mad_pp <- temperatures %>% filter(pair_id == "Mad-Pinpine")
 mad_pp_plot <- ggplot(mad_pp) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   scale_color_manual(breaks = c("avg_Tmax", "avg_Tmean", "avg_Tmin"),
                      values = c("avg_Tmax" = "#940909",
@@ -295,6 +323,10 @@ dev.off()
 
 hue_aa <- precipitation %>% filter(pair_id == "Hue-Abialba")
 hue_aa_plot <- ggplot(hue_aa) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
@@ -316,6 +348,10 @@ hue_aa_plot <- ggplot(hue_aa) +
 
 nav_aa <- precipitation %>% filter(pair_id == "Nav-Abialba")
 nav_aa_plot <- ggplot(nav_aa) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
@@ -337,6 +373,10 @@ nav_aa_plot <- ggplot(nav_aa) +
 
 nav_ps <- precipitation %>% filter(pair_id == "Nav-Pinsylv")
 nav_ps_plot <- ggplot(nav_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
@@ -358,6 +398,10 @@ nav_ps_plot <- ggplot(nav_ps) +
 
 ter_ps <- precipitation %>% filter(pair_id == "Ter-Pinsylv")
 ter_ps_plot <- ggplot(ter_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("Annual precipitation (mm)") + 
   xlab("") + 
@@ -379,6 +423,10 @@ ter_ps_plot <- ggplot(ter_ps) +
 
 gua_ps <- precipitation %>% filter(pair_id == "Gua-Pinsylv")
 gua_ps_plot <- ggplot(gua_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 
   xlab("") + 
@@ -400,6 +448,10 @@ gua_ps_plot <- ggplot(gua_ps) +
 
 mad_ps <- precipitation %>% filter(pair_id == "Mad-Pinsylv")
 mad_ps_plot <- ggplot(mad_ps) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 
   xlab("") + 
@@ -421,6 +473,10 @@ mad_ps_plot <- ggplot(mad_ps) +
 
 mad_pp <- precipitation %>% filter(pair_id == "Mad-Pinpine")
 mad_pp_plot <- ggplot(mad_pp) + 
+  annotate("rect", xmin = 2004.5, xmax = 2005.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2011.5, xmax = 2012.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2014.5, xmax = 2015.5, ymin = -Inf, ymax = Inf, fill = "gray") +
+  annotate("rect", xmin = 2021.5, xmax = 2022.5, ymin = -Inf, ymax = Inf, fill = "gray") +
   geom_line(aes(x = year, y = climate, col = var_type), size  = 1.5) +
   geom_line(aes(x = year, y = climate), col = "#093E5E", size  = 1.5) +
   ylab("") + 

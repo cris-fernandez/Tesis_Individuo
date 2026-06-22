@@ -142,7 +142,7 @@ aa_plot <- ggplot(aa_target) +
                                 "Declining\nstands"),
                      name = "") + 
   xlab("") + 
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(a)") +
   spot_theme + 
   guides(shape = "none")
@@ -202,7 +202,7 @@ pp_plot <- ggplot(pp_target) +
                                "Declining\nstands"),
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(c)") +
   spot_theme + 
   guides(shape = "none")

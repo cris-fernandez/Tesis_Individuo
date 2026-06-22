@@ -96,7 +96,7 @@ clean_target <- clean_target %>%
                   leaf_d13c, leaf_d18o_corrected, mean_def_obs, sp_id, spot_status,
                   pair_id))
 colnames(clean_target) <- c("Height", "BAI80", "SLA", "Leaf N", "Chl.", "Car.",
-                            "δ13C", "δ18O", "Defoliation", "sp_id", "spot_status", "pair_id")
+                            "δ13C", "Δ18O", "Defoliation", "sp_id", "spot_status", "pair_id")
 
 # 6.- Correlograms per species ####
 
@@ -127,10 +127,10 @@ pp_target <- clean_target %>% filter(sp_id == "Pinpine") %>%
 
 ## 6.1.- Abies alba ####
 
-my_fn <- function(data, mapping, method = "loess", ...){
+my_fn <- function(data, mapping, method = "loess", span = 1.5, ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#785EF0") + 
-    geom_smooth(method = method, col = "black", ...)
+    geom_point(col = "#785EF0", alpha = 0.5) + 
+    geom_smooth(method = method, col = "black", span = span, ...)
   p
 }
 
@@ -155,50 +155,53 @@ cor_sig <- function(data, mapping, method = "pearson",
 }
 
 aa_correlo <- ggpairs(aa_target, 
-                      title = "A",
+                      title = "(a)",
                       upper = list(continuous = cor_sig),
                       lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.2.- Pinus sylvestris ####
 
-my_fn <- function(data, mapping, method = "loess", ...){
+my_fn <- function(data, mapping, method = "loess", span = 1.5, ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#FFB000") + 
-    geom_smooth(method = method, col = "black", ...)
+    geom_point(col = "#FFB000", alpha = 0.5) + 
+    geom_smooth(method = method, col = "black", span = span, ...)
   p
 }
 
 ps_correlo <- ggpairs(ps_target, 
-                      title = "B",
+                      title = "(b)",
                       upper = list(continuous = cor_sig),
                       lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 
 ## 6.3.- Pinus pinea ####
 
-my_fn <- function(data, mapping, method = "loess", ...){
+my_fn <- function(data, mapping, method = "loess", span = 1.5, ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#990000") + 
-    geom_smooth(method = method, col = "black", ...)
+    geom_point(col = "#990000", alpha = 0.5) + 
+    geom_smooth(method = method, col = "black", span = span, ...)
   p
 }
 
 pp_correlo <- ggpairs(pp_target, 
-                      title = "C",
+                      title = "(c)",
                       upper = list(continuous = cor_sig),
                       lower = list(continuous = my_fn)) +
   theme_classic() + 
   theme(plot.title = element_text(hjust = 0,  # 0 = left, 0.5 = center, 1 = righ
                                   size = 20),
+        plot.tag = element_text(face = "bold"),
         strip.text.x = element_text(size = 15),
         strip.text.y = element_text(size = 15))
 

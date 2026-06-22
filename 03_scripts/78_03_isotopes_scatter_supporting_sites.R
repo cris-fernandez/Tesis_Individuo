@@ -149,7 +149,7 @@ hue_aa_plot <- ggplot(hue_aa_target) +
                                "Declining\nstands"),
                     name = "") + 
   xlab("") + 
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(a)",
        title = expression(italic("A. alba") * " - Huesca")) +
   spot_theme + 
@@ -212,7 +212,7 @@ nav_ps_plot <- ggplot(nav_ps_target) +
                                "Declining\nstands"),
                     name = "") + 
   xlab("") + 
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(c)",
        title = expression(italic("P. sylvestris") * " - Navarra")) +
   spot_theme + 
@@ -274,7 +274,7 @@ gua_ps_plot <- ggplot(gua_ps_target) +
                                "Declining\nstands"),
                     name = "") + 
   xlab("") + 
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(e)",
        title = expression(italic("P. sylvestris") * " - Guadalajara")) +
   spot_theme + 
@@ -337,7 +337,7 @@ mad_pp_plot <- ggplot(mad_pp_target) +
                                "Declining\nstands"),
                     name = "") + 
   xlab(bquote("δ"^{13}*C~"(‰)")) +
-  ylab(bquote("δ"^{18}*O~"(‰)")) +
+  ylab(bquote("Δ"^{18}*O~"(‰)")) +
   labs(tag = "(g)",
        title = expression(italic("P. pinea") * " - Madrid")) + 
   spot_theme +
