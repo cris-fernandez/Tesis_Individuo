@@ -274,79 +274,79 @@ write.csv(ci_df, "02_clean_data/63_02_AICc_defo.csv")
 
 ## 11.1.- Abies alba ####
 
-summary(lm(mean_def_obs ~ height, data = aa_target2))
-confint(lm(mean_def_obs ~ height, data = aa_target2), level = 0.95)
+summary(lm(height ~ mean_def_obs, data = aa_target2))
+confint(lm(height ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ mean_1980, data = aa_target2))
-confint(lm(mean_def_obs ~ mean_1980, data = aa_target2), level = 0.95)
+summary(lm(mean_1980 ~ mean_def_obs, data = aa_target2))
+confint(lm(mean_1980 ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ sla_22, data = aa_target2))
-confint(lm(mean_def_obs ~ sla_22, data = aa_target2), level = 0.95)
+summary(lm(sla_22 ~ mean_def_obs, data = aa_target2))
+confint(lm(sla_22 ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ percent_n, data = aa_target2))
-confint(lm(mean_def_obs ~ percent_n, data = aa_target2), level = 0.95)
+summary(lm(percent_n ~ mean_def_obs, data = aa_target2))
+confint(lm(percent_n ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ total_chl_fw_22, data = aa_target2))
-confint(lm(mean_def_obs ~ total_chl_fw_22, data = aa_target2), level = 0.95)
+summary(lm(total_chl_fw_22 ~ mean_def_obs, data = aa_target2))
+confint(lm(total_chl_fw_22 ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ xc_fw_22, data = aa_target2))
-confint(lm(mean_def_obs ~ xc_fw_22, data = aa_target2), level = 0.95)
+summary(lm(xc_fw_22 ~ mean_def_obs, data = aa_target2))
+confint(lm(xc_fw_22 ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d13c, data = aa_target2))
-confint(lm(mean_def_obs ~ leaf_d13c, data = aa_target2), level = 0.95)
+summary(lm(leaf_d13c ~ mean_def_obs, data = aa_target2))
+confint(lm(leaf_d13c ~ mean_def_obs, data = aa_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = aa_target2))
-confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = aa_target2), level = 0.95)
+summary(lm(leaf_d18o_corrected ~ mean_def_obs, data = aa_target2))
+confint(lm(leaf_d18o_corrected ~ mean_def_obs, data = aa_target2), level = 0.95)
 
 ## 11.2.- Pinus sylvestris ####
 
-summary(lm(mean_def_obs ~ height, data = ps_target2))
-confint(lm(mean_def_obs ~ height, data = ps_target2), level = 0.95)
+summary(lm(height ~ mean_def_obs, data = ps_target2))
+confint(lm(height ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ mean_1980, data = ps_target2))
-confint(lm(mean_def_obs ~ mean_1980, data = ps_target2), level = 0.95)
+summary(lm(mean_1980 ~ mean_def_obs, data = ps_target2))
+confint(lm(mean_1980 ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ sla_22, data = ps_target2))
-confint(lm(mean_def_obs ~ sla_22, data = ps_target2), level = 0.95)
+summary(lm(sla_22 ~ mean_def_obs, data = ps_target2))
+confint(lm(sla_22 ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ percent_n, data = ps_target2))
-confint(lm(mean_def_obs ~ percent_n, data = ps_target2), level = 0.95)
+summary(lm(percent_n ~ mean_def_obs, data = ps_target2))
+confint(lm(percent_n ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ total_chl_fw_22, data = ps_target2))
-confint(lm(mean_def_obs ~ total_chl_fw_22, data = ps_target2), level = 0.95)
+summary(lm(total_chl_fw_22 ~ mean_def_obs, data = ps_target2))
+confint(lm(total_chl_fw_22 ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ xc_fw_22, data = ps_target2))
-confint(lm(mean_def_obs ~ xc_fw_22, data = ps_target2), level = 0.95)
+summary(lm(xc_fw_22 ~ mean_def_obs, data = ps_target2))
+confint(lm(xc_fw_22 ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d13c, data = ps_target2))
-confint(lm(mean_def_obs ~ leaf_d13c, data = ps_target2), level = 0.95)
+summary(lm(leaf_d13c ~ mean_def_obs, data = ps_target2))
+confint(lm(leaf_d13c ~ mean_def_obs, data = ps_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = ps_target2))
-confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = ps_target2), level = 0.95)
+summary(lm(leaf_d18o_corrected ~ mean_def_obs, data = ps_target2))
+confint(lm(leaf_d18o_corrected ~ mean_def_obs, data = ps_target2), level = 0.95)
 
 ## 11.3.- Pinus pinea ####
 
-summary(lm(mean_def_obs ~ height, data = pp_target2))
-confint(lm(mean_def_obs ~ height, data = pp_target2), level = 0.95)
+summary(lm(height ~ mean_def_obs, data = pp_target2))
+confint(lm(height ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ mean_1980, data = pp_target2))
-confint(lm(mean_def_obs ~ mean_1980, data = pp_target2), level = 0.95)
+summary(lm(mean_1980 ~ mean_def_obs, data = pp_target2))
+confint(lm(mean_1980 ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ sla_22, data = pp_target2))
-confint(lm(mean_def_obs ~ sla_22, data = pp_target2), level = 0.95)
+summary(lm(sla_22 ~ mean_def_obs, data = pp_target2))
+confint(lm(sla_22 ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ percent_n, data = pp_target2))
-confint(lm(mean_def_obs ~ percent_n, data = pp_target2), level = 0.95)
+summary(lm(percent_n ~ mean_def_obs, data = pp_target2))
+confint(lm(percent_n ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ total_chl_fw_22, data = pp_target2))
-confint(lm(mean_def_obs ~ total_chl_fw_22, data = pp_target2), level = 0.95)
+summary(lm(total_chl_fw_22 ~ mean_def_obs, data = pp_target2))
+confint(lm(total_chl_fw_22 ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ xc_fw_22, data = pp_target2))
-confint(lm(mean_def_obs ~ xc_fw_22, data = pp_target2), level = 0.95)
+summary(lm(xc_fw_22 ~ mean_def_obs, data = pp_target2))
+confint(lm(xc_fw_22 ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d13c, data = pp_target2))
-confint(lm(mean_def_obs ~ leaf_d13c, data = pp_target2), level = 0.95)
+summary(lm(leaf_d13c ~ mean_def_obs, data = pp_target2))
+confint(lm(leaf_d13c ~ mean_def_obs, data = pp_target2), level = 0.95)
 
-summary(lm(mean_def_obs ~ leaf_d18o_corrected, data = pp_target2))
-confint(lm(mean_def_obs ~ leaf_d18o_corrected, data = pp_target2), level = 0.95)
+summary(lm(leaf_d18o_corrected ~ mean_def_obs, data = pp_target2))
+confint(lm(leaf_d18o_corrected ~ mean_def_obs, data = pp_target2), level = 0.95)
 

@@ -423,7 +423,7 @@ biplot_pp2 <- ggplot() +
 
 # 13.- Saving ####
 
-tiff("04_figures/51_07_PCA_ellipses_gradient_V5.tiff", units = "mm",
+tiff("04_figures/51_07_PCA_ellipses_gradient_V6.tiff", units = "mm",
      width = 400, height = 400,
      res = 600, compression = "lzw")
 (biplot_aa2 + biplot_ps2 + biplot_pp2 + 

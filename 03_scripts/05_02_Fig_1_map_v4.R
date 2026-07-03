@@ -227,6 +227,11 @@ distrib_world <- ggplot() +
                     breaks = c("Abies alba",
                                "Pinus sylvestris",
                                "Pinus pinea")) +
+  geom_segment(aes(x = -5.6, y = 39.5, xend = 1.1, yend = 39.5), colour = "black", linewidth = 1.6) + 
+  geom_segment(aes(x = -5.6, y = 43.5, xend = 1.1, yend = 43.5), colour = "black", linewidth = 1.6) + 
+  geom_segment(aes(x = -5.5, y = 39.5, xend = -5.5, yend = 43.5), colour = "black", linewidth = 1.6) + 
+  geom_segment(aes(x = 1, y = 39.5, xend = 1, yend = 43.5), colour = "black", linewidth = 1.6) + 
+  # coord_sf(xlim = c(-5.5, 1), ylim = c(39.5, 43.5), expand = FALSE) +
   theme_minimal() +
   labs(title = "") + 
   xlab("") + 
