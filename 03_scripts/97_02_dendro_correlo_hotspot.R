@@ -85,16 +85,17 @@ clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target <- clean_target %>%
   mutate(sp_id = fct_relevel(sp_id, "Abialba", "Pinsylv", "Pinpine"),
-         spot_status = fct_relevel(spot_status, "coldspot", "hotspot"))
+         spot_status = fct_relevel(spot_status, "coldspot", "hotspot")) %>% 
+  filter(spot_status == "Hotspot")
 
 
 # 5.- Variable selection and tidying ####
 
 clean_target <- clean_target %>% 
-  dplyr::select(c(leaf_d13c, wood_d13c_17, wood_d13c_22,
+  dplyr::select(c(mean, mean_1980, mean_20, mean_15, mean_10, mean_05, 
                   # mean_def_obs, 
                   sp_id, spot_status))
-colnames(clean_target) <- c("Leaf δ13C", "Wood δ13C '12", "Wood δ13C '17",
+colnames(clean_target) <- c("BAI", "BAI80", "BAI20", "BAI15", "BAI10", "BAI05",
                             # "mean_def_obs", 
                             "sp_id", "spot_status")
 
@@ -117,7 +118,7 @@ pp_target <- clean_target %>% filter(sp_id == "Pinpine") %>% dplyr::select(-c(sp
 
 my_fn <- function(data, mapping, method = "loess", ...){
   p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#785EF0") + 
+    geom_point(col = "#D71515") + 
     geom_smooth(method = method, col = "black", ...)
   p
 }
@@ -137,13 +138,6 @@ aa_correlo <- ggpairs(aa_target,
 
 ## 6.2.- Pinus sylvestris ####
 
-my_fn <- function(data, mapping, method = "loess", ...){
-  p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#FFB000") + 
-    geom_smooth(method = method, col = "black", ...)
-  p
-}
-
 ps_correlo <- ggpairs(ps_target, 
                       title = "B",
                       upper = list(continuous = wrap("cor", 
@@ -158,13 +152,6 @@ ps_correlo <- ggpairs(ps_target,
         strip.text.y = element_text(size = 15))
 
 ## 6.3.- Pinus pinea ####
-
-my_fn <- function(data, mapping, method = "loess", ...){
-  p <- ggplot(data = data, mapping = mapping) + 
-    geom_point(col = "#990000") + 
-    geom_smooth(method = method, col = "black", ...)
-  p
-}
 
 pp_correlo <- ggpairs(pp_target, 
                       title = "C",
@@ -188,8 +175,8 @@ pp_wrap <- wrap_elements(ggmatrix_gtable(pp_correlo))
 
 # Combine correlograms using patchwork
 
-tiff("04_figures/97_03_Correlos_isotopes.tiff",
-     units = "mm", width = 400, height = 400,
+tiff("04_figures/97_02_Correlos_dendro_hotspot.tiff",
+     units = "mm", width = 550, height = 550,
      res = 500, compression = "lzw")
 aa_wrap + ps_wrap + pp_wrap + plot_layout(ncol = 2)
 dev.off()
