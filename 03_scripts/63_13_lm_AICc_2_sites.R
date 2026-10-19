@@ -66,10 +66,6 @@ clean_target$sp_id <- ifelse(clean_target$tree_number == "missing_1" |
                                clean_target$tree_number == "missing_2",
                              "Pinsylv", clean_target$sp_id)
 
-clean_target <- clean_target %>% 
-  mutate(sp_id = factor(sp_id),
-         vigor_id = fct_relevel(vigor_id, "cold_healthy", "hot_healthy", "hot_damaged"))
-
 clean_target <- clean_target[!is.na(clean_target$sp_id), ]
 
 clean_target$cn <- clean_target$percent_c / clean_target$percent_n
@@ -99,170 +95,131 @@ clean_target$mean_1980 <- ifelse(clean_target$mean_1980 > 3000 & clean_target$sp
 
 clean_target$spot_status <- as.factor(clean_target$spot_status)
 
-# Filtering by species: 
+# Filtering by site: 
 
-aa_target <- clean_target %>% 
-  filter(sp_id == "Abialba")
-ps_target <- clean_target %>% 
-  filter(sp_id == "Pinsylv")
-pp_target <- clean_target %>% 
-  filter(sp_id == "Pinpine")
-# filter(mean_def_obs < 60) Why did I did this
+# nav_aa <- clean_target %>% filter(pair_id == "Nav-Abialba")
+# hue_aa <- clean_target %>% filter(pair_id == "Hue-Abialba")
+# nav_ps <- clean_target %>% filter(pair_id == "Nav-Pinsylv")
+# ter_ps <- clean_target %>% filter(pair_id == "Ter-Pinsylv")
+# gua_ps <- clean_target %>% filter(pair_id == "Gua-Pinsylv")
+# mad_ps <- clean_target %>% filter(pair_id == "Mad-Pinsylv")
+# mad_pp <- clean_target %>% filter(pair_id == "Mad-Pinpine")
+
+
+site_list <- split(clean_target, clean_target$pair_id)
 
 # 5.- Variable selection ####
 
-var_list <- c("height", "dbh", "hegyi_index", "wc_22", "percent_c", "percent_n",
-              "cn", "sla_22", "age", 
-              "chlor_a_fw_22", "chlor_b_fw_22", "total_chl_fw_22", "xc_fw_22", 
-              "chla_chlb_22", "chl_xc_22", "leaf_d13c", "leaf_d15n", 
-              "leaf_d18o_corrected",
-              "mean_1980", "mean_05", "Rt12", "Rt17", "Rt22", "Rs12", "Rs17")
+var_list <- c("height", "mean_1980", "sla_22", "percent_n",
+              "leaf_d13c", "leaf_d18o_corrected",
+              "total_chl_fw_22", "xc_fw_22")
+
 
 # 6.- Lm estimates ####
-## 6.1.- Abies alba ####
 
-model_df_aa <- data.frame()
-null_df_aa <- data.frame()
-model_list_aa <- list()
-null_list_aa <- list()
+model_df <- list()
+null_df <- list()
+model_list <- list()
+null_list <- list()
 
-for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
-  aa_target2 <- aa_target %>% filter(!is.na(var_list[i]))
-  model_list_aa[[i]] <- lm(model_formula, data = aa_target2)
-  coefs_model <- broom.mixed::tidy(model_list_aa[[i]]) %>% 
-    mutate(variable = var_list[i]) 
-  model_df_aa <- bind_rows(model_df_aa, coefs_model)
+for (s in 1:length(site_list)) {
+  model_list[[s]] <- list() #If I attempt to do this inside the loop it will overwrite with every
+  # iteration
+  model_df[[s]] <- data.frame()
+  null_list[[s]] <- list()
+  null_df[[s]] <- data.frame()
   
-  null_formula <- as.formula(paste(var_list[i], "~ 1"))
-  null_list_aa[[i]] <- lm(null_formula, data = aa_target2)
-  coefs_null <- broom.mixed::tidy(null_list_aa[[i]]) %>%
-    mutate(variable = var_list[i])
-  null_df_aa <- bind_rows(null_df_aa, coefs_null)
+  for (i in 1:length(var_list)) {
+   model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
+   site_list2 <- site_list[[s]] %>% filter(!is.na(var_list[i]))
+   model_list[[s]][[i]] <- lm(model_formula, data = site_list2)
+   coefs_model <- broom.mixed::tidy(model_list[[s]][[i]]) %>%
+     mutate(variable = var_list[i])
+   model_df[[s]] <- bind_rows(model_df[[s]], coefs_model)
+   
+   null_formula <- as.formula(paste(var_list[i], "~ 1"))
+   null_list[[s]][[i]] <- lm(null_formula, data = site_list2)
+   coefs_null <- broom.mixed::tidy(null_list[[s]][[i]]) %>%
+     mutate(variable = var_list[i])
+   null_df[[s]] <- bind_rows(model_df[[s]], coefs_model)
+   
+   print(paste0(s, ",", i)) 
+  }}
   
-  print(i)
-}
-
-
-## 6.2.- Pinus sylvestris ####
-
-model_df_ps <- data.frame()
-null_df_ps <- data.frame()
-model_list_ps <- list()
-null_list_ps <- list()
-
-for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
-  ps_target2 <- ps_target %>% filter(!is.na(var_list[i]))
-  model_list_ps[[i]] <- lm(model_formula, data = ps_target2)
-  coefs_model <- broom.mixed::tidy(model_list_ps[[i]]) %>% 
-    mutate(variable = var_list[i]) 
-  model_df_ps <- bind_rows(model_df_ps, coefs_model)
-  
-  null_formula <- as.formula(paste(var_list[i], "~ 1"))
-  null_list_ps[[i]] <- lm(null_formula, data = ps_target2)
-  coefs_null <- broom.mixed::tidy(null_list_ps[[i]]) %>%
-    mutate(variable = var_list[i])
-  null_df_ps <- bind_rows(null_df_ps, coefs_null)
-  
-  print(i)
-}
-
-## 6.3.- Pinus pinea ####
-
-model_df_pp <- data.frame()
-null_df_pp <- data.frame()
-model_list_pp <- list()
-null_list_pp <- list()
-
-for (i in 1:length(var_list)) {
-  model_formula <- as.formula(paste(var_list[i], "~ spot_status"))
-  pp_target2 <- pp_target %>% filter(!is.na(var_list[i]))
-  model_list_pp[[i]] <- lm(model_formula, data = pp_target2)
-  coefs_model <- broom.mixed::tidy(model_list_pp[[i]]) %>% 
-    mutate(variable = var_list[i]) 
-  model_df_pp <- bind_rows(model_df_pp, coefs_model)
-  
-  null_formula <- as.formula(paste(var_list[i], "~ 1"))
-  null_list_pp[[i]] <- lm(null_formula, data = pp_target2)
-  coefs_null <- broom.mixed::tidy(null_list_pp[[i]]) %>%
-    mutate(variable = var_list[i])
-  null_df_pp <- bind_rows(null_df_pp, coefs_null)
-  
-  print(i)
-}
 
 # 7.- AICc's ####
 
-aa_aicc <- data.frame(matrix(nrow = length(var_list), ncol = 3))
-ps_aicc <- data.frame(matrix(nrow = length(var_list), ncol = 3))
-pp_aicc <- data.frame(matrix(nrow = length(var_list), ncol = 3))
+models_aicc <- list()
 
-for (i in 1:length(var_list)) {
-  aa_aicc[i, 1] <- var_list[i]
-  aa_aicc[i, 2] <- AICc(model_list_aa[[i]])
-  aa_aicc[i, 3] <- AICc(null_list_aa[[i]])
+for (s in 1:length(site_list)) {
   
-  ps_aicc[i, 1] <- var_list[i]
-  ps_aicc[i, 2] <- AICc(model_list_ps[[i]])
-  ps_aicc[i, 3] <- AICc(null_list_ps[[i]])
+  models_aicc[[s]] <- data.frame(matrix(nrow = length(var_list), ncol = 3))
   
-  pp_aicc[i, 1] <- var_list[i]
-  pp_aicc[i, 2] <- AICc(model_list_pp[[i]])
-  pp_aicc[i, 3] <- AICc(null_list_pp[[i]])
-}
+  for (i in 1:length(var_list)) {
 
-colnames(aa_aicc) <- c("variable", "aa_aicc_full", "aa_aicc_null")
-colnames(ps_aicc) <- c("variable", "ps_aicc_full", "ps_aicc_null")
-colnames(pp_aicc) <- c("variable", "pp_aicc_full", "pp_aicc_null")
+    models_aicc[[s]][i, 1] <- var_list[i]
+    models_aicc[[s]][i, 2] <- AICc(model_list[[s]][[i]])
+    models_aicc[[s]][i, 3] <- AICc(null_list[[s]][[i]])
+    colnames(models_aicc[[s]]) <- c("variable", "aicc_full", "aicc_null")
+    
+    print(paste0(s, ",", i)) 
+    
+  }
+  
+  models_aicc[[s]] <- models_aicc[[s]] %>% 
+    mutate(delta = aicc_full - aicc_null,
+           significant = ifelse(delta < -2, "yes", "no"))
+  
+  }
 
-aa_aicc$delta <- aa_aicc$aa_aicc_full - aa_aicc$aa_aicc_null
-ps_aicc$delta <- ps_aicc$ps_aicc_full - ps_aicc$ps_aicc_null
-pp_aicc$delta <- pp_aicc$pp_aicc_full - pp_aicc$pp_aicc_null
-
-aa_aicc$significant <- ifelse(aa_aicc$delta < -2, "yes", "no")
-ps_aicc$significant <- ifelse(ps_aicc$delta < -2, "yes", "no")
-pp_aicc$significant <- ifelse(pp_aicc$delta < -2, "yes", "no")
-
+ 
 # 8.- Summary with C.I. 95% ####
 
-aa_ci_df <- data.frame()
-ps_ci_df <- data.frame()
-pp_ci_df <- data.frame()
+ci_list <- list()
 
-for (i in 1:length(var_list)) {
-  aa_ci <- summary(emmeans(model_list_aa[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
-  ps_ci <- summary(emmeans(model_list_ps[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
-  pp_ci <- summary(emmeans(model_list_pp[[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
+for (s in 1:length(site_list)) {
   
-  aa_ci_df <- rbind(aa_ci_df, aa_ci)
-  ps_ci_df <- rbind(ps_ci_df, ps_ci)
-  pp_ci_df <- rbind(pp_ci_df, pp_ci)
+  ci_list[[s]] <- data.frame()
   
-  print(i)
+  for (i in 1:length(var_list)) {
+    ci <- summary(emmeans(model_list[[s]][[i]], ~ spot_status)) %>% mutate(variable = var_list[i])
+    ci_list[[s]] <- rbind(ci_list[[s]], ci)
+    
+    print(paste0(s, ",", i))
 }
+}
+
 
 # 9.- Joining ####
 
-# We are only interested on whether they are significant or not, so we will just 
-# select those:
+# We are only interested on whether they are significant or not and delta AICc, 
+# so we will just select those:
 
-aa_significant <- aa_aicc %>% dplyr::select(c(variable, significant))
-ps_significant <- ps_aicc %>% dplyr::select(c(variable, significant))
-pp_significant <- pp_aicc %>% dplyr::select(c(variable, significant))
+significant_list <- list()
 
-aa_ci_df <- left_join(aa_ci_df, aa_significant, by = "variable")
-ps_ci_df <- left_join(ps_ci_df, ps_significant, by = "variable")
-pp_ci_df <- left_join(pp_ci_df, pp_significant, by = "variable")
+for (s in 1:length(site_list)) {
+  significant_list[[s]] <- models_aicc[[s]] %>% dplyr::select(c(variable, significant, delta))
+  print(s)
+}
+ 
+# Joining:
 
-aa_ci_df$sp_id <- "Abialba"
-ps_ci_df$sp_id <- "Pinsylv"
-pp_ci_df$sp_id <- "Pinpine"
+for (s in 1:length(site_list)) {
+  ci_list[[s]] <- left_join(ci_list[[s]], significant_list[[s]], by = "variable")
+  print(s)
+} 
 
-# Final joint
+# Adding a column with site:
 
-ci_df <- rbind(aa_ci_df, ps_ci_df, pp_ci_df)
+for (s in 1:length(site_list)) {
+  ci_list[[s]] <- ci_list[[s]] %>% mutate(pair_id = names(site_list[s]))
+  print(s)
+}
+
+# Collapsing all the elements of the list into a single df:
+
+final_df <- bind_rows(ci_list)
 
 # 10.- Export ####
 
-write.csv(ci_df, "02_clean_data/63_01_AICc_discrete2.csv")
+write.csv(final_df, "02_clean_data/63_13_AICc_discrete2_site.csv")
