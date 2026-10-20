@@ -24,16 +24,17 @@ dendro_data$site <- substr(dendro_data$plot_id, start = 1, stop = 3)
 
 # 2.- Plotting theme ####
 
-spot_theme <- list(theme_classic(),
+spot_theme <- list(scale_y_continuous(labels = scales::label_number(accuracy = 0.1)),
+                   theme_classic(),
                    theme(legend.position = "right",
                          legend.key.size = unit(2, "cm"),  
                          legend.title = element_blank(),
                          axis.text.x = element_text(size = 20,
                                                     angle = 45,
                                                     hjust = 1),
-                         axis.title.x = element_text(size = 25),
+                         axis.title.x = element_text(size = 22),
                          axis.text.y = element_text(size = 20),
-                         axis.title.y = element_text(size = 25),
+                         axis.title.y = element_text(size = 22),
                          legend.text = element_text(size = 25),
                          plot.tag = element_text(size = 25,
                                                  face = "bold"),
@@ -49,32 +50,44 @@ abies_hue <- dendro_data %>%
 
 mean_abies_hue <- abies_hue %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 abhue_plot <- ggplot(data = abies_hue) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_abies_hue, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_abies_hue, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_abies_hue, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
+                     name = "") + 
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                     values = c("Coldspot" = "#2274A5",
+                                "Hotspot" = "#D71515"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
   xlab("") + 
-  ylab("") +
+  ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
   labs(tag = "(a)",
        title = expression(italic("A. alba") * " - Huesca")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
@@ -86,32 +99,44 @@ abies_nav <- dendro_data %>%
 
 mean_abies_nav <- abies_nav %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 abnav_plot <- ggplot(data = abies_nav) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_abies_nav, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_abies_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_abies_nav, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                    values = c("Coldspot" = "#2274A5",
+                               "Hotspot" = "#D71515"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
+                    name = "") + 
   xlab("") + 
   ylab("") +
   labs(tag = "(b)",
        title = expression(italic("A. alba") * " - Navarra")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
@@ -123,32 +148,44 @@ psylv_nav <- dendro_data %>%
 
 mean_psylv_nav <- psylv_nav %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 psnav_plot <- ggplot(data = psylv_nav) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_nav, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_psylv_nav, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                    values = c("Coldspot" = "#2274A5",
+                               "Hotspot" = "#D71515"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
+                    name = "") + 
   xlab("") + 
-  ylab("") +
+  ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
   labs(tag = "(c)",
        title = expression(italic("P. sylvestris") * " - Navarra")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
@@ -160,32 +197,44 @@ psylv_ter <- dendro_data %>%
 
 mean_psylv_ter <- psylv_ter %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 pster_plot <- ggplot(data = psylv_ter) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_ter, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_ter, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_psylv_ter, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                    values = c("Coldspot" = "#2274A5",
+                               "Hotspot" = "#D71515"),
+                    labels = c("Non-declining stands",
+                               "Declining stands"),
+                    name = "") + 
   xlab("") + 
   ylab("") +
   labs(tag = "(d)",
        title = expression(italic("P. sylvestris") * " - Teruel")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
@@ -197,32 +246,44 @@ psylv_gua <- dendro_data %>%
 
 mean_psylv_gua <- psylv_gua %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 psgua_plot <- ggplot(data = psylv_gua) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_gua, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_gua, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_psylv_gua, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
+                     name = "") + 
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                     values = c("Coldspot" = "#2274A5",
+                                "Hotspot" = "#D71515"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
   xlab("") + 
-  ylab("") +
+  ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
   labs(tag = "(e)",
        title = expression(italic("P. sylvestris") * " - Guadalajara")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.text.x = element_blank(),
         axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
@@ -234,67 +295,91 @@ psylv_mad <- dendro_data %>%
 
 mean_psylv_mad <- psylv_mad %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 psmad_plot <- ggplot(data = psylv_mad) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_mad, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_psylv_mad, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
-  xlab("") + 
-  ylab("") +
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                     values = c("Coldspot" = "#2274A5",
+                                "Hotspot" = "#D71515"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
+                     name = "") + 
+  xlab("Year") + 
+  ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
   labs(tag = "(f)",
        title = expression(italic("P. sylvestris") * " - Madrid")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
 
-## 3.6.- Pinus sylvestris - Madrid ####
+## 3.7.- Pinus pinea - Madrid ####
 
 ppine_mad <- dendro_data %>% 
   filter(site == "NAV" | site == "PEL")
 
 mean_ppine_mad <- ppine_mad %>% 
   group_by(year, spot_status) %>% 
-  summarise(mean_bai = mean(bai, na.rm = T))
+  summarise(mean_bai = mean(bai, na.rm = T),
+            se_bai = sd(bai, na.rm = T) / sqrt(sum(!is.na(bai))))
 
 ppmad_plot <- ggplot(data = ppine_mad) + 
-  geom_line(aes(x = year, y = bai, col = spot_status, alpha = tree_number),
+  geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_ppine_mad, aes(x = year, y = mean_bai, col = spot_status), size = 2) +
+  geom_line(data = mean_ppine_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_ribbon(data = mean_ppine_mad, aes(x = year, y = mean_bai / 1000, 
+                                         ymin = (mean_bai - se_bai) / 1000, 
+                                         ymax = (mean_bai + se_bai) / 1000,
+                                         fill = spot_status),
+              alpha = 0.3) + 
   scale_alpha_discrete(range = c(0.2, 0.21),
                        guide = "none") + 
   scale_color_manual(breaks = c("Coldspot", "Hotspot"),
                      values = c("Coldspot" = "#2274A5",
                                 "Hotspot" = "#D71515"),
-                     labels = c("Non-declining\nstands",
-                                "Declining\nstands"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
                      name = "") + 
-  xlab("") + 
-  ylab("") +
+  scale_fill_manual(breaks = c("Coldspot", "Hotspot"),
+                     values = c("Coldspot" = "#2274A5",
+                                "Hotspot" = "#D71515"),
+                     labels = c("Non-declining stands",
+                                "Declining stands"),
+                     name = "") + 
+  xlab("Year") + 
+  ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
   labs(tag = "(h)",
        title = expression(italic("P. pinea") * " - Madrid")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),
-                     guide = guide_axis(minor.ticks = TRUE),
+                     # guide = guide_axis(minor.ticks = TRUE),
                      minor_breaks = seq(1950, 2022, 1)) +
   theme_classic() + 
   theme(axis.ticks.length.x = rel(2),
-        axis.minor.ticks.length.x.bottom = rel(0.7),
+        # axis.minor.ticks.length.x.bottom = rel(0.7),
         plot.tag = element_text(size = 22),
         plot.title = element_text(size = 22)) + 
   spot_theme
