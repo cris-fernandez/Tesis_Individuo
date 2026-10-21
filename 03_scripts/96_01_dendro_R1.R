@@ -56,7 +56,7 @@ mean_abies_hue <- abies_hue %>%
 abhue_plot <- ggplot(data = abies_hue) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_abies_hue, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_abies_hue, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_abies_hue, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -105,7 +105,7 @@ mean_abies_nav <- abies_nav %>%
 abnav_plot <- ggplot(data = abies_nav) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_abies_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_abies_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_abies_nav, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -154,7 +154,7 @@ mean_psylv_nav <- psylv_nav %>%
 psnav_plot <- ggplot(data = psylv_nav) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_nav, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_psylv_nav, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -203,7 +203,7 @@ mean_psylv_ter <- psylv_ter %>%
 pster_plot <- ggplot(data = psylv_ter) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_ter, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_ter, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_psylv_ter, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -252,7 +252,7 @@ mean_psylv_gua <- psylv_gua %>%
 psgua_plot <- ggplot(data = psylv_gua) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_gua, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_gua, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_psylv_gua, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -301,7 +301,7 @@ mean_psylv_mad <- psylv_mad %>%
 psmad_plot <- ggplot(data = psylv_mad) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_psylv_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_psylv_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_psylv_mad, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -349,7 +349,7 @@ mean_ppine_mad <- ppine_mad %>%
 ppmad_plot <- ggplot(data = ppine_mad) + 
   geom_line(aes(x = year, y = bai / 1000, col = spot_status, alpha = tree_number),
             size = 0.2) + 
-  geom_line(data = mean_ppine_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 2) +
+  geom_line(data = mean_ppine_mad, aes(x = year, y = mean_bai / 1000, col = spot_status), size = 1.6) +
   geom_ribbon(data = mean_ppine_mad, aes(x = year, y = mean_bai / 1000, 
                                          ymin = (mean_bai - se_bai) / 1000, 
                                          ymax = (mean_bai + se_bai) / 1000,
@@ -371,7 +371,7 @@ ppmad_plot <- ggplot(data = ppine_mad) +
                      name = "") + 
   xlab("Year") + 
   ylab(expression(paste("BAI (mm² year"^"-1", "10"^"-3",")"))) + 
-  labs(tag = "(h)",
+  labs(tag = "(g)",
        title = expression(italic("P. pinea") * " - Madrid")) +
   scale_x_continuous(breaks = seq(1950, 2022, 10), 
                      limits = c(1950, 2022),

@@ -123,7 +123,7 @@ my_fn <- function(data, mapping, method = "loess", ...){
 }
 
 aa_correlo <- ggpairs(aa_target, 
-                      title = "A",
+                      title = "(a)",
                       upper = list(continuous = wrap("cor", 
                                                      size = 5,
                                                      face = "bold",
@@ -145,7 +145,7 @@ my_fn <- function(data, mapping, method = "loess", ...){
 }
 
 ps_correlo <- ggpairs(ps_target, 
-                      title = "B",
+                      title = "(b)",
                       upper = list(continuous = wrap("cor", 
                                                      size = 5,
                                                      face = "bold",
@@ -167,7 +167,7 @@ my_fn <- function(data, mapping, method = "loess", ...){
 }
 
 pp_correlo <- ggpairs(pp_target, 
-                      title = "C",
+                      title = "(c)",
                       upper = list(continuous = wrap("cor", 
                                                      size = 5,
                                                      face = "bold",
