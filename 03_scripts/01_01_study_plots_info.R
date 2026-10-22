@@ -13,7 +13,7 @@ getwd()
 # 1.- Reading target data ####
 
 clean_target <- read.csv("C:/Users/recup/Universidad de Alcala/IBFORRES/git_local_ibforres/Database_IBFORRES/05_outputs/03_03_result_target.csv",
-                         header = T, sep = ",") %>% select(-X) %>%
+                         header = T, sep = ",") %>% dplyr::select(-X) %>%
   mutate(site = substr(plot_id, 1, 3))
 # clean_target <- read.csv("C:/Users/crist/Documents/Database_IBFORRES/05_outputs/03_03_result_target.csv",
 #                          header = T, sep = ",") %>% dplyr::select(-X) %>%
@@ -31,15 +31,15 @@ clean_target$pair_id <- ifelse(grepl("NAV|PEL", clean_target$plot_id) == T, "Mad
 # 2.- Number of plots per species ####
 
 psylv <- clean_target %>% 
-  select(c(plot_id, sp_id)) %>% 
+  dplyr::select(c(plot_id, sp_id)) %>% 
   filter(sp_id == "Pinsylv") %>% 
   unique()
 ppine <- clean_target %>% 
-  select(c(plot_id, sp_id)) %>% 
+  dplyr::select(c(plot_id, sp_id)) %>% 
   filter(sp_id == "Pinpine") %>% 
   unique()
 aalba <- clean_target %>% 
-  select(c(plot_id, sp_id)) %>% 
+  dplyr::select(c(plot_id, sp_id)) %>% 
   filter(sp_id == "Abialba") %>% 
   unique() 
 # We have 52 P. sylvestris, 17 P. pinea and 23 A. alba plots :)
