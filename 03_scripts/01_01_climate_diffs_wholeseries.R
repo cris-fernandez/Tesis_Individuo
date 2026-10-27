@@ -76,6 +76,7 @@ precipitation_mean <- precipitation_coord %>%
   group_by(plot_id, year) %>% 
   summarise(Prcp = sum(Prcp)) %>% 
   full_join(clean_target, by = "plot_id") %>% 
+  group_by(pair_id) %>% 
   summarise(mean_Prcp = mean(Prcp, na.rm = TRUE),
             sd_Prcp = sd(Prcp, na.rm = TRUE),
             min_Prcp = quantile(Prcp, probs = 0.025),

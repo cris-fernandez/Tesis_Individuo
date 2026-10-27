@@ -110,9 +110,10 @@ nav_target <- clean_target %>% filter(pair_id == "Nav-Pinsylv") %>%
 sem_model1 <- '
 mean_1980 ~ height + sla_22
 leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
-mean_def_obs ~~ c(b4, 0)*leaf_d13c
 '
+# mean_def_obs ~ c(b1, 0)*sla_22 + c(b2, 0)*mean_1980 + c(b3, 0)*height
+# mean_def_obs ~~ c(b4, 0)*leaf_d13c
+
 
 sem_model2 <- '
 mean_1980 ~ height + sla_22
@@ -137,13 +138,13 @@ gua_sem <- sem(sem_model1,
                fixed.x = T,
                group = "spot_status")
 
-ter_sem <- sem(sem_model2,
+ter_sem <- sem(sem_model1,
                ter_target,
                missing = "fiml",
                fixed.x = T,
                group = "spot_status")
 
-nav_sem <- sem(sem_model2,
+nav_sem <- sem(sem_model1,
                nav_target,
                missing = "fiml",
                fixed.x = T,
@@ -151,6 +152,5 @@ nav_sem <- sem(sem_model2,
 
 summary(mad_sem, standardized = TRUE, fit.measures = TRUE)
 summary(gua_sem, standardized = TRUE, fit.measures = TRUE)
-
 summary(ter_sem, standardized = TRUE, fit.measures = TRUE)
 summary(nav_sem, standardized = TRUE, fit.measures = TRUE)

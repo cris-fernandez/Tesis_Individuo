@@ -102,10 +102,7 @@ nav_target <- clean_target %>% filter(pair_id == "Nav-Abialba") %>%
 
 sem_model <- '
 mean_1980 ~ height + sla_22
-leaf_d13c ~ sla_22 + height + mean_1980
-mean_def_obs ~ c(0, b1)*sla_22 + c(0, b2)*mean_1980 + c(0, b3)*height
-mean_def_obs ~~ c(0, b4)*leaf_d13c
-'
+leaf_d13c ~ sla_22 + height + mean_1980'
 
 # 8.- SEM #
 # The arguments provide the standardized coefficients (useful to compare) and 
@@ -113,15 +110,23 @@ mean_def_obs ~~ c(0, b4)*leaf_d13c
 
 hue_sem <- sem(sem_model,
                hue_target,
+               group = "spot_status",
                missing = "fiml",
-               fixed.x = T,
-               group = "spot_status")
+               group.equal = c("regressions"),
+               group.partial = c("leaf_d13c ~ sla_22",
+                                 "leaf_d13c ~ height",
+                                 "mean_1980 ~ height"),
+               fixed.x = F)
 
 nav_sem <- sem(sem_model,
                nav_target,
+               group = "spot_status",
                missing = "fiml",
-               fixed.x = T,
-               group = "spot_status")
+               group.equal = c("regressions"),
+               group.partial = c("leaf_d13c ~ sla_22",
+                                 "leaf_d13c ~ height",
+                                 "mean_1980 ~ height"),
+               fixed.x = F)
 
 summary(hue_sem, standardized = TRUE, fit.measures = TRUE)
 summary(nav_sem, standardized = TRUE, fit.measures = TRUE)
