@@ -266,4 +266,3 @@ ci_df <- rbind(aa_ci_df, ps_ci_df, pp_ci_df)
 # 10.- Export ####
 
 write.csv(ci_df, "02_clean_data/63_01_AICc_discrete2.csv")
-

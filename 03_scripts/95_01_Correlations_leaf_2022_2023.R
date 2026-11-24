@@ -117,7 +117,7 @@ sla_plot <- ggplot(clean_target) +
   geom_smooth(aes(x = sla_22, y = sla_23,
                   colour = spot_status, fill = spot_status),
               method = "lm", alpha = 0.2) + 
-  geom_text(label = paste0("r = 0.682\np < 2.2e-16"),
+  geom_text(label = paste0("r = 0.682\np < 0.0001"),
             aes(x = 36, y = 125, label = label),
             # hjust = 1.1, vjust = 1.5,
             size = 9) +
@@ -147,7 +147,7 @@ chl_plot <- ggplot(clean_target) +
   geom_smooth(aes(x = total_chl_fw_22, y = total_chl_fw_23,
                   colour = spot_status, fill = spot_status),
               method = "lm", alpha = 0.2) + 
-  geom_text(label = paste0("r = 0.646\np < 2.2e-16"),
+  geom_text(label = paste0("r = 0.646\np < 0.0001"),
             aes(x = 500, y = 2500, label = label),
             # hjust = 1.1, vjust = 1.5,
             size = 9) +
@@ -177,7 +177,7 @@ xc_plot <- ggplot(clean_target) +
   geom_smooth(aes(x = xc_fw_22, y = xc_fw_23,
                   colour = spot_status, fill = spot_status),
               method = "lm", alpha = 0.2) + 
-  geom_text(label = paste0("r = 0.620\np < 2.2e-16"),
+  geom_text(label = paste0("r = 0.620\np < 0.0001"),
     aes(x = 17, y = 75, label = label),
     # hjust = 1.1, vjust = 1.5,
     size = 9) +
